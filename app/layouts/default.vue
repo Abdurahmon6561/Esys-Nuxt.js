@@ -2,7 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
-import { gsap } from "gsap/all"; // Import GSAP with all plugins
+import { gsap } from "gsap/all"; 
 
 const open = ref(false);
 const locale = ref("ru");
@@ -24,7 +24,6 @@ onMounted(() => {
   const saved = localStorage.getItem("locale");
   if (saved) locale.value = saved;
 
-  // Close dropdown when clicking outside
   const handleClickOutside = (e) => {
     if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
       open.value = false;
@@ -32,13 +31,11 @@ onMounted(() => {
   };
   window.addEventListener("click", handleClickOutside);
 
-  // Cleanup
   onBeforeUnmount(() => {
     window.removeEventListener("click", handleClickOutside);
   });
 });
 
-// Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(ScrollSmoother);
 

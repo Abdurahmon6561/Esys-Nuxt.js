@@ -33,8 +33,26 @@ onMounted(() => {
   gsap.from(".hero-text", {
     x: -100,
     opacity: 0,
-    duration: 1
+    duration: 2
   });
+
+  gsap.from('.arrow-left', {
+    x: +100,
+    opacity: 0,
+    duration: 2
+  })
+
+  gsap.from('.arrow-right', {
+    x: -100,
+    opacity: 0,
+    duration: 2
+  })
+
+  gsap.from('.hero-btns', {
+    y: +100,
+    opacity: 0,
+    duration: 2
+  })
 });
 </script>
 
@@ -48,7 +66,7 @@ onMounted(() => {
       <!-- Left Arrow -->
       <button
         @click="changeBackground('prev')"
-        class="z-20 text-white text-4xl px-4 py-2 bg-black/40 hover:bg-black/60 rounded-r-lg transition-all duration-300 hero-text"
+        class="z-20 text-white text-4xl px-4 py-2 bg-black/40 hover:bg-black/60 rounded-r-lg transition-all duration-300 arrow-left"
       >
         ‹
       </button>
@@ -63,14 +81,14 @@ onMounted(() => {
           бизнесу расти быстрее
         </h1>
 
-        <div class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4">
+        <div class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns">
           <button
             class="md:px-6 px-2 py-3 bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-all duration-300"
           >
             Наши проекты
           </button>
           <button
-            class="md:px-6 px-2 py-3 bg-transparent border border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300 hero-text" 
+            class="md:px-6 px-2 py-3 bg-transparent border border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300" 
           >
             Связаться
           </button>
@@ -80,7 +98,7 @@ onMounted(() => {
       <!-- Right Arrow -->
       <button
         @click="changeBackground('next')"
-        class="z-20 text-white text-4xl px-4 py-2 bg-black/40 hover:bg-black/60 rounded-l-lg transition-all duration-300"
+        class="z-20 text-white text-4xl px-4 py-2 bg-black/40 hover:bg-black/60 rounded-l-lg transition-all duration-300 arrow-right"
       >
         ›
       </button>
