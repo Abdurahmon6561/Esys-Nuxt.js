@@ -40,12 +40,14 @@ gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(ScrollSmoother);
 
 onMounted(() => {
-  ScrollSmoother.create({
+  const smoother = ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
     content: "#smooth-content",
-    smooth: 3,
+    smooth: 4,
     effects: true,
   });
+
+  smoother.effects("header", { speed: 1, lag: 0 });
 });
 
 onMounted(() => {
@@ -53,6 +55,7 @@ onMounted(() => {
     y: -100,
     opacity: 0,
     duration: 2,
+    ease: "elastic.out(0.4)",
   });
 });
 </script>
@@ -61,7 +64,7 @@ onMounted(() => {
   <div id="smooth-wrapper">
     <div id="smooth-content" class="flex flex-col min-h-screen bg-white p-3 md:p-6">
       <div class="fixed w-full top-0 left-0 right-0">
-        <header class="absolute top-0 left-0 w-full z-50 bg-transparent p-6 rounded-xl">
+        <header class="fixed top-0 left-0 w-full z-50 bg-transparent p-6 rounded-xl">
           <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
             <a href="/">
               <img src="/images/logo.svg" alt="logo" class="h-8" />

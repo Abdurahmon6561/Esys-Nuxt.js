@@ -1,3 +1,4 @@
+<!-- in this code in side buttons when i moving to up the button going to up to where mouse cursor and when coming in this situation the svg path have to change when coming to up or down like тенутся -->
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
@@ -29,7 +30,6 @@ const changeBackground = (direction) => {
   });
 };
 
-// LEFT and RIGHT buttons
 const leftButton = ref(null);
 const rightButton = ref(null);
 
@@ -45,26 +45,101 @@ const moveSideButtons = (e) => {
 
   // LEFT BUTTON
   if (mouseX < proximityThreshold) {
+    const rect = leftButton.value.getBoundingClientRect();
+    const offsetY = mouseY - rect.top - rect.height / 2;
+
     gsap.to(leftButton.value, {
-      y: mouseY - leftButton.value.getBoundingClientRect().top - leftButton.value.offsetHeight / 2,
-      duration: 0.2,
+      y: offsetY,
+      duration: 0.8,
+      ease: "elastic.out(1, 0.4)",
+    });
+
+    const svg = leftButton.value.querySelector("svg");
+    gsap.to(svg, {
+      scaleY: 1 + Math.abs(offsetY) / 300,
+      skewY: offsetY / 40, 
+      transformOrigin: "center",
+      duration: 0.5,
+      ease: "sine.out",
     });
   } else {
-    gsap.to(leftButton.value, { y: leftInitialY, duration: 0.3 });
+    gsap.to(leftButton.value, { y: leftInitialY, duration: 1, ease: "sine.out" });
+    gsap.to(leftButton.value.querySelector("svg"), {
+      scaleY: 1,
+      skewY: 0,
+      duration: 0.6,
+      ease: "sine.out",
+    });
   }
 
   // RIGHT BUTTON
   if (mouseX > windowWidth - proximityThreshold) {
+    const rect = rightButton.value.getBoundingClientRect();
+    const offsetY = mouseY - rect.top - rect.height / 2;
+
     gsap.to(rightButton.value, {
-      y: mouseY - rightButton.value.getBoundingClientRect().top - rightButton.value.offsetHeight / 2,
-      duration: 0.2,
+      y: offsetY,
+      duration: 0.8,
+      ease: "elastic.out(1, 0.4)",
+    });
+
+    const svg = rightButton.value.querySelector("svg");
+    gsap.to(svg, {
+      scaleY: 1 + Math.abs(offsetY) / 300,
+      skewY: offsetY / 40,
+      transformOrigin: "center",
+      duration: 0.5,
+      ease: "sine.out",
     });
   } else {
-    gsap.to(rightButton.value, { y: rightInitialY, duration: 0.3 });
+    gsap.to(rightButton.value, { y: rightInitialY, duration: 1, ease: "sine.out" });
+    gsap.to(rightButton.value.querySelector("svg"), {
+      scaleY: 1,
+      skewY: 0,
+      duration: 0.6,
+      ease: "sine.out",
+    });
   }
 };
 
 onMounted(() => {
+  gsap.to(leftButton.value, {
+    y: "+=10",
+    duration: 2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
+  gsap.to(rightButton.value, {
+    y: "-=10",
+    duration: 2.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
+  // Wave effect for SVG inside buttons
+  gsap.to(leftButton.value.querySelector("svg"), {
+    scaleY: 1.05,
+    skewY: 4,
+    transformOrigin: "center",
+    duration: 1.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
+  gsap.to(rightButton.value.querySelector("svg"), {
+    scaleY: 1.05,
+    skewY: -4,
+    transformOrigin: "center",
+    duration: 1.7,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
+  });
+
   gsap.from(".hero-text", {
     x: -100,
     opacity: 0,
@@ -77,13 +152,15 @@ onMounted(() => {
     duration: 2
   });
 
-  leftInitialY = 0;
-  rightInitialY = 0;
+  gsap.from('.hero-btn', {
+    y: -100,
+    opacity: 0,
+    duration: 2,
+  })
 
   window.addEventListener("mousemove", moveSideButtons);
 });
 </script>
-
 
 <template>
   <section ref="heroSection"
