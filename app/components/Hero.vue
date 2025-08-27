@@ -1,4 +1,3 @@
-<!-- in this code in side buttons when i moving to up the button going to up to where mouse cursor and when coming in this situation the svg path have to change when coming to up or down like тенутся -->
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
