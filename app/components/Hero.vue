@@ -128,7 +128,7 @@ onMounted(() => {
             Наши проекты
           </button>
           <button
-            class="md:px-6 px-2 py-3 bg-transparent border flex justify-center items-center gap-2 border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300 group">
+            class="md:px-6 px-2 py-3 md:max-w-[139px] bg-transparent border flex justify-center items-center gap-2 border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300 group">
             Связаться
             <img src="/images/contact_arrow_up.svg" alt="logo"
               class="w-4 h-4 transition-all duration-300 group-hover:invert">
