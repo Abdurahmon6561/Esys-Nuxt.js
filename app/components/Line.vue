@@ -48,7 +48,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="stringRef" class="w-full h-[200px] flex justify-center items-center">
+  <div ref="stringRef" class="w-full h-[150px] flex justify-center items-center">
     <svg width="1000" height="200">
       <path :d="path" stroke="black" fill="transparent" />
     </svg>

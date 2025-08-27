@@ -52,7 +52,7 @@ onMounted(() => {
   gsap.from("header", {
     y: -100,
     opacity: 0,
-    duration: 1,
+    duration: 2,
   });
 });
 </script>

@@ -60,7 +60,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto mt-[65px] mb-[200px]">
+  <div class="container mx-auto mb-[200px]">
     <div>
       <div class="flex justify-center items-center">
         <h3
@@ -104,10 +104,10 @@ onMounted(() => {
 
             <!-- Bottom -->
             <div
-              class="absolute bottom-6 left-[20px] right-[20px] bg-white rounded-xl shadow p-4 md:w-[608px] md:h-[89px] flex items-center justify-between"
+              class="absolute bottom-6 left-[20px] right-[20px] bg-white rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between"
             >
               <div>
-                <h3 class="text-[24px] font-medium">{{ card.title }}</h3>
+                <h3 class="md:text-[24px] font-medium">{{ card.title }}</h3>
                 <p class="text-sm text-gray-600">
                   {{ card.tech }}
                 </p>

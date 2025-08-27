@@ -13,14 +13,14 @@
         </div>
         <div class="grid md:grid-cols-3 bg-[#ededed] p-8 rounded-xl mt-[48px]">
             <!-- Card -->
-            <div class="p-10 bg-white md:rounded-l-xl">
+            <div class="md:p-10 p-2 bg-white md:rounded-l-xl">
                 <div>
-                    <h2 class="text-[24px] text-[#080808] font-medium">Веб-cайты</h2>
+                    <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">Веб-cайты</h2>
                     <p class="text-[16px] text-[#080808] w-[288px] mt-2">Создаем сайты, которые работают для вас: от
                         лендингов до интернет-магазинов. Современный дизайн, удобство и функционал — всё под ключ</p>
                 </div>
                 <div
-                    class=" bg-white rounded-xl p-4 flex items-center justify-between mt-[50px] border-2 border-[#e0e0e0]">
+                    class=" bg-white rounded-xl md:p-4 p-2 flex items-center justify-between mt-[50px] border-2 border-[#e0e0e0]">
                     <div>
                         <h3 class="text-[16px] font-medium">Заказать</h3>
                     </div>
@@ -36,9 +36,9 @@
 
             <!-- Card -->
             <div
-                class="p-10 bg-white flex flex-col md:border-l-2 md:border-r-2 border-b-2 border-t-2 md:border-t-0 md:border-b-0">
+                class="md:p-10 p-2 bg-white flex flex-col md:border-l-2 md:border-r-2 border-b-2 border-t-2 md:border-t-0 md:border-b-0">
                 <div>
-                    <h2 class="text-[24px] text-[#080808] font-medium">Мобильные приложения</h2>
+                    <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">Мобильные приложения</h2>
                     <p class="text-[16px] text-[#080808] w-[288px] mt-2">
                         Разрабатываем мобильные приложения для iOS и Android: удобные, быстрые и функциональные. Всё для
                         вашего бизнеса под ключ
@@ -46,7 +46,7 @@
                 </div>
 
                 <div
-                    class="bg-white rounded-xl p-4 flex items-center justify-between border-2 border-[#e0e0e0] mt-auto">
+                    class="bg-white rounded-xl md:p-4 p-2  flex items-center justify-between border-2 border-[#e0e0e0] mt-auto">
                     <div>
                         <h3 class="text-[16px] font-medium">Заказать</h3>
                     </div>
@@ -62,14 +62,14 @@
 
 
             <!-- Card -->
-            <div class="p-10 bg-white md:rounded-r-xl">
+            <div class="md:p-10 p-2 bg-white md:rounded-r-xl">
                 <div>
-                    <h2 class="text-[24px] text-[#080808] font-medium">CRM Системы</h2>
+                    <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">CRM Системы</h2>
                     <p class="text-[16px] text-[#080808] w-[288px] mt-2">Создаем CRM-системы для управления бизнесом:
                         автоматизация, аналитика и контроль. Всё для удобства вашей команды и роста компании</p>
                 </div>
                 <div
-                    class=" bg-white rounded-xl p-4 flex items-center justify-between mt-[50px] border-2 border-[#e0e0e0]">
+                    class=" bg-white rounded-xl md:p-4 p-2  flex items-center justify-between mt-[50px] border-2 border-[#e0e0e0]">
                     <div>
                         <h3 class="text-[16px] font-medium">Заказать</h3>
                     </div>
