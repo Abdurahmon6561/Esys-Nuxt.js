@@ -2,11 +2,11 @@
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
 
-const images = [
-  "/images/bg-hero.jpg",
-  "/images/bg-hero2.jpg",
-  "/images/bg-hero3.jpg",
-];
+// const images = [
+//   "/images/bg-hero.jpg",
+//   "/images/bg-hero2.jpg",
+//   "/images/bg-hero3.jpg",
+// ];
 
 const currentIndex = ref(0);
 const heroSection = ref(null);
