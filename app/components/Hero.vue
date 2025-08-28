@@ -12,6 +12,20 @@ const currentIndex = ref(0);
 const heroSection = ref(null);
 
 const changeBackground = (direction) => {
+  const button = direction === "next" ? rightButton.value : leftButton.value;
+
+  gsap.fromTo(
+    button,
+    { scale: 1 },
+    {
+      scale: 1.2,
+      duration: 0.3,
+      ease: "power2.out",
+      yoyo: true,
+      repeat: 1
+    }
+  );
+
   if (direction === "next") {
     currentIndex.value = (currentIndex.value + 1) % images.length;
   } else {
@@ -42,7 +56,7 @@ const moveSideButtons = (e) => {
   const mouseY = e.clientY;
   const windowWidth = window.innerWidth;
 
-  // LEFT BUTTON
+  // left button
   if (mouseX < proximityThreshold) {
     const rect = leftButton.value.getBoundingClientRect();
     const offsetY = mouseY - rect.top - rect.height / 2;
@@ -56,7 +70,7 @@ const moveSideButtons = (e) => {
     const svg = leftButton.value.querySelector("svg");
     gsap.to(svg, {
       scaleY: 1 + Math.abs(offsetY) / 300,
-      skewY: offsetY / 40, 
+      skewY: offsetY / 40,
       transformOrigin: "center",
       duration: 0.5,
       ease: "sine.out",
@@ -71,7 +85,7 @@ const moveSideButtons = (e) => {
     });
   }
 
-  // RIGHT BUTTON
+  // right button
   if (mouseX > windowWidth - proximityThreshold) {
     const rect = rightButton.value.getBoundingClientRect();
     const offsetY = mouseY - rect.top - rect.height / 2;
@@ -184,7 +198,7 @@ onMounted(() => {
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 ml-[-17px]" />
       </button>
 
-      <!-- center content -->
+      <!-- center -->
       <div class="relative z-10 text-center text-white flex-1">
         <h1 class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text">
           Цифровые решения,<br />
@@ -194,14 +208,22 @@ onMounted(() => {
 
         <div class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns">
           <button
-            class="md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-all duration-300">
+            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-all duration-300">
             Наши проекты
           </button>
-          <button
-            class="md:px-6 px-2 py-3 md:max-w-[139px] text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300 group">
-            Связаться
+          <button class="relative overflow-hidden md:px-6 px-2 py-3 md:max-w-[139px] 
+  text-[13px] md:text-[15px] bg-transparent border flex justify-center 
+  items-center gap-2 border-white rounded-full font-semibold text-white group">
+
+            <span
+              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"></span>
+
+            <span class="relative z-10 group-hover:text-black transition-colors duration-300">
+              Связаться
+            </span>
+
             <img src="/images/contact_arrow_up.svg" alt="logo"
-              class="w-4 h-4 transition-all duration-300 group-hover:invert">
+              class="w-4 h-4 transition-all duration-300 relative z-10 group-hover:invert-0 group-hover:brightness-0">
           </button>
 
         </div>

@@ -58,7 +58,6 @@ onMounted(() => {
     y: -100,
     opacity: 0,
     duration: 2,
-    ease: "elastic.out(0.4)",
   });
 });
 </script>
@@ -76,10 +75,27 @@ onMounted(() => {
             </a>
 
             <!-- Desktop Nav -->
-            <nav class="hidden md:flex gap-8 text-white font-medium">
-              <NuxtLink to="#" class="hover:underline">Компания</NuxtLink>
-              <NuxtLink to="#" class="hover:underline">Проекты</NuxtLink>
-              <NuxtLink to="#" class="hover:underline">Блог</NuxtLink>
+            <nav>
+              <ul class="md:flex hidden gap-8 text-white font-medium">
+                <li>
+                  <NuxtLink to="#"
+                    class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
+                    Компания
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="#"
+                    class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
+                    Проекты
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="#"
+                    class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
+                    Блог
+                  </NuxtLink>
+                </li>
+              </ul>
             </nav>
 
             <!-- Desktop Locale Dropdown -->
@@ -111,8 +127,8 @@ onMounted(() => {
             </div>
 
             <!-- Hamburger -->
-            <button class="md:hidden flex flex-col gap-1 z-50" @click="menuOpen = !menuOpen">
-<FontAwesomeIcon :icon="['fas', 'bars']" />
+            <button class="md:hidden flex flex-col gap-1 z-50 text-white text-[24px] hover:scale-105  transition-all duration-300" @click="menuOpen = !menuOpen">
+                 <FontAwesomeIcon :icon="['fas', 'bars']" />
             </button>
           </div>
         </header>
