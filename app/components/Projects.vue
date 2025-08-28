@@ -60,7 +60,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto mb-[200px]">
+  <div class="container mx-auto mb-[200px] mt-[80px]">
     <div>
       <div class="flex justify-center items-center">
         <h3

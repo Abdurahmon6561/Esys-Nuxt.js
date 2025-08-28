@@ -53,4 +53,15 @@ onBeforeUnmount(() => {
       <path :d="path" stroke="black" fill="transparent" />
     </svg>
   </div>
+
+  <!-- <div class="flex gap-4 text-2xl"> -->
+    <!-- solid -->
+    <!-- <FontAwesomeIcon :icon="['fas', 'bars']" /> -->
+
+    <!-- regular -->
+    <!-- <FontAwesomeIcon :icon="['far', 'heart']" /> -->
+
+    <!-- brands -->
+    <!-- <FontAwesomeIcon :icon="['fab', 'github']" /> -->
+  <!-- </div> -->
 </template>

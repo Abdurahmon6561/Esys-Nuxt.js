@@ -151,12 +151,6 @@ onMounted(() => {
     duration: 2
   });
 
-  gsap.from('.hero-btn', {
-    y: -100,
-    opacity: 0,
-    duration: 2,
-  })
-
   window.addEventListener("mousemove", moveSideButtons);
 });
 </script>
@@ -167,7 +161,7 @@ onMounted(() => {
     style="background-image: url('/images/bg-hero.jpg')">
     <div class="flex justify-between w-full items-center h-screen">
       <!-- Left Arrow -->
-      <button @click="changeBackground('prev')" ref="leftButton">
+      <button @click="changeBackground('prev')" ref="leftButton" class="ml-[-2px] md:block hidden ">
         <svg class="clip-path-group" width="78" height="320" viewBox="0 0 78 320" fill="none"
           xmlns="http://www.w3.org/2000/svg">
           <mask id="mask0_185_55" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="78"
@@ -200,11 +194,11 @@ onMounted(() => {
 
         <div class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns">
           <button
-            class="md:px-6 px-2 py-3 bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-all duration-300">
+            class="md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-all duration-300">
             Наши проекты
           </button>
           <button
-            class="md:px-6 px-2 py-3 md:max-w-[139px] bg-transparent border flex justify-center items-center gap-2 border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300 group">
+            class="md:px-6 px-2 py-3 md:max-w-[139px] text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 border-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300 group">
             Связаться
             <img src="/images/contact_arrow_up.svg" alt="logo"
               class="w-4 h-4 transition-all duration-300 group-hover:invert">
@@ -214,7 +208,7 @@ onMounted(() => {
       </div>
 
       <!-- Right Arrow -->
-      <button @click="changeBackground('next')" ref="rightButton">
+      <button @click="changeBackground('next')" ref="rightButton" class="mr-[-2px] md:block hidden">
         <svg class="clip-path-group" width="78" height="320" viewBox="0 0 78 320" fill="none"
           xmlns="http://www.w3.org/2000/svg">
           <mask id="mask0_185_2" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="78"
@@ -235,7 +229,6 @@ onMounted(() => {
         </svg>
         <img src="/images/arrow_left.svg" alt="arrow-right"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ml-[17px]" />
-
       </button>
     </div>
   </section>

@@ -9,7 +9,7 @@ import Line from '~/components/Line.vue';
 
 <template>
   <Hero />
-  <Line />
+  <!-- <Line /> -->
   <Projects />
   <Users />
   <Services />
