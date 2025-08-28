@@ -154,9 +154,9 @@ onMounted(() => {
   });
 
   gsap.from(".hero-text", {
-    x: -100,
     opacity: 0,
-    duration: 2
+    duration: 2,
+    scale: 0.3,
   });
 
   gsap.from('.hero-btns', {
@@ -208,13 +208,12 @@ onMounted(() => {
 
         <div class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns">
           <button
-            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-semibold hover:bg-gray-200 transition-all duration-300">
+            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-semibold hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700">
             Наши проекты
           </button>
           <button class="relative overflow-hidden md:px-6 px-2 py-3 md:max-w-[139px] 
   text-[13px] md:text-[15px] bg-transparent border flex justify-center 
-  items-center gap-2 border-white rounded-full font-semibold text-white group">
-
+  items-center gap-2 border-white rounded-full font-semibold text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700">
             <span
               class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"></span>
 
