@@ -31,14 +31,12 @@ const cards = [
   },
 ];
 
-
 onMounted(() => {
   gsap.to(".project-cards", {
     duration: 3,
     delay: 1,
   })
 })
-
 
 onMounted(() => {
   const observer = new IntersectionObserver(
