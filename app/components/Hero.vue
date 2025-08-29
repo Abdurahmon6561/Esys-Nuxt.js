@@ -12,19 +12,19 @@ const currentIndex = ref(0);
 const heroSection = ref(null);
 
 const changeBackground = (direction) => {
-  const button = direction === "next" ? rightButton.value : leftButton.value;
+  // const button = direction === "next" ? rightButton.value : leftButton.value;
 
-  gsap.fromTo(
-    button,
-    { scale: 1 },
-    {
-      scale: 1.2,
-      duration: 0.3,
-      ease: "power2.out",
-      yoyo: true,
-      repeat: 1
-    }
-  );
+  // gsap.fromTo(
+  //   button,
+  //   { scale: 1 },
+  //   {
+  //     scale: 1.2,
+  //     duration: 0.3,
+  //     ease: "power2.out",
+  //     yoyo: true,
+  //     repeat: 1
+  //   }
+  // );
 
   if (direction === "next") {
     currentIndex.value = (currentIndex.value + 1) % images.length;
@@ -194,7 +194,7 @@ onMounted(() => {
             </g>
           </g>
         </svg>
-        <img src="/images/arrow_left.svg" alt="arrow-left"
+        <img src="/images/arrow_left.webp" alt="arrow-left"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 ml-[-17px]" />
       </button>
 
@@ -248,7 +248,7 @@ onMounted(() => {
             </g>
           </g>
         </svg>
-        <img src="/images/arrow_left.svg" alt="arrow-right"
+        <img src="/images/arrow_left.webp" alt="arrow-right"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ml-[17px]" />
       </button>
     </div>

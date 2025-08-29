@@ -1,3 +1,4 @@
+<!-- in this code when user cliking to "Проекты" this have to scroll down smooth to the projects section -->
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,9 +12,9 @@ const locale = ref("ru");
 const dropdownRef = ref(null);
 
 const languages = [
-  { code: "ru", label: "RU", flag: "/images/ru.png" },
-  { code: "en", label: "EN", flag: "/images/en.png" },
-  { code: "uz", label: "UZ", flag: "/images/uz.png" },
+  { code: "ru", label: "RU", flag: "/images/ru.webp" },
+  { code: "en", label: "EN", flag: "/images/en.webp" },
+  { code: "uz", label: "UZ", flag: "/images/uz.webp" },
 ];
 
 const switchLocale = (code) => {
@@ -62,7 +63,6 @@ onMounted(() => {
 });
 </script>
 
-
 <template>
   <div id="smooth-wrapper">
     <div id="smooth-content" class="flex flex-col min-h-screen bg-white p-3 md:p-6">
@@ -71,7 +71,7 @@ onMounted(() => {
           <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
             <!-- Logo -->
             <a href="/">
-              <img src="/images/logo.svg" alt="logo" class="h-8" />
+              <img src="/images/logo.webp" alt="logo" class="h-8" />
             </a>
 
             <!-- Desktop Nav -->
@@ -84,7 +84,7 @@ onMounted(() => {
                   </NuxtLink>
                 </li>
                 <li>
-                  <NuxtLink to="#"
+                  <NuxtLink to="#" @click.prevent="scrollToSection('projects'); menuOpen = false"
                     class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full">
                     Проекты
                   </NuxtLink>
@@ -104,7 +104,7 @@ onMounted(() => {
                 class="text-white flex items-center justify-center gap-1 border-2 border-[#8198a6] p-2 rounded-full cursor-pointer h-[35px] w-[82px]">
                 <img :src="languages.find(l => l.code === locale)?.flag" alt="locale" class="w-7" />
                 <span class="ml-1 uppercase text-[14px]">{{ locale }}</span>
-                <img src="/images/arrow-down.svg" alt="arrow" :class="{ 'rotate-180': open }" />
+                <img src="/images/arrow-down.webp" alt="arrow" :class="{ 'rotate-180': open }" class="w-4" />
               </button>
 
               <Transition enter-active-class="transition ease-out duration-200"
@@ -127,8 +127,10 @@ onMounted(() => {
             </div>
 
             <!-- Hamburger -->
-            <button class="md:hidden flex flex-col gap-1 z-50 text-white text-[24px] hover:scale-105  transition-all duration-300" @click="menuOpen = !menuOpen">
-                 <FontAwesomeIcon :icon="['fas', 'bars']" />
+            <button
+              class="md:hidden flex flex-col gap-1 z-50 text-white text-[24px] hover:scale-105  transition-all duration-300"
+              @click="menuOpen = !menuOpen">
+              <FontAwesomeIcon :icon="['fas', 'bars']" />
             </button>
           </div>
         </header>
@@ -199,19 +201,39 @@ onMounted(() => {
               </div>
 
               <div class="flex gap-2 mt-5 md:mt-0">
-                <a href="/" class="p-4 rounded-full border-2 border-[#e0e0e0] hover:bg-[#e0e0e0] transition"
-                  target="_blank"><img src="/images/facebok.svg" alt="facebok" class="h-4 w-4" /></a>
-                <a href="/" class="p-4 rounded-full border-2 border-[#e0e0e0] hover:bg-[#e0e0e0] transition"
-                  target="_blank"><img src="/images/instagram.svg" alt="instagram" class="h-4 w-4" /></a>
-                <a href="/" class="p-4 rounded-full border-2 border-[#e0e0e0] hover:bg-[#e0e0e0] transition"
-                  target="_blank"><img src="/images/telegram.svg" alt="telegram" class="h-4 w-4" /></a>
+                <!-- Facebook -->
+                <a href="/" target="_blank"
+                  class="group p-4 rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#0866ff] hover:border-[#0866ff]">
+                  <img src="/images/facebok.svg" alt="facebook"
+                    class="h-4 w-4 transition-all duration-300 group-hover:invert group-hover:scale-125" />
+                </a>
+
+                <!-- Instagram -->
+                <a href="/" target="_blank"
+                  class="group p-4 rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:border-[#d62976] hover:bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5]">
+                  <img src="/images/instagram.svg" alt="instagram"
+                    class="h-4 w-4 transition-all duration-300 group-hover:invert group-hover:scale-125" />
+                </a>
+
+                <!-- Telegram -->
+                <a href="/" target="_blank"
+                  class="group p-4 rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#27a8e8] hover:border-[#27a8e8]">
+                  <img src="/images/telegram.svg" alt="telegram"
+                    class="h-4 w-4 transition-all duration-300 group-hover:invert group-hover:scale-125" />
+                </a>
               </div>
+
             </div>
             <div class="mt-20">
               <hr />
-              <p class="text-[14px] text-[#080808] mt-5">
-                2025 © Evolution Systems — Все права защищены.
-              </p>
+              <div class="flex flex-col md:flex-row justify-between mt-6 items-center">
+                <p class="text-[14px] text-[#080808]">
+                  2025 © Evolution Systems — Все права защищены.
+                </p>
+                <p class="font-semibold text-[14px] text-[#080808] flex items-center gap-1 text-center">
+                  Design by <span class="opacity-50 font-normal">Crave Studio</span>
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -6,19 +6,19 @@ const cardsRef = ref([]);
 
 const cards = [
   {
-    image: "/images/man.jpg",
+    image: "/images/man.webp",
     title: "Wonder Comfort",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     tags: ["Веб-сайты"],
   },
   {
-    image: "/images/soundBar.jpg",
+    image: "/images/soundBar.webp",
     title: "Sound Bar",
     tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
     tags: ["Веб-сайты", "Мобильные приложения"],
   },
   {
-    image: "/images/car.jpg",
+    image: "/images/car.webp",
     title: "Автосалон Asacar",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     tags: ["Веб-сайты"],
@@ -60,7 +60,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto mb-[200px] mt-[80px]">
+  <div class="container mx-auto mb-[200px] mt-[80px]" id="projects">
     <div>
       <div class="flex justify-center items-center">
         <h3
