@@ -172,7 +172,7 @@ onMounted(() => {
 <template>
   <section ref="heroSection"
     class="flex items-center justify-center min-h-screen bg-cover bg-center hero rounded-tl-lg rounded-tr-lg"
-    style="background-image: url('/images/bg-hero.jpg')">
+    style="background-image: url('/images/bg-hero.webp')">
     <div class="flex justify-between w-full items-center h-screen">
       <!-- Left Arrow -->
       <button @click="changeBackground('prev')" ref="leftButton" class="ml-[-2px] md:block hidden ">
