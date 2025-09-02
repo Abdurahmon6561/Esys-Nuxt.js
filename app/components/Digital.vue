@@ -41,11 +41,11 @@ onMounted(() => {
     <div class="p-10 bg-[#e8e8e8]">
         <div class="container mx-auto">
             <div class="flex items-center">
-                <h3 class="text-sm text-[#080808] border-2 px-4 rounded-full p-2 border-[#EEE] bg-white">
+                <h3 class="text-[14px] font-medium text-[#080808] border-2 px-4 rounded-full p-2 border-[#EEE] bg-white">
                     Блог
                 </h3>
             </div>
-            <h1 class="md:text-[60px] text-[40px] text-[#080808] font-medium">Главное <br> о digital</h1>
+            <h1 class="md:text-[60px] text-[40px] text-[#080808] font-medium mt-[19px]">Главное <br> о digital</h1>
             <div>
                 <div class="grid md:grid-cols-3 gap-8 mt-12">
                     <!-- Cards -->
@@ -67,19 +67,19 @@ onMounted(() => {
                         </div>
 
                         <!-- Bottom Box -->
-                        <div
+                        <button
                             class="absolute bottom-3 left-3 max-h-[46px] right-3 bg-white rounded-[8px] shadow p-2 flex items-center justify-between">
                             <div>
                                 <h3 class="text-[15.25px] font-medium">{{ card.title }}</h3>
                             </div>
-                            <button class="flex items-center justify-center w-8 h-8">
+                            <div class="flex items-center justify-center w-8 h-8">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7" />
                                 </svg>
-                            </button>
-                        </div>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>

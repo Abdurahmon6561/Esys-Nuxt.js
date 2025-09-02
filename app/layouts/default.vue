@@ -11,24 +11,23 @@ const locale = ref("ru");
 const dropdownRef = ref(null);
 
 const languages = [
-  { code: "ru", label: "RU", flag: "/images/ru.webp" },
-  { code: "en", label: "EN", flag: "/images/en.webp" },
-  { code: "uz", label: "UZ", flag: "/images/uz.webp" },
+  { code: "ru", label: "Ру"},
+  { code: "uz", label: "Uz" },
 ];
 
-const switchLocale = (code) => {
-  locale.value = code;
-  localStorage.setItem("locale", code);
+const switchLocale = (label) => {
+  locale.value = label;
+  localStorage.setItem("locale", label);
   open.value = false;
   menuOpen.value = false;
 };
 
-let smoother = null; 
+let smoother = null;
 
 const scrollToSection = (id) => {
   const el = document.getElementById(id);
   if (el && smoother) {
-    smoother.scrollTo(el, true, "top top"); 
+    smoother.scrollTo(el, true, "top top");
   }
 };
 
@@ -55,7 +54,7 @@ onMounted(() => {
   smoother = ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
     content: "#smooth-content",
-    smooth: 2,
+    smooth: 1.5,
     effects: true,
   });
 
@@ -77,7 +76,7 @@ onMounted(() => {
       id="smooth-content"
       class="flex flex-col min-h-screen bg-white p-3 md:p-6"
     >
-      <div class="fixed w-full top-0 left-0 right-0">
+      <div class=" w-full top-0 left-0 right-0">
         <header
           class="fixed top-0 left-0 w-full z-50 bg-transparent p-6 rounded-xl"
         >
@@ -129,14 +128,11 @@ onMounted(() => {
             >
               <button
                 @click.stop="open = !open"
-                class="text-white flex items-center justify-center gap-1 border-2 border-[#8198a6] p-2 rounded-full cursor-pointer h-[35px] w-[82px]"
+                style="padding: 8px 10px"
+                class="text-white flex items-center justify-center gap-1 border-2 border-[#8198a6] rounded-full cursor-pointer"
               >
-                <img
-                  :src="languages.find((l) => l.code === locale)?.flag"
-                  alt="locale"
-                  class="w-7"
-                />
-                <span class="ml-1 uppercase text-[14px]">{{ locale }}</span>
+                <img src="/images/locale.svg" alt="locale" class="w-[22px]" />
+                <span class="ml-1 text-[14px]">{{ locale }}</span>
                 <img
                   src="/images/arrow-down.webp"
                   alt="arrow"
@@ -155,17 +151,16 @@ onMounted(() => {
               >
                 <div
                   v-if="open"
-                  class="absolute right-0 mt-2 w-auto bg-white shadow-lg rounded-lg overflow-hidden z-50"
+                  class="absolute right-0 mt-2 bg-white shadow-lg rounded-lg overflow-hidden z-50 w-full"
                 >
                   <ul>
                     <li
                       v-for="lang in languages"
-                      :key="lang.code"
-                      @click="switchLocale(lang.code)"
-                      class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      :key="lang.label"
+                      @click="switchLocale(lang.label)"
+                      class=" gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer text-center"
                     >
-                      <img :src="lang.flag" alt="" class="w-7" />
-                      <span class="text-[14px]">{{ lang.label }}</span>
+                      <span class="text-[14px] text-center">{{ lang.label }}</span>
                     </li>
                   </ul>
                 </div>
@@ -203,9 +198,8 @@ onMounted(() => {
           <div class="mt-10 border-t pt-4">
             <p class="mb-2 text-sm font-semibold">Язык</p>
             <ul class="flex gap-2" ref="dropdownRef">
-              <li v-for="lang in languages" :key="lang.code" @click="switchLocale(lang.code)"
+              <li v-for="lang in languages" :key="lang.label" @click="switchLocale(lang.label)"
                 class="flex items-center border rounded-lg gap-2 px-2 py-2 hover:bg-gray-100 cursor-pointer">
-                <img :src="lang.flag" alt="" class="w-7" />
                 <span class="text-[14px]">{{ lang.label }}</span>
               </li>
             </ul>
@@ -218,9 +212,9 @@ onMounted(() => {
       </main>
 
       <footer>
-        <div class="p-10 bg-[#e8e8e8]">
-          <div class="bg-white md:p-20 p-8 rounded-xl">
-            <div class="md:flex justify-between items-center gap-4">
+        <div class="px-10 py-10 bg-[#e8e8e8]">
+          <div class="bg-white md:px-10 md:py-[100px] p-8 rounded-xl">
+            <div class="md:flex justify-between items-center gap-4 mb-[90px]">
               <a href="/">
                 <img src="/images/footer-logo.svg" alt="logo" />
               </a>
@@ -260,7 +254,7 @@ onMounted(() => {
                 <a
                   href="/"
                   target="_blank"
-                  class="group p-4 rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#0866ff] hover:border-white"
+                  class="group w-10 h-10 flex items-center justify-center rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#0866ff] hover:border-white"
                 >
                   <img
                     src="/images/facebok.svg"
@@ -273,7 +267,7 @@ onMounted(() => {
                 <a
                   href="/"
                   target="_blank"
-                  class="group p-4 rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:border-white hover:bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5]"
+                  class="group w-10 h-10 flex items-center justify-center rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:border-white hover:bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5]"
                 >
                   <img
                     src="/images/instagram.svg"
@@ -286,7 +280,7 @@ onMounted(() => {
                 <a
                   href="/"
                   target="_blank"
-                  class="group p-4 rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#27a8e8] hover:border-white"
+                  class="group w-10 h-10 flex items-center justify-center rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#27a8e8] hover:border-white"
                 >
                   <img
                     src="/images/telegram.svg"
@@ -296,7 +290,7 @@ onMounted(() => {
                 </a>
               </div>
             </div>
-            <div class="mt-20">
+            <div class="mt-10 mb-[-70px]">
               <hr />
               <div
                 class="flex flex-col md:flex-row justify-between mt-6 items-center"

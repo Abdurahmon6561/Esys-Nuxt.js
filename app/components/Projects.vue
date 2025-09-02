@@ -1,3 +1,4 @@
+<!-- in this code the i have the cards and in cards the main div and in main div i have the button and i have to change the main div to button and remove the button in main div to button -->
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
@@ -35,8 +36,8 @@ onMounted(() => {
   gsap.to(".project-cards", {
     duration: 3,
     delay: 1,
-  })
-})
+  });
+});
 
 onMounted(() => {
   const observer = new IntersectionObserver(
@@ -58,7 +59,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto mb-[200px] mt-[80px]" id="projects">
+  <div class="container mx-auto mb-[80px] mt-[64px]" id="projects">
     <div>
       <div class="flex justify-center items-center">
         <h3
@@ -100,17 +101,17 @@ onMounted(() => {
               </span>
             </div>
 
-            <!-- Bottom -->
-            <div
-              class="absolute bottom-6 left-[20px] right-[20px] bg-white rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between"
+            <!-- Main button -->
+            <button
+              class="absolute bottom-6 left-[20px] right-[20px] bg-white rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between hover:bg-gray-100 transition"
             >
-              <div>
+              <div class="text-left">
                 <h3 class="md:text-[24px] font-medium">{{ card.title }}</h3>
                 <p class="text-sm text-gray-600">
                   {{ card.tech }}
                 </p>
               </div>
-              <button
+              <div
                 class="flex items-center justify-center w-12 h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200"
               >
                 <svg
@@ -127,8 +128,8 @@ onMounted(() => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </button>
-            </div>
+              </div>
+            </button>
           </div>
         </div>
       </div>

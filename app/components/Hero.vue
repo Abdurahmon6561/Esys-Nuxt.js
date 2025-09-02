@@ -1,31 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
-
-// const images = [
-//   "/images/bg-hero.jpg",
-//   "/images/bg-hero2.jpg",
-//   "/images/bg-hero3.jpg",
-// ];
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 
 const currentIndex = ref(0);
 const heroSection = ref(null);
 
 const changeBackground = (direction) => {
-  // const button = direction === "next" ? rightButton.value : leftButton.value;
-
-  // gsap.fromTo(
-  //   button,
-  //   { scale: 1 },
-  //   {
-  //     scale: 1.2,
-  //     duration: 0.3,
-  //     ease: "power2.out",
-  //     yoyo: true,
-  //     repeat: 1
-  //   }
-  // );
-
   if (direction === "next") {
     currentIndex.value = (currentIndex.value + 1) % images.length;
   } else {
@@ -37,7 +19,9 @@ const changeBackground = (direction) => {
     opacity: 0,
     duration: 0.3,
     onComplete: () => {
-      heroSection.value.style.backgroundImage = `url('${images[currentIndex.value]}')`;
+      heroSection.value.style.backgroundImage = `url('${
+        images[currentIndex.value]
+      }')`;
       gsap.to(heroSection.value, { opacity: 1, duration: 0.6 });
     },
   });
@@ -76,7 +60,11 @@ const moveSideButtons = (e) => {
       ease: "sine.out",
     });
   } else {
-    gsap.to(leftButton.value, { y: leftInitialY, duration: 1, ease: "sine.out" });
+    gsap.to(leftButton.value, {
+      y: leftInitialY,
+      duration: 1,
+      ease: "sine.out",
+    });
     gsap.to(leftButton.value.querySelector("svg"), {
       scaleY: 1,
       skewY: 0,
@@ -105,7 +93,11 @@ const moveSideButtons = (e) => {
       ease: "sine.out",
     });
   } else {
-    gsap.to(rightButton.value, { y: rightInitialY, duration: 1, ease: "sine.out" });
+    gsap.to(rightButton.value, {
+      y: rightInitialY,
+      duration: 1,
+      ease: "sine.out",
+    });
     gsap.to(rightButton.value.querySelector("svg"), {
       scaleY: 1,
       skewY: 0,
@@ -121,7 +113,7 @@ onMounted(() => {
     duration: 2,
     repeat: -1,
     yoyo: true,
-    ease: "sine.inOut"
+    ease: "sine.inOut",
   });
 
   gsap.to(rightButton.value, {
@@ -129,7 +121,7 @@ onMounted(() => {
     duration: 2.5,
     repeat: -1,
     yoyo: true,
-    ease: "sine.inOut"
+    ease: "sine.inOut",
   });
 
   // Wave effect for SVG inside buttons
@@ -140,7 +132,7 @@ onMounted(() => {
     duration: 1.5,
     repeat: -1,
     yoyo: true,
-    ease: "sine.inOut"
+    ease: "sine.inOut",
   });
 
   gsap.to(rightButton.value.querySelector("svg"), {
@@ -150,7 +142,7 @@ onMounted(() => {
     duration: 1.7,
     repeat: -1,
     yoyo: true,
-    ease: "sine.inOut"
+    ease: "sine.inOut",
   });
 
   gsap.from(".hero-text", {
@@ -159,97 +151,218 @@ onMounted(() => {
     scale: 0.3,
   });
 
-  gsap.from('.hero-btns', {
+  gsap.from(".hero-btns", {
     y: +100,
     opacity: 0,
-    duration: 2
+    duration: 2,
   });
 
   window.addEventListener("mousemove", moveSideButtons);
 });
+
+let smoother = null;
+
+const scrollToSection = (id) => {
+  const el = document.getElementById(id);
+  if (el && smoother) {
+    smoother.scrollTo(el, true, "top top");
+  }
+};
+
+onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+  smoother = ScrollSmoother.create({
+    wrapper: "#smooth-wrapper",
+    content: "#smooth-content",
+    smooth: 1.5,
+    effects: true,
+  });
+});
 </script>
 
 <template>
-  <section ref="heroSection"
+  <section
+    ref="heroSection"
+    id="smooth-wrapper"
     class="flex items-center justify-center min-h-screen bg-cover bg-center hero rounded-tl-lg rounded-tr-lg"
-    style="background-image: url('/images/bg-hero.webp')">
-    <div class="flex justify-between w-full items-center h-screen">
+    style="background-image: url('/images/bg-hero.webp')"
+  >
+    <div
+      class="flex justify-between w-full items-center h-screen"
+      id="smooth-content"
+    >
       <!-- Left Arrow -->
-      <button @click="changeBackground('prev')" ref="leftButton" class="ml-[-2px] md:block hidden ">
-        <svg class="clip-path-group" width="78" height="320" viewBox="0 0 78 320" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <mask id="mask0_185_55" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="78"
-            height="320">
-            <path d="M77.41 0.0271912H0V319.973H77.41V0.0271912Z" fill="var(--color-white-solid, #ffffff)" />
+      <button
+        @click="changeBackground('prev')"
+        ref="leftButton"
+        class="ml-[-2px] md:block hidden"
+      >
+        <svg
+          class="clip-path-group"
+          width="78"
+          height="320"
+          viewBox="0 0 78 320"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <mask
+            id="mask0_185_55"
+            style="mask-type: luminance"
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width="78"
+            height="320"
+          >
+            <path
+              d="M77.41 0.0271912H0V319.973H77.41V0.0271912Z"
+              fill="var(--color-white-solid, #ffffff)"
+            />
           </mask>
           <g mask="url(#mask0_185_55)">
-            <mask id="mask1_185_55" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="50"
-              height="321">
-              <path d="M49.0263 0.543243V320.489H0.516071V0.543243H49.0263Z" fill="var(--color-white-solid, #ffffff)" />
+            <mask
+              id="mask1_185_55"
+              style="mask-type: luminance"
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="50"
+              height="321"
+            >
+              <path
+                d="M49.0263 0.543243V320.489H0.516071V0.543243H49.0263Z"
+                fill="var(--color-white-solid, #ffffff)"
+              />
             </mask>
             <g mask="url(#mask1_185_55)">
               <path
                 d="M3.47599 44.1098C5.7191 77.1494 16.2741 109.102 34.164 136.981C43.2465 151.141 43.3979 169.25 34.5631 183.561L33.7924 184.786C16.1227 213.367 5.69158 245.829 3.3659 279.35L0.517281 320.481V0.543243L3.47599 44.1098Z"
-                fill="var(--color-white-solid, #ffffff)" />
+                fill="var(--color-white-solid, #ffffff)"
+              />
             </g>
           </g>
         </svg>
-        <img src="/images/arrow_left.webp" alt="arrow-left"
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 ml-[-17px]" />
+        <img
+          src="/images/arrow_left.webp"
+          alt="arrow-left"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 ml-[-17px]"
+        />
       </button>
 
       <!-- center -->
       <div class="relative z-10 text-center text-white flex-1">
-        <h1 class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text">
+        <h1
+          class="text-2xl md:text-[92px] font-extrabold leading-tight hero-text"
+        >
           Цифровые решения,<br />
           которые помогают вашему <br />
           бизнесу расти быстрее
         </h1>
 
-        <div class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns">
+        <div
+          class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns"
+        >
           <button
-            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-semibold hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700">
+            @click.prevent="scrollToSection('projects')"
+            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+          >
             Наши проекты
           </button>
-          <button class="relative overflow-hidden md:px-6 px-2 py-3 md:max-w-[139px] 
-  text-[13px] md:text-[15px] bg-transparent border flex justify-center 
-  items-center gap-2 border-white rounded-full font-semibold text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700">
+          <button
+            class="relative overflow-hidden md:px-6 px-2 py-3 md:max-w-[139px] text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+          >
             <span
-              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"></span>
+              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
+            ></span>
 
-            <span class="relative z-10 group-hover:text-black transition-colors duration-300">
+            <span
+              class="relative z-10 group-hover:text-black transition-colors duration-300"
+            >
               Связаться
             </span>
 
-            <img src="/images/contact_arrow_up.svg" alt="logo"
-              class="w-4 h-4 transition-all duration-300 relative z-10 group-hover:invert-0 group-hover:brightness-0">
+            <img
+              src="/images/contact_arrow_up.svg"
+              alt="logo"
+              class="w-4 h-4 transition-all duration-300 relative z-10 group-hover:invert-0 group-hover:brightness-0"
+            />
           </button>
+        </div>
 
+        <div class="hidden absolute -bottom-[250px] left-1/2 transform -translate-x-1/2">
+          <div class="margin">
+            <div class="background cursor-pointer">
+              <div class="button-show-slide-1-of-3-margin">
+                <div class="button-show-slide-1-of-3"></div>
+              </div>
+              <div class="button-show-slide-2-of-3-margin">
+                <div class="button-show-slide-2-of-3"></div>
+              </div>
+              <div class="button-show-slide-3-of-3-margin">
+                <div class="button-show-slide-3-of-3"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Right Arrow -->
-      <button @click="changeBackground('next')" ref="rightButton" class="mr-[-2px] md:block hidden">
-        <svg class="clip-path-group" width="78" height="320" viewBox="0 0 78 320" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <mask id="mask0_185_2" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="78"
-            height="320">
-            <path d="M78 0.0271912H0.589966V319.973H78V0.0271912Z" fill="var(--color-white-solid, #ffffff)" />
+      <button
+        @click="changeBackground('next')"
+        ref="rightButton"
+        class="mr-[-2px] md:block hidden"
+      >
+        <svg
+          class="clip-path-group"
+          width="78"
+          height="320"
+          viewBox="0 0 78 320"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <mask
+            id="mask0_185_2"
+            style="mask-type: luminance"
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width="78"
+            height="320"
+          >
+            <path
+              d="M78 0.0271912H0.589966V319.973H78V0.0271912Z"
+              fill="var(--color-white-solid, #ffffff)"
+            />
           </mask>
           <g mask="url(#mask0_185_2)">
-            <mask id="mask1_185_2" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="28" y="0" width="50"
-              height="321">
-              <path d="M28.9736 320.489V0.543274H77.4839V320.489H28.9736Z" fill="var(--color-white-solid, #ffffff)" />
+            <mask
+              id="mask1_185_2"
+              style="mask-type: luminance"
+              maskUnits="userSpaceOnUse"
+              x="28"
+              y="0"
+              width="50"
+              height="321"
+            >
+              <path
+                d="M28.9736 320.489V0.543274H77.4839V320.489H28.9736Z"
+                fill="var(--color-white-solid, #ffffff)"
+              />
             </mask>
             <g mask="url(#mask1_185_2)">
               <path
                 d="M74.524 276.922C72.2809 243.883 61.7259 211.93 43.836 184.051C34.7535 169.891 34.6021 151.782 43.437 137.471L44.2076 136.246C61.8773 107.665 72.3084 75.2034 74.6341 41.6822L77.4827 0.55127V320.489L74.524 276.922Z"
-                fill="var(--color-white-solid, #ffffff)" />
+                fill="var(--color-white-solid, #ffffff)"
+              />
             </g>
           </g>
         </svg>
-        <img src="/images/arrow_left.webp" alt="arrow-right"
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ml-[17px]" />
+        <img
+          src="/images/arrow_left.webp"
+          alt="arrow-right"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 rotate-180 ml-[17px]"
+        />
       </button>
     </div>
   </section>
@@ -260,5 +373,94 @@ onMounted(() => {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   overflow: hidden;
+}
+.margin,
+.margin * {
+  box-sizing: border-box;
+}
+.margin {
+  padding: 0px 679.81px 32px 679.81px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  height: 48px;
+  min-height: var(--width-16, 16px);
+  position: relative;
+}
+.background {
+  background: var(--color-white-solid, #ffffff);
+  border-radius: 1600px;
+  padding: 4px 3.2px 0px 3.2px;
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 16px;
+  position: relative;
+}
+.button-show-slide-1-of-3-margin {
+  padding: 0px 3px 4px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 14px;
+  height: 12px;
+  position: relative;
+}
+.button-show-slide-1-of-3 {
+  background: var(--color-grey-13, #222222);
+  border-radius: 8px;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  position: relative;
+}
+.button-show-slide-2-of-3-margin {
+  padding: 0px 3px 4px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 14px;
+  height: 12px;
+  position: relative;
+}
+.button-show-slide-2-of-3 {
+  background: var(--color-grey-13-40, rgba(34, 34, 34, 0.4));
+  border-radius: 8px;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  position: relative;
+}
+.button-show-slide-3-of-3-margin {
+  padding: 0px 3px 4px 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 14px;
+  height: 12px;
+  position: relative;
+}
+.button-show-slide-3-of-3 {
+  background: var(--color-grey-13-40, rgba(34, 34, 34, 0.4));
+  border-radius: 8px;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  position: relative;
 }
 </style>
