@@ -1,4 +1,3 @@
-<!-- in this code the i have the cards and in cards the main div and in main div i have the button and i have to change the main div to button and remove the button in main div to button -->
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
