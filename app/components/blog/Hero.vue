@@ -120,6 +120,7 @@ onMounted(() => {
 });
 </script>
 
+<!-- look in this code the Bottom Navigation Button not in centre -->
 <template>
   <section
     ref="heroSection"
@@ -191,7 +192,8 @@ onMounted(() => {
       </div>
 
       <!-- Bottom Navigation Button -->
-      <button
+     <div class="flex justify-center items-center">
+         <button
         @click="scrollDown"
         ref="bottomButton"
         class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 md:block hidden z-50"
@@ -209,6 +211,7 @@ onMounted(() => {
           />
         </div>
       </button>
+     </div>
     </div>
   </section>
 </template>
