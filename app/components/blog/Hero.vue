@@ -141,7 +141,7 @@ onMounted(() => {
         </h1>
 
         <div
-          class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns"
+          class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
         >
           <button
             class="md:px-6 h-[41px] border-white/40  text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700"
@@ -191,7 +191,7 @@ onMounted(() => {
     <button
       @click="scrollDown"
       ref="bottomButton"
-      class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 md:block hidden z-50"
+      class="absolute -bottom-1 left-1/2 transform -translate-x-1/2  md:block hidden z-50"
     >
       <!-- Main Button Shape SVG -->
       <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
