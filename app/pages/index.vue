@@ -1,5 +1,4 @@
 <script setup>
-import Digital from '~/components/Digital.vue';
 import Hero from '~/components/Hero.vue';
 import Projects from '~/components/Projects.vue';
 import Services from '~/components/Services.vue';
@@ -13,5 +12,4 @@ import Line from '~/components/Line.vue';
   <Projects />
   <Users />
   <Services />
-  <Digital />
 </template>

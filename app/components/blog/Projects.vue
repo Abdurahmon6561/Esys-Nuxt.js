@@ -60,18 +60,7 @@ onMounted(() => {
 <template>
   <div class="container mx-auto mb-[80px] mt-[64px]" id="projects">
     <div>
-      <div class="flex justify-center items-center">
-        <h3
-          class="text-sm text-[#080808] border-2 rounded-full p-2 border-[#EEE]"
-        >
-          Наши проекты
-        </h3>
-      </div>
       <div>
-        <h2 class="text-5xl text-[#080808] font-medium text-center mt-5">
-          Создаём цифровые продукты, которые <br />
-          выделяют вас на рынке и приводят клиентов
-        </h2>
         <div class="flex flex-wrap justify-center gap-[32px] mt-12">
           <!-- Cards -->
           <div

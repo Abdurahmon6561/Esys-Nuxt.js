@@ -3,16 +3,15 @@
 <template>
   <div class="container mx-auto mt-[80px] mb-[80px]">
     <div>
-      <div class="flex items-center">
+  <div class="flex justify-center items-center">
         <h3
-          class="text-[14px] font-medium text-[#080808] border-2 rounded-full p-2 border-[#EEE]"
+          class="text-sm text-[#080808] border-2 rounded-full p-2 border-[#EEE]"
         >
-          В чем мы сильны
+          Наши проекты
         </h3>
       </div>
-      <h1 class="md:text-[60px] text-[40px] text-[#080808] font-medium mt-[19px]">
-        Услуги, которые <br />
-        приносят пользу
+      <h1 class="md:text-[60px] text-[40px] text-[#080808] font-medium mt-[19px] text-center">
+        Услуги, которые решают проблемы
       </h1>
     </div>
     <div class="grid md:grid-cols-3 bg-[#ededed] p-8 rounded-xl mt-[48px]">
