@@ -120,16 +120,15 @@ onMounted(() => {
 });
 </script>
 
-<!-- look in this code the Bottom Navigation Button not in centre -->
 <template>
   <section
     ref="heroSection"
     id="smooth-wrapper"
-    class="flex items-center justify-center min-h-screen bg-cover bg-center hero rounded-tl-lg rounded-tr-lg"
+    class="flex items-center justify-center min-h-screen bg-cover bg-center hero relative"
     style="background-image: url('/images/blog-hero.webp')"
   >
     <div
-      class="flex justify-center w-full items-center h-screen relative"
+      class="flex justify-center w-full items-center h-screen"
       id="smooth-content"
     >
       <!-- Center Content -->
@@ -155,7 +154,6 @@ onMounted(() => {
             <span
               class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
             ></span>
-
             <span
               class="relative z-10 group-hover:text-black transition-colors duration-300"
             >
@@ -168,7 +166,6 @@ onMounted(() => {
             <span
               class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
             ></span>
-
             <span
               class="relative z-10 group-hover:text-black transition-colors duration-300"
             >
@@ -181,7 +178,6 @@ onMounted(() => {
             <span
               class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
             ></span>
-
             <span
               class="relative z-10 group-hover:text-black transition-colors duration-300"
             >
@@ -190,29 +186,26 @@ onMounted(() => {
           </button>
         </div>
       </div>
-
-      <!-- Bottom Navigation Button -->
-     <div class="flex justify-center items-center">
-         <button
-        @click="scrollDown"
-        ref="bottomButton"
-        class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 md:block hidden z-50"
-      >
-        <!-- Main Button Shape SVG -->
-        <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
-        <!-- Down Arrow SVG -->
-        <div
-          class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-          <img
-            src="/images/arrow-down-hero.png"
-            alt="arrow"
-            class="z-50 w-4 h-4"
-          />
-        </div>
-      </button>
-     </div>
     </div>
+
+    <button
+      @click="scrollDown"
+      ref="bottomButton"
+      class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 md:block hidden z-50"
+    >
+      <!-- Main Button Shape SVG -->
+      <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
+      <!-- Down Arrow SVG -->
+      <div
+        class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      >
+        <img
+          src="/images/arrow-down-hero.png"
+          alt="arrow"
+          class="z-50 w-4 h-4"
+        />
+      </div>
+    </button>
   </section>
 </template>
 
