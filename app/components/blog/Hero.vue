@@ -1,3 +1,4 @@
+<!-- in this code the btn scrollDown don't standing in centre and this standing center when i updating the webpage site where can be mistake ? -->
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
@@ -110,6 +111,8 @@ let smoother = null;
 
 onMounted(() => {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+  gsap.set(bottomButton.value, { xPercent: -50 });
+
 
   smoother = ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
@@ -188,24 +191,18 @@ onMounted(() => {
       </div>
     </div>
 
-    <button
-      @click="scrollDown"
-      ref="bottomButton"
-      class="absolute -bottom-1 left-1/2 transform -translate-x-1/2  md:block hidden z-50"
-    >
-      <!-- Main Button Shape SVG -->
-      <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
-      <!-- Down Arrow SVG -->
-      <div
-        class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-      >
-        <img
-          src="/images/arrow-down-hero.png"
-          alt="arrow"
-          class="z-50 w-4 h-4"
-        />
-      </div>
-    </button>
+<button
+  @click="scrollDown"
+  ref="bottomButton"
+  class="absolute -bottom-1 left-1/2 md:block hidden z-50"
+>
+  <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
+  <div class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <img src="/images/arrow-down-hero.png" alt="arrow" class="z-50 w-4 h-4" />
+  </div>
+</button>
+
+
   </section>
 </template>
 
