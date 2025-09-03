@@ -64,7 +64,6 @@ const moveBottomButton = (e) => {
 };
 
 const scrollDown = () => {
-  // Scroll down to next section
   window.scrollBy({
     top: window.innerHeight,
     behavior: "smooth",
