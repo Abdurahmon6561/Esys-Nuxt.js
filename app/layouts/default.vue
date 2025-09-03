@@ -99,11 +99,7 @@ onMounted(() => {
                 </li>
                 <li>
                   <NuxtLink
-                    to="#"
-                    @click.prevent="
-                      scrollToSection('projects');
-                      menuOpen = false;
-                    "
+                    to="project"
                     class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                   >
                     Проекты
@@ -111,7 +107,7 @@ onMounted(() => {
                 </li>
                 <li>
                   <NuxtLink
-                    to="blog"
+                    to="#"
                     class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                   >
                     Блог
