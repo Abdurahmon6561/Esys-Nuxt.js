@@ -11,8 +11,8 @@ const locale = ref("ru");
 const dropdownRef = ref(null);
 
 const languages = [
-  { code: "ru", label: "Ру"},
-  { code: "uz", label: "Uz" },
+  { label: "ru", label: "Ру"},
+  { label: "uz", label: "Uz" },
 ];
 
 const switchLocale = (label) => {
