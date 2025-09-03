@@ -14,31 +14,54 @@ const moveBottomButton = (e) => {
   if (!bottomButton.value) return;
 
   const mouseX = e.clientX;
-  const windowWidth = window.innerWidth;
+  const mouseY = e.clientY;
 
-  // Map mouse position (0 -> screen left, width -> screen right)
-  // Button can move within [-maxMove, maxMove] around center
-  const maxMove = windowWidth / 2 - 100; // 100 = padding so button stays visible
-  const offsetX = ((mouseX / windowWidth) * 2 - 1) * maxMove;
+  const rect = bottomButton.value.getBoundingClientRect();
+  const buttonCenterX = rect.left + rect.width / 2;
+  const buttonCenterY = rect.top + rect.height / 2;
 
-  gsap.to(bottomButton.value, {
-    x: offsetX,
-    duration: 0.6,
-    ease: "elastic.out(1, 0.4)",
-  });
+  const distanceX = Math.abs(mouseX - buttonCenterX);
+  const distanceY = Math.abs(mouseY - buttonCenterY);
 
-  const svg = bottomButton.value.querySelector(".clip-path-group");
-  if (svg) {
-    gsap.to(svg, {
-      scaleX: 1 + Math.abs(offsetX) / 300,
-      skewX: offsetX / 40,
-      transformOrigin: "center",
-      duration: 0.5,
+  // Only move if mouse is within 100px both horizontally & vertically
+  if (distanceX <= proximityThreshold && distanceY <= proximityThreshold) {
+    const offsetX = mouseX - buttonCenterX;
+
+    gsap.to(bottomButton.value, {
+      x: offsetX,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.4)",
+    });
+
+    const svg = bottomButton.value.querySelector(".clip-path-group");
+    if (svg) {
+      gsap.to(svg, {
+        scaleX: 1 + Math.abs(offsetX) / 300,
+        skewX: offsetX / 40,
+        transformOrigin: "center",
+        duration: 0.5,
+        ease: "sine.out",
+      });
+    }
+  } else {
+    // Return to original X when out of proximity
+    gsap.to(bottomButton.value, {
+      x: bottomInitialX,
+      duration: 0.8,
       ease: "sine.out",
     });
+
+    const svg = bottomButton.value.querySelector(".clip-path-group");
+    if (svg) {
+      gsap.to(svg, {
+        scaleX: 1,
+        skewX: 0,
+        duration: 0.6,
+        ease: "sine.out",
+      });
+    }
   }
 };
-
 
 const scrollDown = () => {
   window.scrollBy({
