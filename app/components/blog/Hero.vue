@@ -1,4 +1,3 @@
-<!-- in this code the btn scrollDown don't standing in centre and this standing center when i updating the webpage site where can be mistake ? -->
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
@@ -9,60 +8,37 @@ const heroSection = ref(null);
 const bottomButton = ref(null);
 
 let bottomInitialX = 0;
-const proximityThreshold = 100; 
+const proximityThreshold = 100;
 
 const moveBottomButton = (e) => {
   if (!bottomButton.value) return;
 
   const mouseX = e.clientX;
-  const mouseY = e.clientY;
+  const windowWidth = window.innerWidth;
 
-  const rect = bottomButton.value.getBoundingClientRect();
-  const buttonCenterX = rect.left + rect.width / 2;
-  const buttonCenterY = rect.top + rect.height / 2;
+  // Map mouse position (0 -> screen left, width -> screen right)
+  // Button can move within [-maxMove, maxMove] around center
+  const maxMove = windowWidth / 2 - 100; // 100 = padding so button stays visible
+  const offsetX = ((mouseX / windowWidth) * 2 - 1) * maxMove;
 
-  const distanceX = Math.abs(mouseX - buttonCenterX);
-  const distanceY = Math.abs(mouseY - buttonCenterY);
+  gsap.to(bottomButton.value, {
+    x: offsetX,
+    duration: 0.6,
+    ease: "elastic.out(1, 0.4)",
+  });
 
-  // Only move if mouse is within 100px both horizontally & vertically
-  if (distanceX <= proximityThreshold && distanceY <= proximityThreshold) {
-    const offsetX = mouseX - buttonCenterX;
-
-    gsap.to(bottomButton.value, {
-      x: offsetX,
-      duration: 0.6,
-      ease: "elastic.out(1, 0.4)",
-    });
-
-    const svg = bottomButton.value.querySelector(".clip-path-group");
-    if (svg) {
-      gsap.to(svg, {
-        scaleX: 1 + Math.abs(offsetX) / 300,
-        skewX: offsetX / 40,
-        transformOrigin: "center",
-        duration: 0.5,
-        ease: "sine.out",
-      });
-    }
-  } else {
-    // Return to original X when out of proximity
-    gsap.to(bottomButton.value, {
-      x: bottomInitialX,
-      duration: 0.8,
+  const svg = bottomButton.value.querySelector(".clip-path-group");
+  if (svg) {
+    gsap.to(svg, {
+      scaleX: 1 + Math.abs(offsetX) / 300,
+      skewX: offsetX / 40,
+      transformOrigin: "center",
+      duration: 0.5,
       ease: "sine.out",
     });
-
-    const svg = bottomButton.value.querySelector(".clip-path-group");
-    if (svg) {
-      gsap.to(svg, {
-        scaleX: 1,
-        skewX: 0,
-        duration: 0.6,
-        ease: "sine.out",
-      });
-    }
   }
 };
+
 
 const scrollDown = () => {
   window.scrollBy({
@@ -111,8 +87,6 @@ let smoother = null;
 
 onMounted(() => {
   gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-  gsap.set(bottomButton.value, { xPercent: -50 });
-
 
   smoother = ScrollSmoother.create({
     wrapper: "#smooth-wrapper",
@@ -147,7 +121,7 @@ onMounted(() => {
           class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
         >
           <button
-            class="md:px-6 h-[41px] border-white/40  text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+            class="md:px-6 h-[41px] border-white/40 text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700"
           >
             Все
           </button>
@@ -164,7 +138,7 @@ onMounted(() => {
             </span>
           </button>
           <button
-            class="relative overflow-hidden border-white/40  h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+            class="relative overflow-hidden border-white/40 h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
           >
             <span
               class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
@@ -176,7 +150,7 @@ onMounted(() => {
             </span>
           </button>
           <button
-            class="relative overflow-hidden border-white/40  h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+            class="relative overflow-hidden border-white/40 h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
           >
             <span
               class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
@@ -191,18 +165,24 @@ onMounted(() => {
       </div>
     </div>
 
-<button
-  @click="scrollDown"
-  ref="bottomButton"
-  class="absolute -bottom-1 left-1/2 md:block hidden z-50"
->
-  <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
-  <div class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-    <img src="/images/arrow-down-hero.png" alt="arrow" class="z-50 w-4 h-4" />
-  </div>
-</button>
-
-
+    <div class="flex justify-center items-center">
+      <button
+        @click="scrollDown"
+        ref="bottomButton"
+        class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 md:block hidden z-50"
+      >
+        <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
+        <div
+          class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        >
+          <img
+            src="/images/arrow-down-hero.png"
+            alt="arrow"
+            class="z-50 w-4 h-4"
+          />
+        </div>
+      </button>
+    </div>
   </section>
 </template>
 
