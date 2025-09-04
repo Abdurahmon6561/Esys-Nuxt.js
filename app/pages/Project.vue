@@ -1,8 +1,8 @@
 <script setup>
-import Hero from '~/components/blog/Hero.vue';
-import Projects from '~/components/blog/Projects.vue';
-import Users from '~/components/blog/Users.vue';
-import Technologies from '~/components/blog/Technologies.vue';
+import Hero from '~/components/project/Hero.vue';
+import Projects from '~/components/project/Projects.vue';
+import Technologies from '~/components/project/Technologies.vue';
+import Users from '~/components/project/Users.vue';
 </script>
 
 <template>
