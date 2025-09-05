@@ -15,18 +15,21 @@ const cards = [
     image: "/images/soundBar.webp",
     title: "Sound Bar",
     tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
+    link: "https://soundbar010.com/",
     tags: ["Веб-сайты", "Мобильные приложения"],
   },
   {
     image: "/images/car.webp",
     title: "Автосалон Asacar",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
+    link: "https://asacar.uz/",
     tags: ["Веб-сайты"],
   },
   {
     image: "/images/bbd.jpg",
     title: "BBD",
     tech: "Laravel, PHP, MySQL, JavaScript",
+    link: "https://bbd.uz/",
     tags: ["Веб-сайты"],
   },
 ];
@@ -90,6 +93,7 @@ onMounted(() => {
             </div>
 
             <!-- Main button -->
+            <a :href="card.link" target="_blank">
             <button
               class="absolute bottom-6 left-[20px] right-[20px] backdrop-blur-md bg-white/30 rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between hover:bg-white/40 transition"
             >
@@ -132,6 +136,7 @@ onMounted(() => {
                 </svg>
               </div>
             </button>
+            </a>
           </div>
         </div>
       </div>
