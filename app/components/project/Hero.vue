@@ -159,7 +159,7 @@ onMounted(() => {
   <section
     ref="heroSection"
     id="smooth-wrapper"
-    class="flex-col items-center justify-center min-h-screen bg-cover bg-center hero"
+    class="flex-col items-center justify-center min-h-screen bg-cover bg-center hero rounded-tl-lg rounded-tr-lg"
     style="background-image: url('/images/blog-hero.webp')"
   >
     <div
