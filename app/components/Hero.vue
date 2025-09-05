@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -25,6 +25,32 @@ const changeBackground = (direction) => {
       gsap.to(heroSection.value, { opacity: 1, duration: 0.6 });
     },
   });
+};
+
+const buttonTexts = ["Связаться"];
+
+const buttons = reactive(
+  buttonTexts.map((text) => ({
+    text,
+    xPos: "0px",
+    yPos: "0px",
+    isHover: false,
+  }))
+);
+
+const selectedIndex = ref(null);
+
+const updatePosition = (event, index) => {
+  if (selectedIndex.value === index) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  buttons[index].xPos = `${event.clientX - rect.left}px`;
+  buttons[index].yPos = `${event.clientY - rect.top}px`;
+  buttons[index].isHover = true;
+};
+
+const resetPosition = (index) => {
+  if (selectedIndex.value === index) return;
+  buttons[index].isHover = false;
 };
 
 const leftButton = ref(null);
@@ -265,32 +291,52 @@ onMounted(() => {
         >
           <button
             @click.prevent="scrollToSection('projects')"
-            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
           >
             Наши проекты
           </button>
+
           <button
-            class="relative overflow-hidden md:px-6 px-2 py-3 md:max-w-[139px] text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+            v-for="(btn, index) in buttons"
+            :key="index"
+            @mouseenter="updatePosition($event, index)"
+            @mousemove="updatePosition($event, index)"
+            @mouseleave="resetPosition(index)"
+            class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700 group"
           >
             <span
-              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
+              class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
+              :style="{
+                top: btn.yPos,
+                left: btn.xPos,
+                transform: 'translate(-50%, -50%)',
+                width: btn.isHover ? '400px' : '0px',
+                height: btn.isHover ? '400px' : '0px',
+              }"
             ></span>
 
+            <!-- text -->
             <span
-              class="relative z-10 group-hover:text-black transition-colors duration-300"
+              class="relative z-10 transition-colors duration-300"
+              :class="btn.isHover ? 'text-black' : 'text-white'"
             >
-              Связаться
+              {{ btn.text }}
             </span>
 
             <img
               src="/images/contact_arrow_up.svg"
               alt="logo"
-              class="w-4 h-4 transition-all duration-300 relative z-10 group-hover:invert-0 group-hover:brightness-0"
+              class="w-4 h-4 -mr-2 ml-2 transition-all duration-300 relative z-10"
+              :class="
+                btn.isHover ? 'invert-0 brightness-0' : 'invert brightness-0'
+              "
             />
           </button>
         </div>
 
-        <div class="hidden absolute -bottom-[250px] left-1/2 transform -translate-x-1/2">
+        <div
+          class="hidden absolute -bottom-[250px] left-1/2 transform -translate-x-1/2"
+        >
           <div class="margin">
             <div class="background cursor-pointer">
               <div class="button-show-slide-1-of-3-margin">

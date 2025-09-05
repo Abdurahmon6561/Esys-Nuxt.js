@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, reactive } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -9,6 +9,41 @@ const bottomButton = ref(null);
 
 let bottomInitialX = 0;
 const proximityThreshold = 100;
+
+const buttonTexts = ["Все", "Веб-сайты", "Приложения", "CRM-системы"];
+
+const buttons = reactive(
+  buttonTexts.map((text) => ({
+    text,
+    xPos: "0px",
+    yPos: "0px",
+    isHover: false,
+  }))
+);
+
+const selectedIndex = ref(null);
+
+const updatePosition = (event, index) => {
+  if (selectedIndex.value === index) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  buttons[index].xPos = `${event.clientX - rect.left}px`;
+  buttons[index].yPos = `${event.clientY - rect.top}px`;
+  buttons[index].isHover = true;
+};
+
+const resetPosition = (index) => {
+  if (selectedIndex.value === index) return;
+  buttons[index].isHover = false;
+};
+
+const selectButton = (index) => {
+  selectedIndex.value = index;
+  buttons.forEach((btn, i) => {
+    btn.isHover = i === index;
+  });
+};
+
+const isActive = (index) => selectedIndex.value === index;
 
 const moveBottomButton = (e) => {
   if (!bottomButton.value) return;
@@ -124,7 +159,7 @@ onMounted(() => {
   <section
     ref="heroSection"
     id="smooth-wrapper"
-    class="flex items-center justify-center min-h-screen bg-cover bg-center hero relative"
+    class="flex-col items-center justify-center min-h-screen bg-cover bg-center hero"
     style="background-image: url('/images/blog-hero.webp')"
   >
     <div
@@ -144,44 +179,46 @@ onMounted(() => {
           class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
         >
           <button
-            class="md:px-6 h-[41px] border-white/40 text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl hover:scale-110 transition-transform duration-700"
+            v-for="(btn, index) in buttons"
+            :key="index"
+            @mouseenter="updatePosition($event, index)"
+            @mousemove="updatePosition($event, index)"
+            @mouseleave="resetPosition(index)"
+            @click="selectButton(index)"
+            class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700"
           >
-            Все
-          </button>
-          <button
-            class="relative overflow-hidden h-[41px] border-white/40 md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
-          >
+            <!-- expanding circle -->
             <span
-              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
+              class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
+              :style="{
+                top: btn.yPos,
+                left: btn.xPos,
+                transform: 'translate(-50%, -50%)',
+                width: isActive(index)
+                  ? '400px'
+                  : btn.isHover
+                  ? '400px'
+                  : '0px',
+                height: isActive(index)
+                  ? '400px'
+                  : btn.isHover
+                  ? '400px'
+                  : '0px',
+              }"
             ></span>
+
+            <!-- text -->
             <span
-              class="relative z-10 group-hover:text-black transition-colors duration-300"
+              class="relative z-10 transition-colors duration-300"
+              :class="
+                isActive(index)
+                  ? 'text-black'
+                  : btn.isHover
+                  ? 'text-black'
+                  : 'text-white'
+              "
             >
-              Веб-сайты
-            </span>
-          </button>
-          <button
-            class="relative overflow-hidden border-white/40 h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
-          >
-            <span
-              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
-            ></span>
-            <span
-              class="relative z-10 group-hover:text-black transition-colors duration-300"
-            >
-              Приложения
-            </span>
-          </button>
-          <button
-            class="relative overflow-hidden border-white/40 h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] bg-transparent border flex justify-center items-center gap-2 hover:border-none rounded-full font-medium text-white group hover:shadow-2xl hover:scale-110 transition-transform duration-700"
-          >
-            <span
-              class="absolute left-0 top-0 h-full w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full -z-10"
-            ></span>
-            <span
-              class="relative z-10 group-hover:text-black transition-colors duration-300"
-            >
-              CRM-системы
+              {{ btn.text }}
             </span>
           </button>
         </div>
@@ -192,11 +229,12 @@ onMounted(() => {
       <button
         @click="scrollDown"
         ref="bottomButton"
-        class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 md:block hidden z-50"
+        style="margin-bottom: -5px; z-index: 99999"
       >
         <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
         <div
-          class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          style="margin-top: -26px"
         >
           <img
             src="/images/arrow-down-hero.png"
@@ -208,11 +246,3 @@ onMounted(() => {
     </div>
   </section>
 </template>
-
-<style scoped>
-.hero {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  overflow: hidden;
-}
-</style>

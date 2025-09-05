@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
     port: 6561,
-    host: 'localhost',
+    host: "localhost",
   },
 
   css: [
@@ -15,7 +15,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: "Esys",
+      title: "Создание и разработка сайтов в г. Ташкенте - Evolution Systems",
       htmlAttrs: {
         lang: "en",
       },

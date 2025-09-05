@@ -281,7 +281,7 @@ onMounted(() => {
                 <div class="flex gap-2 mt-5 md:mt-0">
                   <!-- Facebook -->
                   <a
-                    href="/"
+                    href="https://www.facebook.com/esys.uz"
                     target="_blank"
                     class="group w-10 h-10 flex items-center justify-center rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#0866ff] hover:border-white"
                   >
@@ -294,7 +294,7 @@ onMounted(() => {
 
                   <!-- Instagram -->
                   <a
-                    href="/"
+                    href="https://www.instagram.com/esysuz/"
                     target="_blank"
                     class="group w-10 h-10 flex items-center justify-center rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:border-white hover:bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5]"
                   >
@@ -307,7 +307,7 @@ onMounted(() => {
 
                   <!-- Telegram -->
                   <a
-                    href="/"
+                    href="https://t.me/esys_uz"
                     target="_blank"
                     class="group w-10 h-10 flex items-center justify-center rounded-full border-2 border-[#e0e0e0] transition-all duration-300 hover:bg-[#27a8e8] hover:border-white"
                   >
