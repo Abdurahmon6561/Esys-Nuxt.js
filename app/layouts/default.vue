@@ -1,12 +1,8 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
-import { gsap } from "gsap/all";
 
 const open = ref(false);
 const menuOpen = ref(false);
-
 const locale = ref("ru");
 const dropdownRef = ref(null);
 
@@ -17,7 +13,9 @@ const languages = [
 
 const switchLocale = (label) => {
   locale.value = label;
-  localStorage.setItem("locale", label);
+  if (process.client) {
+    localStorage.setItem("locale", label);
+  }
   open.value = false;
   menuOpen.value = false;
 };
@@ -30,42 +28,69 @@ const scrollToSection = (id) => {
   }
 };
 
-onMounted(() => {
-  const saved = localStorage.getItem("locale");
-  if (saved) locale.value = saved;
+onMounted(async () => {
+  if (process.client) {
+    // Initialize locale from localStorage
+    const saved = localStorage.getItem("locale");
+    if (saved) locale.value = saved;
 
-  const handleClickOutside = (e) => {
-    if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
-      open.value = false;
-    }
-  };
-  window.addEventListener("click", handleClickOutside);
+    // Click outside handler for dropdown
+    const handleClickOutside = (e) => {
+      if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+        open.value = false;
+      }
+    };
+    
+    window.addEventListener("click", handleClickOutside);
 
-  onBeforeUnmount(() => {
+    // Dynamic import GSAP and plugins
+    const { gsap } = await import('gsap')
+    const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+    const { ScrollSmoother } = await import('gsap/ScrollSmoother')
+
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollSmoother);
+
+    // Initialize ScrollSmoother
+    smoother = ScrollSmoother.create({
+      wrapper: "#smooth-wrapper",
+      content: "#smooth-content",
+      smooth: 1.5,
+      effects: true,
+    });
+
+    smoother.effects("header", { speed: 1, lag: 0 });
+
+    // Animate header on mount
+    gsap.fromTo("header", 
+      {
+        y: -100,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.2,
+        ease: "power2.out"
+      }
+    );
+  }
+});
+
+onBeforeUnmount(() => {
+  if (process.client) {
     window.removeEventListener("click", handleClickOutside);
-  });
-});
-
-gsap.registerPlugin(ScrollTrigger);
-gsap.registerPlugin(ScrollSmoother);
-
-onMounted(() => {
-  smoother = ScrollSmoother.create({
-    wrapper: "#smooth-wrapper",
-    content: "#smooth-content",
-    smooth: 1.5,
-    effects: true,
-  });
-
-  smoother.effects("header", { speed: 1, lag: 0 });
-});
-
-onMounted(() => {
-  gsap.from("header", {
-    y: -100,
-    opacity: 0,
-    duration: 2,
-  });
+    
+    if (smoother) {
+      smoother.kill();
+    }
+    
+    // Clean up ScrollTrigger instances
+    if (window.ScrollTrigger) {
+      window.ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    }
+  }
 });
 </script>
 
@@ -78,16 +103,16 @@ onMounted(() => {
         >
           <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
             <!-- Logo -->
-            <a href="/">
+            <NuxtLink to="/" class="transition-transform duration-300 hover:scale-105">
               <img src="/images/logo.webp" alt="logo" class="h-8" />
-            </a>
+            </NuxtLink>
 
             <!-- Desktop Nav -->
             <nav>
               <ul class="md:flex hidden gap-8 text-white font-medium">
                 <li>
                   <NuxtLink
-                    to="#"
+                    to="/"
                     class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                   >
                     Компания
@@ -95,7 +120,7 @@ onMounted(() => {
                 </li>
                 <li>
                   <NuxtLink
-                    to="project"
+                    to="/project"
                     class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                   >
                     Проекты
@@ -103,7 +128,7 @@ onMounted(() => {
                 </li>
                 <li>
                   <NuxtLink
-                    to="#"
+                    to="/blog"
                     class="relative after:content-[''] pb-1 after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:bg-white after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                   >
                     Блог
@@ -121,7 +146,7 @@ onMounted(() => {
               <button
                 @click.stop="open = !open"
                 style="padding: 8px 10px"
-                class="text-white flex items-center justify-center gap-1 border-2 border-[#8198a6] rounded-full cursor-pointer"
+                class="text-white flex items-center justify-center gap-1 border-2 border-[#8198a6] rounded-full cursor-pointer transition-all duration-300 hover:border-white hover:bg-white/10"
               >
                 <img src="/images/locale.svg" alt="locale" class="w-[22px]" />
                 <span class="ml-1 text-[14px]">{{ locale }}</span>
@@ -129,7 +154,7 @@ onMounted(() => {
                   src="/images/arrow-down.webp"
                   alt="arrow"
                   :class="{ 'rotate-180': open }"
-                  class="w-4"
+                  class="w-4 transition-transform duration-200"
                 />
               </button>
 
@@ -150,7 +175,7 @@ onMounted(() => {
                       v-for="lang in languages"
                       :key="lang.label"
                       @click="switchLocale(lang.label)"
-                      class="gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer text-center"
+                      class="gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer text-center transition-colors duration-200"
                     >
                       <span class="text-[14px] text-center">{{
                         lang.label
@@ -160,48 +185,11 @@ onMounted(() => {
                 </div>
               </Transition>
             </div>
-
-            <!-- Hamburger -->
-            <!-- <button
-              class="md:hidden flex flex-col gap-1 z-50 text-white text-[24px] hover:scale-105  transition-all duration-300"
-              @click="menuOpen = !menuOpen">
-              <FontAwesomeIcon :icon="['fas', 'bars']" />
-            </button> -->
           </div>
         </header>
       </div>
 
-      <!-- Mobile Side -->
-      <!-- <Transition enter-active-class="transition-transform duration-300 ease-out" enter-from-class="-translate-x-full"
-        enter-to-class="translate-x-0" leave-active-class="transition-transform duration-300 ease-in"
-        leave-from-class="translate-x-0" leave-to-class="-translate-x-full">
-        <div v-if="menuOpen" class="fixed inset-0 bg-white text-black z-40 flex flex-col p-8">
-          <button class="self-end mb-2 mt-[12px] mr-[12px]" @click="menuOpen = false">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          <nav class="flex flex-col gap-3 text-lg font-semibold">
-            <NuxtLink to="#" @click="menuOpen = false" class="text-sm font-normal">Компания</NuxtLink>
-            <NuxtLink to="#" @click="menuOpen = false" class="text-sm font-normal">Проекты</NuxtLink>
-            <NuxtLink to="#" @click="menuOpen = false" class="text-sm font-normal">Блог</NuxtLink>
-          </nav>
-
-          <div class="mt-10 border-t pt-4">
-            <p class="mb-2 text-sm font-semibold">Язык</p>
-            <ul class="flex gap-2" ref="dropdownRef">
-              <li v-for="lang in languages" :key="lang.label" @click="switchLocale(lang.label)"
-                class="flex items-center border rounded-lg gap-2 px-2 py-2 hover:bg-gray-100 cursor-pointer">
-                <span class="text-[14px]">{{ lang.label }}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </Transition> -->
-
-      <main>
+      <main class="min-h-screen">
         <slot />
       </main>
 
@@ -209,35 +197,35 @@ onMounted(() => {
         <div class="px-10 py-10 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl p-6">
             <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
-              <button>
+              <button class="transition-transform duration-300 hover:scale-105">
                 <img
                   src="/images/women-footer.webp"
                   alt="women"
                   class="md:h-[233px] md:w-[260px] object-cover rounded-l-md"
                 />
               </button>
-              <button>
+              <button class="transition-transform duration-300 hover:scale-105">
                 <img
                   src="/images/insayt.jpg"
                   alt="insayt"
                   class="md:h-[233px] md:w-[260px] object-cover"
                 />
               </button>
-              <button>
+              <button class="transition-transform duration-300 hover:scale-105">
                 <img
                   src="/images/soundBar.webp"
                   alt="soundBar"
                   class="md:h-[233px] md:w-[260px] object-cover"
                 />
               </button>
-              <button>
+              <button class="transition-transform duration-300 hover:scale-105">
                 <img
                   src="/images/chair-footer.webp"
                   alt="chair-footer"
                   class="md:h-[233px] md:w-[260px] object-cover"
                 />
               </button>
-              <button>
+              <button class="transition-transform duration-300 hover:scale-105">
                 <img
                   src="/images/black_women-footer.webp"
                   alt="women"
@@ -248,39 +236,38 @@ onMounted(() => {
             <hr />
             <div class="md:px-10 md:py-[100px] p-8 rounded-xl">
               <div class="md:flex justify-between items-center gap-4 mb-[90px]">
-                <a href="/">
+                <NuxtLink to="/" class="transition-transform duration-300 hover:scale-105">
                   <img src="/images/footer-logo.svg" alt="logo" />
-                </a>
+                </NuxtLink>
 
                 <div
                   class="md:flex grid grid-cols-1 md:gap-5 mt-5 md:mt-0 gap-3"
                 >
-                  <a
-                    href="/"
+                  <NuxtLink
+                    to="/"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Главная</a
+                    >Главная</NuxtLink
                   >
-                  <a
-                    href="/"
+                  <NuxtLink
+                    to="/company"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Компания</a
+                    >Компания</NuxtLink
                   >
-                  <a
-                    href="#"
-                    @click.prevent="scrollToSection('projects')"
+                  <NuxtLink
+                    to="/project"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                   >
                     Проекты
-                  </a>
-                  <a
-                    href="/"
+                  </NuxtLink>
+                  <NuxtLink
+                    to="/blog"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Блог</a
+                    >Блог</NuxtLink
                   >
-                  <a
-                    href="/"
+                  <NuxtLink
+                    to="/contact"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Связь</a
+                    >Связь</NuxtLink
                   >
                 </div>
 

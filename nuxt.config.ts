@@ -21,5 +21,18 @@ export default defineNuxtConfig({
       },
       meta: [{ name: "robots", content: "noindex" }],
     },
+    pageTransition: { 
+      name: 'page', 
+      mode: 'out-in' 
+    },
+    layoutTransition: { 
+      name: 'layout', 
+      mode: 'out-in' 
+    }
   },
+
+  // Add build transpile for GSAP
+  build: {
+    transpile: ['gsap']
+  }
 });
