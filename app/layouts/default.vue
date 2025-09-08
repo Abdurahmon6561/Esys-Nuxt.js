@@ -196,36 +196,36 @@ onBeforeUnmount(() => {
       <footer>
         <div class="px-10 py-10 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl p-6">
-            <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
-              <button class="transition-transform duration-300 hover:scale-105">
+                      <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
+              <button>
                 <img
                   src="/images/women-footer.webp"
                   alt="women"
                   class="md:h-[233px] md:w-[260px] object-cover rounded-l-md"
                 />
               </button>
-              <button class="transition-transform duration-300 hover:scale-105">
+              <button>
                 <img
                   src="/images/insayt.jpg"
                   alt="insayt"
                   class="md:h-[233px] md:w-[260px] object-cover"
                 />
               </button>
-              <button class="transition-transform duration-300 hover:scale-105">
+              <button>
                 <img
                   src="/images/soundBar.webp"
                   alt="soundBar"
                   class="md:h-[233px] md:w-[260px] object-cover"
                 />
               </button>
-              <button class="transition-transform duration-300 hover:scale-105">
+              <button>
                 <img
                   src="/images/chair-footer.webp"
                   alt="chair-footer"
                   class="md:h-[233px] md:w-[260px] object-cover"
                 />
               </button>
-              <button class="transition-transform duration-300 hover:scale-105">
+              <button>
                 <img
                   src="/images/black_women-footer.webp"
                   alt="women"
@@ -254,7 +254,8 @@ onBeforeUnmount(() => {
                     >Компания</NuxtLink
                   >
                   <NuxtLink
-                    to="/project"
+                   href="#"
+                    @click.prevent="scrollToSection('projects')"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                   >
                     Проекты
