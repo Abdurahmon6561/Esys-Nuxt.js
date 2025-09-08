@@ -71,7 +71,7 @@ onMounted(() => {
 
 <template>
   <div id="smooth-wrapper">
-    <div id="smooth-content" class="flex flex-col p-6 bg-white">
+    <div id="smooth-content" class="flex flex-col md:p-6 p-3 bg-white">
       <div class="w-full top-0 left-0 right-0">
         <header
           class="fixed top-0 left-0 w-full z-50 bg-transparent p-6 rounded-xl"

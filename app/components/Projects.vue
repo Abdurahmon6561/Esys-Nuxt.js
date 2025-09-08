@@ -71,7 +71,7 @@ onMounted(() => {
         </h3>
       </div>
       <div>
-        <h2 class="text-5xl text-[#080808] font-medium text-center mt-5">
+        <h2 class="md:text-5xl text-2xl text-[#080808] font-medium text-center mt-5">
           Создаём цифровые продукты, которые <br />
           выделяют вас на рынке и приводят клиентов
         </h2>
@@ -129,7 +129,7 @@ onMounted(() => {
               </div>
               <!-- why in this color white in svg don't works ? -->
               <div
-                class="flex items-center justify-center w-12 h-12 rounded-xl border-2 border-gray-100"
+                class="flex items-center justify-center md:w-12 md:h-12 w-[30px] h-[30px] rounded-xl border-2 border-gray-100"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
