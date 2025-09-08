@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="p-6 bg-[#ededed] rounded-xl">
     <div
-      class="flex items-center justify-center h-screen bg-cover bg-center rounded-xl"
+      class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg"
       style="background-image: url('/images/users-bg.webp')"
     >
       <div class="md:w-[576px] p-8 md:p-0">

@@ -159,90 +159,80 @@ onMounted(() => {
   <section
     ref="heroSection"
     id="smooth-wrapper"
-    class="flex-col items-center justify-center min-h-screen bg-cover bg-center hero rounded-tl-lg rounded-tr-lg"
+    class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg"
     style="background-image: url('/images/blog-hero.webp')"
   >
-    <div
-      class="flex justify-center w-full items-center h-screen"
-      id="smooth-content"
-    >
-      <!-- Center Content -->
-      <div class="relative z-10 text-center text-white flex-1">
-        <h1
-          class="text-2xl md:text-[92px] font-extrabold leading-tight hero-text"
-        >
-          Откройте для себя <br />
-          наши проекты
-        </h1>
+    <!-- Center Content -->
+    <div class="relative z-10 text-center text-white flex-1">
+      <h1
+        class="text-2xl md:text-[92px] font-extrabold leading-tight hero-text"
+      >
+        Откройте для себя <br />
+        наши проекты
+      </h1>
 
-        <div
-          class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
+      <div
+        class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
+      >
+        <button
+          v-for="(btn, index) in buttons"
+          :key="index"
+          @mouseenter="updatePosition($event, index)"
+          @mousemove="updatePosition($event, index)"
+          @mouseleave="resetPosition(index)"
+          @click="selectButton(index)"
+          class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700"
         >
-          <button
-            v-for="(btn, index) in buttons"
-            :key="index"
-            @mouseenter="updatePosition($event, index)"
-            @mousemove="updatePosition($event, index)"
-            @mouseleave="resetPosition(index)"
-            @click="selectButton(index)"
-            class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700"
+          <!-- expanding circle -->
+          <span
+            class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
+            :style="{
+              top: btn.yPos,
+              left: btn.xPos,
+              transform: 'translate(-50%, -50%)',
+              width: isActive(index)
+                ? '400px'
+                : btn.isHover
+                ? '400px'
+                : '0px',
+              height: isActive(index)
+                ? '400px'
+                : btn.isHover
+                ? '400px'
+                : '0px',
+            }"
+          ></span>
+
+          <!-- text -->
+          <span
+            class="relative z-10 transition-colors duration-300"
+            :class="
+              isActive(index)
+                ? 'text-black'
+                : btn.isHover
+                ? 'text-black'
+                : 'text-white'
+            "
           >
-            <!-- expanding circle -->
-            <span
-              class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
-              :style="{
-                top: btn.yPos,
-                left: btn.xPos,
-                transform: 'translate(-50%, -50%)',
-                width: isActive(index)
-                  ? '400px'
-                  : btn.isHover
-                  ? '400px'
-                  : '0px',
-                height: isActive(index)
-                  ? '400px'
-                  : btn.isHover
-                  ? '400px'
-                  : '0px',
-              }"
-            ></span>
-
-            <!-- text -->
-            <span
-              class="relative z-10 transition-colors duration-300"
-              :class="
-                isActive(index)
-                  ? 'text-black'
-                  : btn.isHover
-                  ? 'text-black'
-                  : 'text-white'
-              "
-            >
-              {{ btn.text }}
-            </span>
-          </button>
-        </div>
+            {{ btn.text }}
+          </span>
+        </button>
       </div>
     </div>
 
-    <div class="flex justify-center items-center">
-      <button
-        @click="scrollDown"
-        ref="bottomButton"
-        style="margin-bottom: -5px; z-index: 99999"
-      >
-        <img src="/images/arrow-down.png" alt="arrow" class="z-50" />
-        <div
-          class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          style="margin-top: -26px"
-        >
-          <img
-            src="/images/arrow-down-hero.png"
-            alt="arrow"
-            class="z-50 w-4 h-4"
-          />
-        </div>
-      </button>
-    </div>
+    <!-- Scroll Down Button (absolute at bottom) -->
+    <button
+      @click="scrollDown"
+      ref="bottomButton"
+      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center"
+    >
+      <img src="/images/arrow-down.png" alt="arrow" />
+      <img
+        src="/images/arrow-down-hero.png"
+        alt="arrow"
+        class="w-4 h-4 mt-[-36px]"
+      />
+    </button>
   </section>
 </template>
+

@@ -209,13 +209,14 @@ onMounted(() => {
 
 <template>
   <section
-    ref="heroSection"
-    id="smooth-wrapper"
-    class="flex items-center justify-center min-h-screen bg-cover bg-center hero rounded-tl-lg rounded-tr-lg"
-    style="background-image: url('/images/bg-hero.webp')"
-  >
+  ref="heroSection"
+  id="smooth-wrapper"
+  class="min-h-[calc(100vh-3rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
+  style="background-image: url('/images/bg-hero.webp')"
+>
+  
     <div
-      class="flex justify-between w-full items-center h-screen"
+      class="flex justify-between w-full items-center"
       id="smooth-content"
     >
       <!-- Left Arrow -->
@@ -420,93 +421,5 @@ onMounted(() => {
   border-top-right-radius: 10px;
   overflow: hidden;
 }
-.margin,
-.margin * {
-  box-sizing: border-box;
-}
-.margin {
-  padding: 0px 679.81px 32px 679.81px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
-  height: 48px;
-  min-height: var(--width-16, 16px);
-  position: relative;
-}
-.background {
-  background: var(--color-white-solid, #ffffff);
-  border-radius: 1600px;
-  padding: 4px 3.2px 0px 3.2px;
-  display: flex;
-  flex-direction: row;
-  gap: 0px;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  height: 16px;
-  position: relative;
-}
-.button-show-slide-1-of-3-margin {
-  padding: 0px 3px 4px 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 14px;
-  height: 12px;
-  position: relative;
-}
-.button-show-slide-1-of-3 {
-  background: var(--color-grey-13, #222222);
-  border-radius: 8px;
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  position: relative;
-}
-.button-show-slide-2-of-3-margin {
-  padding: 0px 3px 4px 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 14px;
-  height: 12px;
-  position: relative;
-}
-.button-show-slide-2-of-3 {
-  background: var(--color-grey-13-40, rgba(34, 34, 34, 0.4));
-  border-radius: 8px;
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  position: relative;
-}
-.button-show-slide-3-of-3-margin {
-  padding: 0px 3px 4px 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  width: 14px;
-  height: 12px;
-  position: relative;
-}
-.button-show-slide-3-of-3 {
-  background: var(--color-grey-13-40, rgba(34, 34, 34, 0.4));
-  border-radius: 8px;
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  position: relative;
-}
+
 </style>

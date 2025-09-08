@@ -23,7 +23,6 @@ const switchLocale = (label) => {
 };
 
 let smoother = null;
-
 const scrollToSection = (id) => {
   const el = document.getElementById(id);
   if (el && smoother) {
@@ -72,10 +71,7 @@ onMounted(() => {
 
 <template>
   <div id="smooth-wrapper">
-    <div
-      id="smooth-content"
-      class="flex flex-col min-h-screen bg-white p-3 md:p-6"
-    >
+    <div id="smooth-content" class="flex flex-col p-6 bg-white">
       <div class="w-full top-0 left-0 right-0">
         <header
           class="fixed top-0 left-0 w-full z-50 bg-transparent p-6 rounded-xl"
@@ -213,31 +209,41 @@ onMounted(() => {
         <div class="px-10 py-10 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl p-6">
             <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
-              <img
-                src="/images/women-footer.webp"
-                alt="women"
-                class="md:h-[233px] md:w-[260px] object-cover rounded-l-md"
-              />
-              <img
-                src="/images/insayt.jpg"
-                alt="insayt"
-                class="md:h-[233px] md:w-[260px] object-cover"
-              />
-              <img
-                src="/images/soundBar.webp"
-                alt="soundBar"
-                class="md:h-[233px] md:w-[260px] object-cover"
-              />
-              <img
-                src="/images/chair-footer.webp"
-                alt="chair-footer"
-                class="md:h-[233px] md:w-[260px] object-cover"
-              />
-              <img
-                src="/images/black_women-footer.webp"
-                alt="women"
-                class="md:h-[233px] md:w-[260px] object-cover rounded-r-md"
-              />
+              <button>
+                <img
+                  src="/images/women-footer.webp"
+                  alt="women"
+                  class="md:h-[233px] md:w-[260px] object-cover rounded-l-md"
+                />
+              </button>
+              <button>
+                <img
+                  src="/images/insayt.jpg"
+                  alt="insayt"
+                  class="md:h-[233px] md:w-[260px] object-cover"
+                />
+              </button>
+              <button>
+                <img
+                  src="/images/soundBar.webp"
+                  alt="soundBar"
+                  class="md:h-[233px] md:w-[260px] object-cover"
+                />
+              </button>
+              <button>
+                <img
+                  src="/images/chair-footer.webp"
+                  alt="chair-footer"
+                  class="md:h-[233px] md:w-[260px] object-cover"
+                />
+              </button>
+              <button>
+                <img
+                  src="/images/black_women-footer.webp"
+                  alt="women"
+                  class="md:h-[233px] md:w-[260px] object-cover rounded-r-md"
+                />
+              </button>
             </div>
             <hr />
             <div class="md:px-10 md:py-[100px] p-8 rounded-xl">
