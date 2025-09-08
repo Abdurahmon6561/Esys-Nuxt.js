@@ -128,14 +128,14 @@ onMounted(() => {
 
   gsap.from(".hero-text", {
     opacity: 0,
-    duration: 2,
+    duration: 1,
     scale: 0.3,
   });
 
   gsap.from(".hero-btns", {
     y: +100,
     opacity: 0,
-    duration: 2,
+    duration: 1,
   });
 
   window.addEventListener("mousemove", moveBottomButton);
@@ -165,7 +165,7 @@ onMounted(() => {
     <!-- Center Content -->
     <div class="relative z-10 text-center text-white flex-1">
       <h1
-        class="text-2xl md:text-[92px] font-extrabold leading-tight hero-text"
+        class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text"
       >
         Откройте для себя <br />
         наши проекты

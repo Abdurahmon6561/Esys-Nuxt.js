@@ -11,7 +11,7 @@
     </div>
 
     <div>
-      <h1 class="md:text-[62px] font-medium text-center">
+      <h1 class="md:text-[62px] font-medium text-center leading-[67px]">
         Технологии, которые <br />
         работают на результат
       </h1>

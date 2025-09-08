@@ -31,7 +31,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="page-section"><Hero /></div>
+    <div class="page-section hero-section"><Hero /></div>
     <div class="page-section"><Projects /></div>
     <div class="page-section"><Users /></div>
     <div class="page-section"><Technologies /></div>

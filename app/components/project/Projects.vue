@@ -71,7 +71,7 @@ onMounted(() => {
             :key="i"
             ref="cardsRef"
             :class="[
-              'relative rounded-xl overflow-hidden shadow-xl md:h-[501px] md:w-[656px] hover:scale-105 duration-700 opacity-0 transform transition-all project-cards',
+              'relative rounded-xl overflow-hidden shadow-xl md:h-[501px] md:w-[656px] duration-700 opacity-0 transform transition-all project-cards',
               i % 2 === 0 ? 'translate-x-[-100px]' : 'translate-x-[100px]',
             ]"
           >
@@ -142,7 +142,7 @@ onMounted(() => {
       </div>
       <div class="flex justify-center items-center mt-12">
         <button
-          class="px-5 hover:bg-[#EEE] text-[#080808] border-2 rounded-full p-2 border-[#EEE] font-medium"
+          class="px-5 text-[#080808] border-2 rounded-full p-2 border-[#EEE] font-medium"
         >
           Больше проектов
         </button>

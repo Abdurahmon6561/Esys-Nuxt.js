@@ -173,14 +173,14 @@ onMounted(() => {
 
   gsap.from(".hero-text", {
     opacity: 0,
-    duration: 2,
+    duration: 1,
     scale: 0.3,
   });
 
   gsap.from(".hero-btns", {
     y: +100,
     opacity: 0,
-    duration: 2,
+    duration: 1,
   });
 
   window.addEventListener("mousemove", moveSideButtons);
@@ -209,16 +209,12 @@ onMounted(() => {
 
 <template>
   <section
-  ref="heroSection"
-  id="smooth-wrapper"
-  class="min-h-[calc(100vh-3rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
-  style="background-image: url('/images/bg-hero.webp')"
->
-  
-    <div
-      class="flex justify-between w-full items-center"
-      id="smooth-content"
-    >
+    ref="heroSection"
+    id="smooth-wrapper"
+    class="min-h-[calc(100vh-3rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
+    style="background-image: url('/images/bg-hero.webp')"
+  >
+    <div class="flex justify-between w-full items-center" id="smooth-content">
       <!-- Left Arrow -->
       <button
         @click="changeBackground('prev')"
@@ -280,7 +276,7 @@ onMounted(() => {
       <!-- center -->
       <div class="relative z-10 text-center text-white flex-1">
         <h1
-          class="text-2xl md:text-[92px] font-extrabold leading-tight hero-text"
+          class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text "
         >
           Цифровые решения,<br />
           которые помогают вашему <br />
@@ -292,7 +288,7 @@ onMounted(() => {
         >
           <button
             @click.prevent="scrollToSection('projects')"
-            class="md:px-6 px-6 py-3 text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
+            class="md:px-6 px-6 text-[13px] md:text-[15px] h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
           >
             Наши проекты
           </button>
@@ -421,5 +417,14 @@ onMounted(() => {
   border-top-right-radius: 10px;
   overflow: hidden;
 }
+.hero-text-handmaded{
+  color: var(--E-Sys-color-styles-White, var(--color-white-solid, #FFF));
+text-align: center;
 
+font-size: 92.625px;
+font-style: normal;
+font-weight: var(--font-weight-500, 500);
+line-height: var(--line-height-96, 96px); /* 103.644% */
+letter-spacing: var(--letter-spacing--1_92, -1.92px);
+}
 </style>

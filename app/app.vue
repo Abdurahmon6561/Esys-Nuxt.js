@@ -13,7 +13,15 @@ async function onBeforeEnter(el) {
 
 async function onEnter(el, done) {
   if (process.client) {
-    const { gsap } = await import('gsap')
+    const { gsap } = await import("gsap")
+
+    // Сбрасываем скролл при входе
+    if (window.smoother) {
+      window.smoother.scrollTo(0, true) 
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+
     gsap.to(el, {
       opacity: 1,
       y: 0,
@@ -24,6 +32,7 @@ async function onEnter(el, done) {
     })
   }
 }
+
 
 async function onLeave(el, done) {
   if (process.client) {
