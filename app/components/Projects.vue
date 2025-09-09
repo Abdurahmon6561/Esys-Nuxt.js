@@ -192,8 +192,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto; /* ✅ allow clicking */
-  cursor: pointer; /* ✅ show pointer cursor */
+  pointer-events: auto; 
+  cursor: pointer; 
   opacity: 0;
   z-index: 20;
 }
