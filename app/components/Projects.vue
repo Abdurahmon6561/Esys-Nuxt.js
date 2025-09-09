@@ -1,36 +1,39 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import gsap from "gsap";
 
 const cardsRef = ref([]);
+
+const { t } = useI18n();
 
 const cards = [
   {
     image: "/images/man.webp",
     title: "Wonder Comfort",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
-    tags: ["Веб-сайты"],
+    tags: [t("projects.tags.websites")],
   },
   {
     image: "/images/soundBar.webp",
     title: "Sound Bar",
     tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
     link: "https://soundbar010.com/",
-    tags: ["Веб-сайты", "Мобильные приложения"],
+    tags: [ t("projects.tags.websites"), t("projects.tags.mobile_apps")],
   },
   {
     image: "/images/car.webp",
-    title: "Автосалон Asacar",
+    title: t("projects.car_card_title"),
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     link: "https://asacar.uz/",
-    tags: ["Веб-сайты"],
+    tags: [t("projects.tags.websites")],
   },
   {
     image: "/images/bbd.jpg",
     title: "BBD",
     tech: "Laravel, PHP, MySQL, JavaScript",
     link: "https://bbd.uz/",
-    tags: ["Веб-сайты"],
+    tags: [t("projects.tags.websites")],
   },
 ];
 
@@ -67,14 +70,17 @@ onMounted(() => {
         <h3
           class="text-sm text-[#080808] border-2 rounded-full p-2 border-[#EEE]"
         >
-          Наши проекты
+          {{ t("hero.our_projects") }}
         </h3>
       </div>
       <div>
-        <h2 class="md:text-5xl text-2xl text-[#080808] font-medium text-center mt-5">
-          Создаём цифровые продукты, которые <br />
-          выделяют вас на рынке и приводят клиентов
-        </h2>
+        <div class="flex justify-center">
+          <h2
+            class="md:text-5xl text-2xl text-[#080808] font-medium text-center mt-5 md:w-[1070px]"
+          >
+            {{ t("projects.title") }}
+          </h2>
+        </div>
         <div class="flex flex-wrap justify-center gap-[32px] mt-12">
           <!-- Cards -->
           <div
@@ -105,59 +111,60 @@ onMounted(() => {
 
             <!-- Main button -->
             <a :href="card.link" target="_blank">
-            <button
-              class="absolute bottom-6 left-[20px] right-[20px] backdrop-blur-md bg-white/30 rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between hover:bg-white/40 transition"
-            >
-              <div class="text-left">
-                <h3
-                  :class="[
-                    'md:text-[24px]',
-                    'font-medium',
-                    i === 1 ? 'text-black' : 'text-white',
-                  ]"
-                >
-                  {{ card.title }}
-                </h3>
-                <p
-                  :class="[
-                    'md:text-[14px]',
-                    i === 1 ? 'text-black' : 'text-white',
-                  ]"
-                >
-                  {{ card.tech }}
-                </p>
-              </div>
-              <!-- why in this color white in svg don't works ? -->
-              <div
-                class="flex items-center justify-center md:w-12 md:h-12 w-[30px] h-[30px] rounded-xl border-2 border-gray-100"
+              <button
+                class="absolute bottom-6 left-[20px] right-[20px] backdrop-blur-md bg-white/30 rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between hover:bg-white/40 transition"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <div class="text-left">
+                  <h3
+                    :class="[
+                      'md:text-[24px]',
+                      'font-medium',
+                      i === 1 ? 'text-black' : 'text-white',
+                    ]"
+                  >
+                    {{ card.title }}
+                  </h3>
+                  <p
+                    :class="[
+                      'md:text-[14px]',
+                      i === 1 ? 'text-black' : 'text-white',
+                    ]"
+                  >
+                    {{ card.tech }}
+                  </p>
+                </div>
+                <!-- why in this color white in svg don't works ? -->
+                <div
+                  class="flex items-center justify-center md:w-12 md:h-12 w-[30px] h-[30px] rounded-xl border-2 border-gray-100"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </button>
             </a>
-
           </div>
         </div>
       </div>
       <div class="flex justify-center items-center mt-12">
-        <button
+        <NuxtLink>
+          <button
           class="px-5 text-[#080808] border-2 rounded-full p-2 border-[#EEE] font-medium"
-        >
-          Больше проектов
+          >
+          {{ t("projects.more_projects") }}
         </button>
+      </NuxtLink>
       </div>
     </div>
   </div>

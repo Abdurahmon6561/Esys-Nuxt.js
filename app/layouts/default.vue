@@ -1,46 +1,30 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 const open = ref(false);
 const menuOpen = ref(false);
-const locale = ref("ru");
 const dropdownRef = ref(null);
+const { locale, locales, setLocale, t } = useI18n();
+const localePath = useLocalePath();
 
-const languages = [
-  { label: "ru", label: "Ру" },
-  { label: "uz", label: "Uz" },
-  { label: "en", label: "En" },
-];
-
-const headerScrolled = ref(false);
-
-onMounted(async () => {
-  if (process.client) {
-    const { gsap } = await import("gsap");
-    const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Trigger when Hero is passed
-    ScrollTrigger.create({
-      trigger: ".hero-section",
-      start: "bottom top", // when bottom of Hero hits top of viewport
-      onEnter: () => (headerScrolled.value = true),
-      onLeaveBack: () => (headerScrolled.value = false),
-    });
-  }
+const currentLocaleName = computed(() => {
+  const lang = locales.value.find((l) => l.code === locale.value);
+  return lang ? lang.name : locale.value;
 });
 
-const switchLocale = (label) => {
-  locale.value = label;
+const switchLocale = (code) => {
+  setLocale(code);
   if (process.client) {
-    localStorage.setItem("locale", label);
+    const lang = locales.value.find((l) => l.code === code);
+    if (lang) localStorage.setItem("locale", lang.code);
   }
   open.value = false;
   menuOpen.value = false;
 };
 
 let smoother = null;
+
 const scrollToSection = (id) => {
   const el = document.getElementById(id);
   if (el && smoother) {
@@ -48,30 +32,32 @@ const scrollToSection = (id) => {
   }
 };
 
+const headerScrolled = ref(false);
+
+const handleClickOutside = (e) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+    open.value = false;
+  }
+};
+
 onMounted(async () => {
   if (process.client) {
-    // Initialize locale from localStorage
+    // Load saved locale
     const saved = localStorage.getItem("locale");
-    if (saved) locale.value = saved;
-
-    // Click outside handler for dropdown
-    const handleClickOutside = (e) => {
-      if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
-        open.value = false;
-      }
-    };
-
+    if (saved) setLocale(saved); // Use setLocale instead of directly setting locale.value
+    
+    // Add click outside listener
     window.addEventListener("click", handleClickOutside);
-
+    
     // Dynamic import GSAP and plugins
     const { gsap } = await import("gsap");
     const { ScrollTrigger } = await import("gsap/ScrollTrigger");
     const { ScrollSmoother } = await import("gsap/ScrollSmoother");
-
+    
     // Register GSAP plugins
     gsap.registerPlugin(ScrollTrigger);
     gsap.registerPlugin(ScrollSmoother);
-
+    
     // Initialize ScrollSmoother
     smoother = ScrollSmoother.create({
       wrapper: "#smooth-wrapper",
@@ -79,9 +65,16 @@ onMounted(async () => {
       smooth: 1.5,
       effects: true,
     });
-
     smoother.effects("header", { speed: 1, lag: 0 });
-
+    
+    // Create ScrollTrigger for header
+    ScrollTrigger.create({
+      trigger: ".hero-section",
+      start: "bottom top",
+      onEnter: () => (headerScrolled.value = true),
+      onLeaveBack: () => (headerScrolled.value = false),
+    });
+    
     // Animate header on mount
     gsap.fromTo(
       "header",
@@ -102,11 +95,9 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (process.client) {
     window.removeEventListener("click", handleClickOutside);
-
     if (smoother) {
       smoother.kill();
     }
-
     // Clean up ScrollTrigger instances
     if (window.ScrollTrigger) {
       window.ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -121,14 +112,14 @@ onBeforeUnmount(() => {
       :class="[
         'fixed top-0 left-0 w-full z-50 rounded-xl transition-all duration-300',
         headerScrolled
-          ? 'bg-white backdrop-blur-md text-black shadow-lg p-2'
+          ? 'bg-white/70 backdrop-blur-md text-black shadow-lg p-2'
           : 'bg-transparent text-white py-7 px-6',
       ]"
     >
       <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
         <!-- Logo -->
         <NuxtLink
-          to="/"
+          :to="localePath('/')"
           class="transition-transform duration-300 hover:scale-105"
         >
           <img
@@ -138,7 +129,7 @@ onBeforeUnmount(() => {
             :class="headerScrolled ? 'invert' : ''"
           />
         </NuxtLink>
-
+        
         <!-- Desktop Nav -->
         <nav>
           <ul class="md:flex hidden gap-8 font-medium">
@@ -152,12 +143,12 @@ onBeforeUnmount(() => {
                     : 'text-white after:bg-white'
                 "
               >
-                Компания
+                {{ t("header.company") }}
               </NuxtLink>
             </li>
             <li>
               <NuxtLink
-                to="/project"
+                :to="localePath('/projects')"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
                   headerScrolled
@@ -165,7 +156,7 @@ onBeforeUnmount(() => {
                     : 'text-white after:bg-white'
                 "
               >
-                Проекты
+                {{ t("header.projects") }}
               </NuxtLink>
             </li>
             <li>
@@ -178,12 +169,12 @@ onBeforeUnmount(() => {
                     : 'text-white after:bg-white'
                 "
               >
-                Блог
+                {{ t("header.blog") }}
               </NuxtLink>
             </li>
           </ul>
         </nav>
-
+        
         <!-- Desktop Locale Dropdown -->
         <div
           class="relative hidden md:block"
@@ -207,7 +198,7 @@ onBeforeUnmount(() => {
               class="w-[22px]"
               :class="headerScrolled ? 'invert' : ''"
             />
-            <span class="ml-1 text-[14px]">{{ locale }}</span>
+            <span class="ml-1 text-[14px]">{{ currentLocaleName }}</span>
             <img
               src="/images/arrow-down.webp"
               alt="arrow"
@@ -215,7 +206,7 @@ onBeforeUnmount(() => {
               class="w-4 transition-transform duration-200"
             />
           </button>
-
+          
           <!-- Dropdown -->
           <Transition
             enter-active-class="transition ease-out duration-200"
@@ -236,15 +227,17 @@ onBeforeUnmount(() => {
             >
               <ul>
                 <li
-                  v-for="lang in languages.filter((l) => l.label !== locale)"
-                  :key="lang.label"
-                  @click="switchLocale(lang.label)"
+                  v-for="lang in locales.filter(
+                    (l) => l.name !== currentLocaleName
+                  )"
+                  :key="lang.code"
+                  @click="switchLocale(lang.code)"
                   :class="[
                     headerScrolled ? 'hover:bg-gray-200' : 'hover:bg-gray-400',
                   ]"
                   class="gap-2 px-4 py-2 font-medium cursor-pointer text-center transition-colors duration-200"
                 >
-                  <span class="text-[14px] text-center">{{ lang.label }}</span>
+                  <span class="text-[14px]">{{ lang.name }}</span>
                 </li>
               </ul>
             </div>
@@ -252,14 +245,13 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </header>
-
+    
     <div id="smooth-content" class="flex flex-col md:p-6 p-3 bg-white">
       <div class="w-full top-0 left-0 right-0"></div>
-
       <main class="min-h-screen">
         <slot />
       </main>
-
+      
       <footer>
         <div class="px-10 py-10 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl p-6">
@@ -304,44 +296,41 @@ onBeforeUnmount(() => {
             <div class="md:px-10 md:py-[100px] p-8 rounded-xl">
               <div class="md:flex justify-between items-center gap-4 mb-[90px]">
                 <NuxtLink
-                  to="/"
+                  :to="localePath('/')"
                   class="transition-transform duration-300 hover:scale-105"
                 >
                   <img src="/images/footer-logo.svg" alt="logo" />
                 </NuxtLink>
-
                 <div
                   class="md:flex grid grid-cols-1 md:gap-5 mt-5 md:mt-0 gap-3"
                 >
                   <NuxtLink
-                    to="/"
+                    :to="localePath('index')"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Главная</NuxtLink
+                    >{{ t("footer.home") }}</NuxtLink
                   >
                   <NuxtLink
                     to="#"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Компания</NuxtLink
+                    >{{ t("footer.company") }}</NuxtLink
                   >
                   <NuxtLink
-                    href="#"
-                    @click.prevent="scrollToSection('projects')"
+                    :to="localePath('/projects')"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                   >
-                    Проекты
+                    {{ t("footer.projects") }}
                   </NuxtLink>
                   <NuxtLink
                     to="#"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Блог</NuxtLink
+                    >{{ t("footer.blog") }}</NuxtLink
                   >
                   <NuxtLink
                     to="#"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >Связь</NuxtLink
+                    >{{ t("footer.contact") }}</NuxtLink
                   >
                 </div>
-
                 <div class="flex gap-2 mt-5 md:mt-0">
                   <!-- Facebook -->
                   <a
@@ -355,7 +344,6 @@ onBeforeUnmount(() => {
                       class="h-4 w-4 transition-all duration-300 group-hover:invert group-hover:scale-125"
                     />
                   </a>
-
                   <!-- Instagram -->
                   <a
                     href="https://www.instagram.com/esysuz/"
@@ -368,7 +356,6 @@ onBeforeUnmount(() => {
                       class="h-4 w-4 transition-all duration-300 group-hover:invert group-hover:scale-125"
                     />
                   </a>
-
                   <!-- Telegram -->
                   <a
                     href="https://t.me/esys_uz"
@@ -390,7 +377,7 @@ onBeforeUnmount(() => {
                 class="flex flex-col md:flex-row justify-between mt-6 items-center"
               >
                 <p class="text-[14px] text-[#080808]">
-                  2025 © Evolution Systems — Все права защищены.
+                  2025 © Evolution Systems — {{ t("footer.security") }}.
                 </p>
                 <p
                   class="font-semibold text-[14px] text-[#080808] flex items-center gap-1 text-center"

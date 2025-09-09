@@ -1,4 +1,8 @@
-<script setup></script>
+<script setup>
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+</script>
 
 <template>
   <div class="md:flex justify-center gap-[43px] p-10 mt-[88px] mb-[88px]">
@@ -11,19 +15,21 @@
     </div>
 
     <div>
-      <h1 class="md:text-[62px] font-medium text-center leading-[67px]">
-        Технологии, которые <br />
-        работают на результат
-      </h1>
+      <div class="flex justify-center">
+        <h1
+          class="md:text-[62px] font-medium text-center leading-[67px] md:w-[712px]"
+        >
+          {{ t("technologies.title") }}
+        </h1>
+      </div>
       <p class="w-[617px] md:text-[27px] font-normal mt-8 text-center">
-        Проектируем и запускаем IT-системы, которые упрощают процессы и ускоряют
-        рост компаний.
+        {{ t("technologies.text") }}
       </p>
       <div class="flex justify-center items-center mt-12">
         <button
           class="px-5 hover:bg-[#EEE] text-[#080808] border-2 rounded-full p-2 border-[#EEE] font-medium"
         >
-          Забронируйте звонок
+          {{ t("technologies.book_call") }}
         </button>
       </div>
     </div>

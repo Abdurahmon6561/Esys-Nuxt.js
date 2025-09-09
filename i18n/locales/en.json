@@ -1,0 +1,54 @@
+{
+  "header": {
+    "company": "Company",
+    "projects": "Projects",
+    "blog": "Blog"
+  },
+  "hero": {
+    "title": "Digital solutions that help your business grow faster",
+    "our_projects": "Our projects",
+    "contact": "Contact"
+  },
+  "second_hero": {
+    "title": "Discover our projects",
+    "btns": {
+      "all": "All",
+      "websites": "Websites",
+      "apps": "Applications",
+      "crm": "CRM Systems"
+    }
+  },
+  "projects": {
+    "title": "We create digital products that make you stand out in the market and attract clients",
+    "car_card_title": "Asacar Car Dealership",
+    "tags": {
+      "websites": "Websites",
+      "mobile_apps": "Mobile Apps",
+      "crm": "CRM Systems"
+    },
+    "more_projects": "More projects"
+  },
+  "services": {
+    "title": "Services that solve problems",
+    "cards": {
+      "first_title": "We create websites that work for you: from landing pages to online stores. Modern design, usability, and functionality — all turnkey",
+      "second_title": "We develop mobile applications for iOS and Android: convenient, fast, and functional. Everything your business needs — turnkey",
+      "third_title": "We create CRM systems for business management: automation, analytics, and control. Everything for your team’s convenience and company growth"
+    },
+    "order": "Order"
+  },
+  "technologies": {
+    "title": "Technologies that deliver results",
+    "text": "We design and launch IT systems that simplify processes and accelerate company growth.",
+    "book_call": "Book a call"
+  },
+
+  "footer": {
+    "home": "Home",
+    "company": "Company",
+    "projects": "Projects",
+    "blog": "Blog",
+    "contact": "Contact",
+    "security": "All rights reserved"
+  }
+}

@@ -4,6 +4,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 
+const { locale, locales, setLocale, t } = useI18n();
+
 const currentIndex = ref(0);
 const heroSection = ref(null);
 
@@ -183,6 +185,22 @@ onMounted(() => {
     duration: 1,
   });
 
+  gsap.fromTo(
+    ".hero-text",
+    {
+      scale: 0.3,
+      opacity: 0,
+      backgroundPosition: "100% 0", // start with black
+    },
+    {
+      scale: 1,
+      opacity: 1,
+      duration: 4,
+      ease: "power3.out",
+      backgroundPosition: "0% 0", // move gradient like a snake across text
+    }
+  );
+
   window.addEventListener("mousemove", moveSideButtons);
 });
 
@@ -274,14 +292,14 @@ onMounted(() => {
       </button>
 
       <!-- center -->
-      <div class="relative z-10 text-center text-white flex-1">
-        <h1
-          class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text "
-        >
-          Цифровые решения,<br />
-          которые помогают вашему <br />
-          бизнесу расти быстрее
-        </h1>
+      <div class="relative z-10 text-center flex-1">
+        <div class="flex justify-center items-center">
+          <h1
+            class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text md:max-w-[1218px] md:h-[300px]"
+          >
+            {{ $t("hero.title") }}
+          </h1>
+        </div>
 
         <div
           class="mt-8 md:flex justify-center grid md:grid-cols-2 gap-4 hero-btns"
@@ -290,7 +308,7 @@ onMounted(() => {
             @click.prevent="scrollToSection('projects')"
             class="md:px-6 px-6 text-[13px] md:text-[15px] h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
           >
-            Наши проекты
+            {{ $t("hero.our_projects") }}
           </button>
 
           <button
@@ -317,7 +335,7 @@ onMounted(() => {
               class="relative z-10 transition-colors duration-300"
               :class="btn.isHover ? 'text-black' : 'text-white'"
             >
-              {{ btn.text }}
+              {{ $t("hero.contact") }}
             </span>
 
             <img
@@ -417,14 +435,21 @@ onMounted(() => {
   border-top-right-radius: 10px;
   overflow: hidden;
 }
-.hero-text-handmaded{
-  color: var(--E-Sys-color-styles-White, var(--color-white-solid, #FFF));
-text-align: center;
+.hero-text-handmaded {
+  color: var(--E-Sys-color-styles-White, var(--color-white-solid, #fff));
+  text-align: center;
 
-font-size: 92.625px;
-font-style: normal;
-font-weight: var(--font-weight-500, 500);
-line-height: var(--line-height-96, 96px); /* 103.644% */
-letter-spacing: var(--letter-spacing--1_92, -1.92px);
+  font-size: 92.625px;
+  font-style: normal;
+  font-weight: var(--font-weight-500, 500);
+  line-height: var(--line-height-96, 96px); /* 103.644% */
+  letter-spacing: var(--letter-spacing--1_92, -1.92px);
+}
+.hero-text {
+  color: transparent;
+  background: linear-gradient(90deg, white 50%, black 50%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 </style>

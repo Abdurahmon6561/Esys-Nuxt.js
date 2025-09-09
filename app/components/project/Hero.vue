@@ -4,13 +4,15 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 
+const { t } = useI18n();
+
 const heroSection = ref(null);
 const bottomButton = ref(null);
 
 let bottomInitialX = 0;
 const proximityThreshold = 100;
 
-const buttonTexts = ["Все", "Веб-сайты", "Приложения", "CRM-системы"];
+const buttonTexts = [t("second_hero.btns.all"), t("second_hero.btns.websites"), t("second_hero.btns.apps"), t("second_hero.btns.crm")];
 
 const buttons = reactive(
   buttonTexts.map((text) => ({
@@ -138,6 +140,22 @@ onMounted(() => {
     duration: 1,
   });
 
+  gsap.fromTo(
+  ".hero-text",
+  {
+    scale: 0.3,
+    opacity: 0,
+    backgroundPosition: "100% 0", // start with black
+  },
+  {
+    scale: 1,
+    opacity: 1,
+    duration: 4,
+    ease: "power3.out",
+    backgroundPosition: "0% 0", // move gradient like a snake across text
+  }
+);
+
   window.addEventListener("mousemove", moveBottomButton);
 });
 
@@ -164,12 +182,13 @@ onMounted(() => {
   >
     <!-- Center Content -->
     <div class="relative z-10 text-center text-white flex-1">
-      <h1
-        class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text"
-      >
-        Откройте для себя <br />
-        наши проекты
-      </h1>
+      <div class="flex justify-center items-center">
+        <h1
+          class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text md:w-[820px] md:h-[300px]"
+        >
+          {{ $t("second_hero.title") }}
+        </h1>
+      </div>
 
       <div
         class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
@@ -190,16 +209,8 @@ onMounted(() => {
               top: btn.yPos,
               left: btn.xPos,
               transform: 'translate(-50%, -50%)',
-              width: isActive(index)
-                ? '400px'
-                : btn.isHover
-                ? '400px'
-                : '0px',
-              height: isActive(index)
-                ? '400px'
-                : btn.isHover
-                ? '400px'
-                : '0px',
+              width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+              height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
             }"
           ></span>
 
@@ -224,7 +235,7 @@ onMounted(() => {
     <button
       @click="scrollDown"
       ref="bottomButton"
-      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center"
+      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex"
     >
       <img src="/images/arrow-down.png" alt="arrow" />
       <img
@@ -236,3 +247,12 @@ onMounted(() => {
   </section>
 </template>
 
+<style scoped>
+.hero-text {
+  color: transparent;
+  background: linear-gradient(90deg, white 50%, black 50%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+</style>

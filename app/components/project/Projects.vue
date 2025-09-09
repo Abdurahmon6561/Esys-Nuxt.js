@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const cardsRef = ref([]);
 
@@ -9,28 +12,28 @@ const cards = [
     image: "/images/man.webp",
     title: "Wonder Comfort",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
-    tags: ["Веб-сайты"],
+    tags: [t("projects.tags.websites")],
   },
   {
     image: "/images/soundBar.webp",
     title: "Sound Bar",
     tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
     link: "https://soundbar010.com/",
-    tags: ["Веб-сайты", "Мобильные приложения"],
+    tags: [ t("projects.tags.websites"), t("projects.tags.mobile_apps")],
   },
   {
     image: "/images/car.webp",
-    title: "Автосалон Asacar",
+    title: t("projects.car_card_title"),
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     link: "https://asacar.uz/",
-    tags: ["Веб-сайты"],
+    tags: [t("projects.tags.websites")],
   },
   {
     image: "/images/bbd.jpg",
     title: "BBD",
     tech: "Laravel, PHP, MySQL, JavaScript",
     link: "https://bbd.uz/",
-    tags: ["Веб-сайты"],
+    tags: [t("projects.tags.websites")],
   },
 ];
 
@@ -144,7 +147,7 @@ onMounted(() => {
         <button
           class="px-5 text-[#080808] border-2 rounded-full p-2 border-[#EEE] font-medium"
         >
-          Больше проектов
+          {{ t("projects.more_projects") }}
         </button>
       </div>
     </div>

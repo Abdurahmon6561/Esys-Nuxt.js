@@ -11,7 +11,25 @@ export default defineNuxtConfig({
     "@fortawesome/fontawesome-svg-core/styles.css",
   ],
 
-  modules: ["@nuxtjs/tailwindcss"],
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n"],
+
+  i18n: {
+    lazy: true,
+    langDir: "locales",
+    strategy: "prefix_except_default",
+    locales: [
+      { code: "en", iso: "en", name: "En", file: "en.json" },
+      { code: "uz", iso: "uz", name: "Uz", file: "uz.json" },
+      { code: "ru", iso: "ru", name: "Ру", file: "ru.json" },
+    ],
+    defaultLocale: "ru",
+    // Add this to redirect root to default locale
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    }
+  },
 
   app: {
     head: {
@@ -21,18 +39,18 @@ export default defineNuxtConfig({
       },
       meta: [{ name: "robots", content: "noindex" }],
     },
-    pageTransition: { 
-      name: 'page', 
-      mode: 'out-in' 
+    pageTransition: {
+      name: "page",
+      mode: "out-in",
     },
-    layoutTransition: { 
-      name: 'layout', 
-      mode: 'out-in' 
-    }
+    layoutTransition: {
+      name: "layout",
+      mode: "out-in",
+    },
   },
 
   // Add build transpile for GSAP
   build: {
-    transpile: ['gsap']
-  }
+    transpile: ["gsap"],
+  },
 });

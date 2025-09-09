@@ -1,0 +1,53 @@
+{
+  "header": {
+    "company": "Kompaniya",
+    "projects": "Loyihalar",
+    "blog": "Blog"
+  },
+  "hero": {
+    "title": "Biznesingizni tezroq o‘sishiga yordam beradigan raqamli yechimlar",
+    "our_projects": "Bizning loyihalar",
+    "contact": "Bog‘lanish"
+  },
+  "second_hero": {
+    "title": "Bizning loyihalarimizni kashf eting",
+    "btns": {
+      "all": "Barchasi",
+      "websites": "Veb-saytlar",
+      "apps": "Ilovalar",
+      "crm": "CRM Tizimlar"
+    }
+  },
+  "projects": {
+    "title": "Biz sizni bozorda ajratib ko‘rsatadigan va mijozlarni olib keladigan raqamli mahsulotlar yaratamiz",
+    "car_card_title": "Asacar Avtosalon",
+    "tags": {
+      "websites": "Veb-saytlar",
+      "mobile_apps": "Mobil ilovalar",
+      "crm": "CRM Tizimlar"
+    },
+    "more_projects": "Ko‘proq loyihalar"
+  },
+  "services": {
+    "title": "Muammolarni hal qiladigan xizmatlar",
+    "cards": {
+      "first_title": "Biz siz uchun ishlaydigan saytlar yaratamiz: landing sahifalardan tortib internet-do‘konlargacha. Zamonaviy dizayn, qulaylik va funksionallik — hammasi tayyor holatda",
+      "second_title": "Biz iOS va Android uchun mobil ilovalar ishlab chiqamiz: qulay, tezkor va funksional. Biznesingiz uchun kerakli hamma narsa tayyor holatda",
+      "third_title": "Biznesingizni boshqarish uchun CRM tizimlari yaratamiz: avtomatlashtirish, tahlil va nazorat. Jamoangiz qulayligi va kompaniya o‘sishi uchun hammasi"
+    },
+    "order": "Buyurtma berish"
+  },
+  "technologies": {
+    "title": "Natija beradigan texnologiyalar",
+    "text": "Biz jarayonlarni soddalashtiradigan va kompaniyalar o‘sishini tezlashtiradigan IT tizimlarini loyihalashtiramiz va ishga tushiramiz.",
+    "book_call": "Qo‘ng‘iroqni bron qiling"
+  },
+  "footer": {
+    "home": "Bosh sahifa",
+    "company": "Kompaniya",
+    "projects": "Loyihalar",
+    "blog": "Blog",
+    "contact": "Aloqa",
+    "security": "Barcha huquqlar himoyalangan"
+  }
+}
