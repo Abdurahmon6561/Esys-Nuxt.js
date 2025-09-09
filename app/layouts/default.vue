@@ -1,4 +1,3 @@
-<!-- in this code when i going to other page with NuxtLink this have to be on top page not in middle not anywhere -->
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
@@ -145,7 +144,7 @@ onBeforeUnmount(() => {
           <ul class="md:flex hidden gap-8 font-medium">
             <li>
               <NuxtLink
-                to="/"
+                to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
                   headerScrolled
@@ -171,7 +170,7 @@ onBeforeUnmount(() => {
             </li>
             <li>
               <NuxtLink
-                to="/blog"
+                to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
                   headerScrolled
@@ -320,7 +319,7 @@ onBeforeUnmount(() => {
                     >Главная</NuxtLink
                   >
                   <NuxtLink
-                    to="/company"
+                    to="#"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                     >Компания</NuxtLink
                   >
@@ -332,12 +331,12 @@ onBeforeUnmount(() => {
                     Проекты
                   </NuxtLink>
                   <NuxtLink
-                    to="/blog"
+                    to="#"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                     >Блог</NuxtLink
                   >
                   <NuxtLink
-                    to="/contact"
+                    to="#"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                     >Связь</NuxtLink
                   >
