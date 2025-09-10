@@ -94,7 +94,6 @@ onMounted(async () => {
 
     <div class="flex flex-wrap justify-center gap-[32px] mt-12">
       <!-- Cards -->
-      <!-- Inside v-for loop -->
       <div
         v-for="(card, i) in cards"
         :key="i"
@@ -109,12 +108,32 @@ onMounted(async () => {
 
         <!-- Custom Cursor INSIDE Card (Clickable) -->
         <div class="card-cursor" v-if="card.link" @click="openLink(card.link)">
-          {{ t("projects.view") }}
-          <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="#fff" class="w-6 h-6">
+          <svg
+            class="eye-svg"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Eye outline -->
             <path
-              d="M320 96C239.2 96 174.5 132.8 127.4 176.6C80.6 220.1 49.3 272 34.4 307.7C31.1 315.6 31.1 324.4 34.4 332.3C49.3 368 80.6 420 127.4 463.4C174.5 507.1 239.2 544 320 544C400.8 544 465.5 507.2 512.6 463.4C559.4 419.9 590.7 368 605.6 332.3C608.9 324.4 608.9 315.6 605.6 307.7C590.7 272 559.4 220 512.6 176.6C465.5 132.9 400.8 96 320 96zM176 320C176 240.5 240.5 176 320 176C399.5 176 464 240.5 464 320C464 399.5 399.5 464 320 464C240.5 464 176 399.5 176 320zM320 256C320 291.3 291.3 320 256 320C244.5 320 233.7 317 224.3 311.6C223.3 322.5 224.2 333.7 227.2 344.8C240.9 396 293.6 426.4 344.8 412.7C396 399 426.4 346.3 412.7 295.1C400.5 249.4 357.2 220.3 311.6 224.3C316.9 233.6 320 244.4 320 256z"
+              d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
+              fill="none"
+              stroke="white"
+              stroke-width="4"
             />
-          </svg> -->
+            <!-- Eyeball -->
+            <circle cx="32" cy="32" r="8" fill="white" />
+            <!-- Pupil -->
+            <circle cx="32" cy="32" r="4" fill="black" />
+            <!-- Eyelid -->
+            <rect
+              class="eyelid"
+              x="0"
+              y="0"
+              width="64"
+              height="32"
+              fill="black"
+            />
+          </svg>
         </div>
 
         <!-- Category -->
@@ -182,8 +201,8 @@ onMounted(async () => {
   left: 0;
   top: 0;
   transform: translate(-50%, -50%) scale(0.5);
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.85);
   color: #fff;
@@ -192,8 +211,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto; 
-  cursor: pointer; 
+  pointer-events: auto;
+  cursor: pointer;
   opacity: 0;
   z-index: 20;
 }
@@ -201,6 +220,40 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .card-cursor {
     display: none;
+  }
+}
+
+.eye-svg {
+  width: 30px;
+  height: 30px;
+  animation: blink 2s infinite;
+}
+
+/* Eyelid moves up and down */
+.eyelid {
+  animation: closeEye 2s infinite;
+  transform-origin: top;
+}
+
+@keyframes closeEye {
+  0%,
+  90%,
+  100% {
+    transform: translateY(-32px);
+  }
+  95% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
   }
 }
 </style>
