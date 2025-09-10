@@ -2,6 +2,10 @@
 import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import { gsap } from "gsap";
+import { useRoute } from "vue-router"; // ✅ import route
+
+const route = useRoute(); // ✅ get current route
+
 
 const mobileMenuOpen = ref(false);
 
@@ -79,7 +83,7 @@ onMounted(async () => {
     gsap.fromTo(
       "header",
       { y: -100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, ease: "power2.out" }
+      { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
     );
   }
 });
@@ -129,14 +133,16 @@ onMounted(async () => {
 <template>
   <div id="smooth-wrapper">
     <header
-      :class="[
-        'fixed top-0 left-0 w-full z-50 rounded-xl transition-all duration-300',
-        passedHero
-          ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-2'
-          : hasScrolled
-          ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-2'
-          : 'bg-transparent text-white py-7 px-6',
-      ]"
+  :class="[
+    'fixed top-0 left-0 w-full z-50 transition-all duration-300',
+    route.path.includes('/view')
+      ? 'bg-black/60 backdrop-blur-md text-white shadow-sm p-1 rounded-none'
+      : passedHero
+      ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1 rounded-xl'
+      : hasScrolled
+      ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-1 rounded-xl'
+      : 'bg-transparent text-white py-7 px-6',
+  ]"
     >
       <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
         <!-- Logo -->

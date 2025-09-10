@@ -1,19 +1,23 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router"; // ✅ import router
 import gsap from "gsap";
 
 const cardsRef = ref([]);
 const { t } = useI18n();
+const router = useRouter(); // ✅ init router
 
 const cards = [
   {
+    id: 1,
     image: "/images/man.webp",
     title: "Wonder Comfort",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     tags: [t("projects.tags.websites")],
   },
   {
+    id: 2,
     image: "/images/soundBar.webp",
     title: "Sound Bar",
     tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
@@ -21,6 +25,7 @@ const cards = [
     tags: [t("projects.tags.websites"), t("projects.tags.mobile_apps")],
   },
   {
+    id: 3,
     image: "/images/car.webp",
     title: t("projects.car_card_title"),
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
@@ -28,6 +33,7 @@ const cards = [
     tags: [t("projects.tags.websites")],
   },
   {
+    id: 4,
     image: "/images/bbd.jpg",
     title: "BBD",
     tech: "Laravel, PHP, MySQL, JavaScript",
@@ -36,37 +42,30 @@ const cards = [
   },
 ];
 
-const openLink = (url) => {
-  window.open(url, "_blank");
+// ✅ when clicking eye
+const openProject = (card) => {
+  localStorage.setItem("selectedProject", JSON.stringify(card)); // save project
+  router.push("/view"); // go to view.vue
 };
 
 onMounted(async () => {
   await nextTick();
 
-  // Animate each card's cursor inside
   cardsRef.value.forEach((card) => {
     const cursor = card.querySelector(".card-cursor");
 
-    // move cursor inside card only
     card.addEventListener("mousemove", (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      gsap.to(cursor, {
-        x,
-        y,
-        duration: 0.2,
-        ease: "power3.out",
-      });
+      gsap.to(cursor, { x, y, duration: 0.2, ease: "power3.out" });
     });
 
-    // show on enter
     card.addEventListener("mouseenter", () => {
       gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
     });
 
-    // hide on leave
     card.addEventListener("mouseleave", () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     });
@@ -106,8 +105,8 @@ onMounted(async () => {
           class="w-full h-full object-cover"
         />
 
-        <!-- Custom Cursor INSIDE Card (Clickable) -->
-        <div class="card-cursor" v-if="card.link" @click="openLink(card.link)">
+        <!-- Eye Cursor -->
+        <div class="card-cursor" @click="openProject(card)">
           <svg
             class="eye-svg"
             viewBox="0 0 64 64"

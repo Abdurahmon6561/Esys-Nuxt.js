@@ -12,7 +12,12 @@ const bottomButton = ref(null);
 let bottomInitialX = 0;
 const proximityThreshold = 100;
 
-const buttonTexts = [t("second_hero.btns.all"), t("second_hero.btns.websites"), t("second_hero.btns.apps"), t("second_hero.btns.crm")];
+const buttonTexts = [
+  t("second_hero.btns.all"),
+  t("second_hero.btns.websites"),
+  t("second_hero.btns.apps"),
+  t("second_hero.btns.crm"),
+];
 
 const buttons = reactive(
   buttonTexts.map((text) => ({
@@ -132,27 +137,45 @@ onMounted(() => {
     opacity: 0,
   });
 
-  gsap.from(".hero-btns", {
+  gsap.from(".hero-btn-1", {
     y: +100,
-    opacity: 0,
+    opacity: -5,
+    duration: 0.8,
+  });
+
+  gsap.from(".hero-btn-2", {
+    y: +100,
+    opacity: -5,
     duration: 1,
   });
 
+  gsap.from(".hero-btn-3", {
+    y: +100,
+    opacity: -5,
+    duration: 1.1,
+  });
+
+  gsap.from(".hero-btn-4", {
+    y: +100,
+    opacity: -5,
+    duration: 1.3,
+  });
+
   gsap.fromTo(
-  ".hero-text",
-  {
-    scale: 0.3,
-    opacity: 0,
-    backgroundPosition: "100% 0", // start with black
-  },
-  {
-    scale: 1,
-    opacity: 1,
-    duration: 3,
-    ease: "power3.out",
-    backgroundPosition: "0% 0", // move gradient like a snake across text
-  }
-);
+    ".hero-text",
+    {
+      scale: 0.3,
+      opacity: 0,
+      backgroundPosition: "100% 0", // start with black
+    },
+    {
+      scale: 1,
+      opacity: 1,
+      duration: 1,
+      ease: "power3.out",
+      backgroundPosition: "0% 0", // move gradient like a snake across text
+    }
+  );
 
   window.addEventListener("mousemove", moveBottomButton);
 });
@@ -181,52 +204,75 @@ onMounted(() => {
     <!-- Center Content -->
     <div class="relative z-10 text-center text-white flex-1">
       <div class="flex justify-center items-center">
-        <h1
-          class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text md:w-[970px] md:h-[300px] hidden md:block "
-          :style="{ height: $i18n.locale === 'uz' ? '300px' : '200px' }"
-        >
-          {{ $t("second_hero.title") }}
-        </h1>
+        <div v-if="$i18n.locale === 'ru'">
+          <h1
+            class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+          >
+            Откройте для себя <br />
+            наши проекты
+          </h1>
+        </div>
+
+        <div v-if="$i18n.locale === 'uz'">
+          <h1
+            class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+          >
+            Bizning loyihalarimizni <br />
+            kashf eting
+          </h1>
+        </div>
+
+        <div v-if="$i18n.locale === 'en'">
+          <h1
+            class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+          >
+            Discover our projects
+          </h1>
+        </div>
       </div>
 
       <div
-        class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4 hero-btns"
+        class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4"
       >
-        <button
-          v-for="(btn, index) in buttons"
-          :key="index"
-          @mouseenter="updatePosition($event, index)"
-          @mousemove="updatePosition($event, index)"
-          @mouseleave="resetPosition(index)"
-          @click="selectButton(index)"
-          class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700"
-        >
-          <!-- expanding circle -->
-          <span
-            class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
-            :style="{
-              top: btn.yPos,
-              left: btn.xPos,
-              transform: 'translate(-50%, -50%)',
-              width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
-              height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
-            }"
-          ></span>
+<button
+  v-for="(btn, index) in buttons"
+  :key="index"
+  :class="[
+    'relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
+    `hero-btn-${index + 1}` // ✅ unique GSAP class
+  ]"
+  @mouseenter="updatePosition($event, index)"
+  @mousemove="updatePosition($event, index)"
+  @mouseleave="resetPosition(index)"
+  @click="selectButton(index)"
+>
+  <!-- expanding circle -->
+  <span
+    class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
+    :style="{
+      top: btn.yPos,
+      left: btn.xPos,
+      transform: 'translate(-50%, -50%)',
+      width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+      height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+    }"
+  ></span>
 
-          <!-- text -->
-          <span
-            class="relative z-10 transition-colors duration-300"
-            :class="
-              isActive(index)
-                ? 'text-black'
-                : btn.isHover
-                ? 'text-black'
-                : 'text-white'
-            "
-          >
-            {{ btn.text }}
-          </span>
-        </button>
+  <!-- text -->
+  <span
+    class="relative z-10 transition-colors duration-300"
+    :class="
+      isActive(index)
+        ? 'text-black'
+        : btn.isHover
+        ? 'text-black'
+        : 'text-white'
+    "
+  >
+    {{ btn.text }}
+  </span>
+</button>
+
       </div>
     </div>
 
@@ -253,10 +299,5 @@ onMounted(() => {
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
-}
-@media (min-width: 768px) {
-  .hero-text {
-    height: 300px;
-  }
 }
 </style>

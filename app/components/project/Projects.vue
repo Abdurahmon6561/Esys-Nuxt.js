@@ -2,8 +2,12 @@
 import { ref, onMounted } from "vue";
 import gsap from "gsap";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router"; // ✅ import router
+
 
 const { t } = useI18n();
+const router = useRouter(); // ✅ init router
+
 
 const cardsRef = ref([]);
 
@@ -37,8 +41,10 @@ const cards = [
   },
 ];
 
-const openLink = (url) => {
-  window.open(url, "_blank");
+// ✅ when clicking eye
+const openProject = (card) => {
+  localStorage.setItem("selectedProject", JSON.stringify(card)); // save project
+  router.push("/view"); // go to view.vue
 };
 
 onMounted(async () => {
@@ -94,38 +100,34 @@ onMounted(async () => {
             />
 
             <!-- Custom Cursor INSIDE Card (Clickable) -->
-            <div
-              class="card-cursor"
-              v-if="card.link"
-              @click="openLink(card.link)"
-            >
-              <svg
-                class="eye-svg"
-                viewBox="0 0 64 64"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <!-- Eye outline -->
-                <path
-                  d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
-                  fill="none"
-                  stroke="white"
-                  stroke-width="4"
-                />
-                <!-- Eyeball -->
-                <circle cx="32" cy="32" r="8" fill="white" />
-                <!-- Pupil -->
-                <circle cx="32" cy="32" r="4" fill="black" />
-                <!-- Eyelid -->
-                <rect
-                  class="eyelid"
-                  x="0"
-                  y="0"
-                  width="64"
-                  height="32"
-                  fill="black"
-                />
-              </svg>
-            </div>
+            <div class="card-cursor" @click="openProject(card)">
+          <svg
+            class="eye-svg"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Eye outline -->
+            <path
+              d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
+              fill="none"
+              stroke="white"
+              stroke-width="4"
+            />
+            <!-- Eyeball -->
+            <circle cx="32" cy="32" r="8" fill="white" />
+            <!-- Pupil -->
+            <circle cx="32" cy="32" r="4" fill="black" />
+            <!-- Eyelid -->
+            <rect
+              class="eyelid"
+              x="0"
+              y="0"
+              width="64"
+              height="32"
+              fill="black"
+            />
+          </svg>
+        </div>
 
             <!-- Category -->
             <div class="absolute top-3 left-3 flex gap-1 z-10">
