@@ -6,7 +6,6 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 
-
 const mobileMenuOpen = ref(false);
 
 const open = ref(false);
@@ -118,12 +117,12 @@ onMounted(async () => {
     });
 
     btn.addEventListener("mouseenter", () => {
-      btn.classList.add("opacity-60"); // 👈 make button 60% opacity
+      btn.classList.add("brightness-75"); // darker effect
       gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
     });
 
     btn.addEventListener("mouseleave", () => {
-      btn.classList.remove("opacity-60"); // 👈 reset button opacity
+      btn.classList.remove("brightness-75");
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     });
   });
@@ -133,16 +132,16 @@ onMounted(async () => {
 <template>
   <div id="smooth-wrapper">
     <header
-  :class="[
-    'fixed top-0 left-0 w-full z-50 transition-all duration-300',
-    route.path.includes('/view')
-      ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1'
-      : passedHero
-      ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1 rounded-xl'
-      : hasScrolled
-      ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-1 rounded-xl'
-      : 'bg-transparent text-white py-7 px-6',
-  ]"
+      :class="[
+        'fixed top-0 left-0 w-full z-50 transition-all duration-300',
+        route.path.includes('/view')
+          ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1'
+          : passedHero
+          ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1 rounded-xl'
+          : hasScrolled
+          ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-1 rounded-xl'
+          : 'bg-transparent text-white py-7 px-6',
+      ]"
     >
       <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
         <!-- Logo -->
@@ -230,9 +229,7 @@ onMounted(async () => {
               alt="locale"
               class="w-[22px]"
               :class="[
-                passedHero || route.path.includes('/view')
-                  ? 'invert'
-                  : '',
+                passedHero || route.path.includes('/view') ? 'invert' : '',
               ]"
             />
             <span class="ml-1 text-[14px]">{{ currentLocaleName }}</span>
@@ -242,9 +239,7 @@ onMounted(async () => {
               class="w-4 transition-transform duration-200"
               :class="[
                 open ? 'rotate-180' : '',
-                passedHero || route.path.includes('/view')
-                  ? 'invert'
-                  : '',
+                passedHero || route.path.includes('/view') ? 'invert' : '',
               ]"
             />
           </button>
@@ -275,7 +270,7 @@ onMounted(async () => {
                   :key="lang.code"
                   @click="switchLocale(lang.code)"
                   :class="[
-                    passedHero ? 'hover:bg-gray-200' : 'hover:bg-gray-200',
+                    passedHero ? 'hover:bg-gray-200' : 'hover:bg-gray-400',
                   ]"
                   class="gap-2 px-4 py-2 font-medium cursor-pointer text-center transition-colors duration-200"
                 >
@@ -553,7 +548,7 @@ onMounted(async () => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: black; /* 👈 always black */
+  background: black;
   display: flex;
   align-items: center;
   justify-content: center;
