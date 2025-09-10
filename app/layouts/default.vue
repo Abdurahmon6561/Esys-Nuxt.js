@@ -136,7 +136,7 @@ onMounted(async () => {
   :class="[
     'fixed top-0 left-0 w-full z-50 transition-all duration-300',
     route.path.includes('/view')
-      ? 'bg-black/60 backdrop-blur-md text-white shadow-sm p-1 rounded-none'
+      ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1'
       : passedHero
       ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1 rounded-xl'
       : hasScrolled
@@ -150,7 +150,7 @@ onMounted(async () => {
           :to="localePath('/')"
           class="transition-transform duration-300 hover:scale-105 w-[94px]"
         >
-          <div v-if="passedHero">
+          <div v-if="passedHero || route.path.includes('/view')">
             <img src="/images/footer-logo.svg" alt="logo" class="h-8" />
           </div>
           <div v-else>
@@ -171,7 +171,7 @@ onMounted(async () => {
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  passedHero
+                  passedHero || route.path.includes('/view')
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -184,7 +184,7 @@ onMounted(async () => {
                 :to="localePath('/projects')"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  passedHero
+                  passedHero || route.path.includes('/view')
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -197,7 +197,7 @@ onMounted(async () => {
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  passedHero
+                  passedHero || route.path.includes('/view')
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -220,7 +220,7 @@ onMounted(async () => {
             style="padding: 8px 10px"
             :class="[
               'flex items-center justify-center gap-1 border-2 rounded-full cursor-pointer transition-all duration-300',
-              passedHero
+              passedHero || route.path.includes('/view')
                 ? 'text-black border-gray-400 hover:border-black hover:bg-black/10'
                 : 'text-white border-[#8198a6] hover:border-white hover:bg-white/10',
             ]"
@@ -229,14 +229,23 @@ onMounted(async () => {
               src="/images/locale.svg"
               alt="locale"
               class="w-[22px]"
-              :class="passedHero ? 'invert' : ''"
+              :class="[
+                passedHero || route.path.includes('/view')
+                  ? 'invert'
+                  : '',
+              ]"
             />
             <span class="ml-1 text-[14px]">{{ currentLocaleName }}</span>
             <img
               src="/images/arrow-down.webp"
               alt="arrow"
-              :class="[{ 'rotate-180': open }, passedHero ? 'invert' : '']"
               class="w-4 transition-transform duration-200"
+              :class="[
+                open ? 'rotate-180' : '',
+                passedHero || route.path.includes('/view')
+                  ? 'invert'
+                  : '',
+              ]"
             />
           </button>
 
@@ -253,7 +262,7 @@ onMounted(async () => {
               v-if="open"
               :class="[
                 'absolute right-0 mt-2 shadow-lg rounded-lg overflow-hidden z-50 w-full backdrop-blur-md',
-                passedHero
+                passedHero || route.path.includes('/view')
                   ? 'bg-white/90 text-black'
                   : 'bg-white/30 text-white',
               ]"
@@ -266,7 +275,7 @@ onMounted(async () => {
                   :key="lang.code"
                   @click="switchLocale(lang.code)"
                   :class="[
-                    passedHero ? 'hover:bg-gray-200' : 'hover:bg-gray-400',
+                    passedHero ? 'hover:bg-gray-200' : 'hover:bg-gray-200',
                   ]"
                   class="gap-2 px-4 py-2 font-medium cursor-pointer text-center transition-colors duration-200"
                 >
