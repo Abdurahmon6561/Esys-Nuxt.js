@@ -175,8 +175,6 @@ onMounted(() => {
 
   gsap.from(".hero-text", {
     opacity: 0,
-    duration: 1,
-    scale: 0.3,
   });
 
   gsap.from(".hero-btns", {
@@ -189,13 +187,12 @@ onMounted(() => {
     ".hero-text",
     {
       scale: 0.3,
-      opacity: 0,
       backgroundPosition: "100% 0", // start with black
     },
     {
       scale: 1,
       opacity: 1,
-      duration: 4,
+      duration: 3,
       ease: "power3.out",
       backgroundPosition: "0% 0", // move gradient like a snake across text
     }
@@ -295,7 +292,7 @@ onMounted(() => {
       <div class="relative z-10 text-center flex-1">
         <div class="flex justify-center items-center">
           <h1
-            class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text md:max-w-[1218px] md:h-[300px]"
+            class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text"
           >
             {{ $t("hero.title") }}
           </h1>

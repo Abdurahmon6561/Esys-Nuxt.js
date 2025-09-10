@@ -1,64 +1,15 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
-import gsap from "gsap";
+import { gsap } from "gsap";
 
-const transitioning = ref(true); // show overlay initially
-const router = useRouter();
-
-function playIntro() {
-  // On initial load
-  gsap.to(".layer-1", { y: "-100vh", delay: 0.5, duration: 1 });
-  gsap.to(".layer-2", { y: "-100vh", delay: 0.7, duration: 1 });
-  gsap.to(".layer-3", { y: "-100vh", delay: 0.9, duration: 1 });
-  gsap.to(".overlay", {
-    y: "-100vh",
-    delay: 1.5,
-    duration: 1,
-    onComplete: () => (transitioning.value = false),
-  });
-}
-
-function playPageTransition(to, from, next) {
-  transitioning.value = true;
-
-  // Reset overlay (cover screen instantly)
-  gsap.set(".overlay", { y: 0 });
-  gsap.set(".layer", { y: "0" });
-
-  // Allow Nuxt to load the next page immediately
-  next();
-
-  // Play overlay exit animation
-  gsap.to(".layer-1", { y: "-100vh", delay: 0.5, duration: 1 });
-  gsap.to(".layer-2", { y: "-100vh", delay: 0.7, duration: 1 });
-  gsap.to(".layer-3", { y: "-100vh", delay: 0.9, duration: 1 });
-  gsap.to(".overlay", {
-    y: "-100vh",
-    delay: 1.5,
-    duration: 1,
-    onComplete: () => (transitioning.value = false),
-  });
-}
-
-onMounted(() => {
-  playIntro();
-
-  // Hook into Nuxt router
-  router.beforeEach((to, from, next) => {
-    if (from.fullPath !== to.fullPath) {
-      playPageTransition(to, from, next);
-    } else {
-      next();
-    }
-  });
-});
+const mobileMenuOpen = ref(false);
 
 const open = ref(false);
 const menuOpen = ref(false);
 const dropdownRef = ref(null);
 const { locale, locales, setLocale, t } = useI18n();
+const cardsRef = ref([]);
 const localePath = useLocalePath();
 
 const currentLocaleName = computed(() => {
@@ -78,14 +29,9 @@ const switchLocale = (code) => {
 
 let smoother = null;
 
-const scrollToSection = (id) => {
-  const el = document.getElementById(id);
-  if (el && smoother) {
-    smoother.scrollTo(el, true, "top top");
-  }
-};
-
-const headerScrolled = ref(false);
+// 👇 Two states instead of one
+const hasScrolled = ref(false); // user started scrolling
+const passedHero = ref(false); // hero section completely passed
 
 const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
@@ -95,52 +41,45 @@ const handleClickOutside = (e) => {
 
 onMounted(async () => {
   if (process.client) {
-    // Load saved locale
     const saved = localStorage.getItem("locale");
-    if (saved) setLocale(saved); // Use setLocale instead of directly setting locale.value
+    if (saved) setLocale(saved);
 
-    // Add click outside listener
     window.addEventListener("click", handleClickOutside);
 
-    // Dynamic import GSAP and plugins
     const { gsap } = await import("gsap");
     const { ScrollTrigger } = await import("gsap/ScrollTrigger");
     const { ScrollSmoother } = await import("gsap/ScrollSmoother");
 
-    // Register GSAP plugins
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.registerPlugin(ScrollSmoother);
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
-    // Initialize ScrollSmoother
     smoother = ScrollSmoother.create({
       wrapper: "#smooth-wrapper",
       content: "#smooth-content",
       smooth: 1.5,
       effects: true,
     });
+
     smoother.effects("header", { speed: 1, lag: 0 });
 
-    // Create ScrollTrigger for header
+    // ✅ Detect if user has started scrolling
+    ScrollTrigger.create({
+      start: 1,
+      onEnter: () => (hasScrolled.value = true),
+      onLeaveBack: () => (hasScrolled.value = false),
+    });
+
+    // ✅ Detect if hero section is fully passed
     ScrollTrigger.create({
       trigger: ".hero-section",
       start: "bottom top",
-      onEnter: () => (headerScrolled.value = true),
-      onLeaveBack: () => (headerScrolled.value = false),
+      onEnter: () => (passedHero.value = true),
+      onLeaveBack: () => (passedHero.value = false),
     });
 
-    // Animate header on mount
     gsap.fromTo(
       "header",
-      {
-        y: -100,
-        opacity: 0,
-      },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: "power2.out",
-      }
+      { y: -100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.2, ease: "power2.out" }
     );
   }
 });
@@ -148,14 +87,42 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (process.client) {
     window.removeEventListener("click", handleClickOutside);
-    if (smoother) {
-      smoother.kill();
-    }
-    // Clean up ScrollTrigger instances
+    if (smoother) smoother.kill();
     if (window.ScrollTrigger) {
-      window.ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      window.ScrollTrigger.getAll().forEach((t) => t.kill());
     }
   }
+});
+
+onMounted(async () => {
+  await nextTick();
+
+  cardsRef.value.forEach((btn) => {
+    const cursor = btn.querySelector(".card-cursor");
+
+    btn.addEventListener("mousemove", (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      gsap.to(cursor, {
+        x,
+        y,
+        duration: 0.2,
+        ease: "power3.out",
+      });
+    });
+
+    btn.addEventListener("mouseenter", () => {
+      btn.classList.add("opacity-60"); // 👈 make button 60% opacity
+      gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      btn.classList.remove("opacity-60"); // 👈 reset button opacity
+      gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
+    });
+  });
 });
 </script>
 
@@ -164,8 +131,10 @@ onBeforeUnmount(() => {
     <header
       :class="[
         'fixed top-0 left-0 w-full z-50 rounded-xl transition-all duration-300',
-        headerScrolled
-          ? 'bg-white/70 backdrop-blur-md text-black shadow-lg p-2'
+        passedHero
+          ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-2'
+          : hasScrolled
+          ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-2'
           : 'bg-transparent text-white py-7 px-6',
       ]"
     >
@@ -173,14 +142,19 @@ onBeforeUnmount(() => {
         <!-- Logo -->
         <NuxtLink
           :to="localePath('/')"
-          class="transition-transform duration-300 hover:scale-105"
+          class="transition-transform duration-300 hover:scale-105 w-[94px]"
         >
-          <img
-            src="/images/logo.webp"
-            alt="logo"
-            class="h-8"
-            :class="headerScrolled ? 'invert' : ''"
-          />
+          <div v-if="passedHero">
+            <img src="/images/footer-logo.svg" alt="logo" class="h-8" />
+          </div>
+          <div v-else>
+            <img
+              src="/images/logo.webp"
+              alt="logo"
+              class="h-8"
+              :class="passedHero ? 'invert' : ''"
+            />
+          </div>
         </NuxtLink>
 
         <!-- Desktop Nav -->
@@ -191,7 +165,7 @@ onBeforeUnmount(() => {
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  headerScrolled
+                  passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -204,7 +178,7 @@ onBeforeUnmount(() => {
                 :to="localePath('/projects')"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  headerScrolled
+                  passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -217,7 +191,7 @@ onBeforeUnmount(() => {
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  headerScrolled
+                  passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -240,7 +214,7 @@ onBeforeUnmount(() => {
             style="padding: 8px 10px"
             :class="[
               'flex items-center justify-center gap-1 border-2 rounded-full cursor-pointer transition-all duration-300',
-              headerScrolled
+              passedHero
                 ? 'text-black border-gray-400 hover:border-black hover:bg-black/10'
                 : 'text-white border-[#8198a6] hover:border-white hover:bg-white/10',
             ]"
@@ -249,13 +223,13 @@ onBeforeUnmount(() => {
               src="/images/locale.svg"
               alt="locale"
               class="w-[22px]"
-              :class="headerScrolled ? 'invert' : ''"
+              :class="passedHero ? 'invert' : ''"
             />
             <span class="ml-1 text-[14px]">{{ currentLocaleName }}</span>
             <img
               src="/images/arrow-down.webp"
               alt="arrow"
-              :class="[{ 'rotate-180': open }, headerScrolled ? 'invert' : '']"
+              :class="[{ 'rotate-180': open }, passedHero ? 'invert' : '']"
               class="w-4 transition-transform duration-200"
             />
           </button>
@@ -273,7 +247,7 @@ onBeforeUnmount(() => {
               v-if="open"
               :class="[
                 'absolute right-0 mt-2 shadow-lg rounded-lg overflow-hidden z-50 w-full backdrop-blur-md',
-                headerScrolled
+                passedHero
                   ? 'bg-white/90 text-black'
                   : 'bg-white/30 text-white',
               ]"
@@ -286,7 +260,7 @@ onBeforeUnmount(() => {
                   :key="lang.code"
                   @click="switchLocale(lang.code)"
                   :class="[
-                    headerScrolled ? 'hover:bg-gray-200' : 'hover:bg-gray-400',
+                    passedHero ? 'hover:bg-gray-200' : 'hover:bg-gray-400',
                   ]"
                   class="gap-2 px-4 py-2 font-medium cursor-pointer text-center transition-colors duration-200"
                 >
@@ -296,8 +270,105 @@ onBeforeUnmount(() => {
             </div>
           </Transition>
         </div>
+
+        <!-- Mobile Hamburger -->
+        <button
+          @click="mobileMenuOpen = true"
+          class="md:hidden flex flex-col justify-center items-center space-y-1"
+        >
+          <span
+            :class="[
+              'block h-0.5 w-6 rounded transition-all',
+              passedHero || hasScrolled ? 'bg-black' : 'bg-white',
+            ]"
+          ></span>
+          <span
+            :class="[
+              'block h-0.5 w-6 rounded transition-all',
+              passedHero || hasScrolled ? 'bg-black' : 'bg-white',
+            ]"
+          ></span>
+          <span
+            :class="[
+              'block h-0.5 w-6 rounded transition-all',
+              passedHero || hasScrolled ? 'bg-black' : 'bg-white',
+            ]"
+          ></span>
+        </button>
       </div>
     </header>
+
+    <!-- Mobile Fullscreen Menu -->
+    <Transition
+      enter-active-class="transition duration-500 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-400 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div
+        v-if="mobileMenuOpen"
+        class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xl text-black p-8"
+      >
+        <!-- Close Button -->
+        <button
+          @click="mobileMenuOpen = false"
+          class="absolute top-6 right-6 text-2xl font-light hover:rotate-90 transition-transform"
+        >
+          ✕
+        </button>
+
+        <!-- Menu Items -->
+        <nav class="flex flex-col items-center gap-8 text-center">
+          <NuxtLink
+            @click="mobileMenuOpen = false"
+            to="#"
+            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-[#B88E2F] after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
+          >
+            {{ t("header.company") }}
+          </NuxtLink>
+
+          <NuxtLink
+            @click="mobileMenuOpen = false"
+            :to="localePath('/projects')"
+            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-[#B88E2F] after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
+          >
+            {{ t("header.projects") }}
+          </NuxtLink>
+
+          <NuxtLink
+            @click="mobileMenuOpen = false"
+            to="#"
+            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-[#B88E2F] after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
+          >
+            {{ t("header.blog") }}
+          </NuxtLink>
+        </nav>
+
+        <!-- Language Tabs -->
+        <div
+          class="mt-12 flex gap-3 bg-gray-100/70 rounded-full p-1 shadow-inner"
+        >
+          <button
+            v-for="lang in locales"
+            :key="lang.code"
+            @click="
+              switchLocale(lang.code);
+              mobileMenuOpen = false;
+            "
+            :class="[
+              'px-5 py-2 rounded-full text-sm font-medium transition-all',
+              currentLocaleName === lang.name
+                ? 'bg-[#1aab9a] text-white shadow-md'
+                : 'text-gray-600 hover:bg-gray-200',
+            ]"
+          >
+            {{ lang.name }}
+          </button>
+        </div>
+      </div>
+    </Transition>
 
     <div id="smooth-content" class="flex flex-col md:p-6 p-3 bg-white">
       <div class="w-full top-0 left-0 right-0"></div>
@@ -309,49 +380,60 @@ onBeforeUnmount(() => {
         <div class="px-10 py-10 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl p-6">
             <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
-              <button>
+              <button
+                v-for="(img, i) in [
+                  '/images/women-footer.webp',
+                  '/images/insayt.jpg',
+                  '/images/soundBar.webp',
+                  '/images/chair-footer.webp',
+                  '/images/black_women-footer.webp',
+                ]"
+                :key="i"
+                :ref="(el) => (cardsRef[i] = el)"
+                class="relative transition duration-300"
+              >
                 <img
-                  src="/images/women-footer.webp"
-                  alt="women"
-                  class="md:h-[233px] md:w-[260px] object-cover rounded-l-md"
-                />
-              </button>
-              <button>
-                <img
-                  src="/images/insayt.jpg"
-                  alt="insayt"
+                  :src="img"
+                  alt="footer-card"
                   class="md:h-[233px] md:w-[260px] object-cover"
+                  :class="[
+                    i === 0 ? 'rounded-l-md' : '',
+                    i === 4 ? 'rounded-r-md' : '',
+                  ]"
                 />
-              </button>
-              <button>
-                <img
-                  src="/images/soundBar.webp"
-                  alt="soundBar"
-                  class="md:h-[233px] md:w-[260px] object-cover"
-                />
-              </button>
-              <button>
-                <img
-                  src="/images/chair-footer.webp"
-                  alt="chair-footer"
-                  class="md:h-[233px] md:w-[260px] object-cover"
-                />
-              </button>
-              <button>
-                <img
-                  src="/images/black_women-footer.webp"
-                  alt="women"
-                  class="md:h-[233px] md:w-[260px] object-cover rounded-r-md"
-                />
+
+                <!-- Eye cursor -->
+                <div class="card-cursor">
+                  <svg
+                    class="eye-svg"
+                    viewBox="0 0 64 64"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
+                      fill="none"
+                      stroke="white"
+                      stroke-width="4"
+                    />
+                    <circle cx="32" cy="32" r="8" fill="white" />
+                    <circle cx="32" cy="32" r="4" fill="black" />
+                    <rect
+                      class="eyelid"
+                      x="0"
+                      y="0"
+                      width="64"
+                      height="32"
+                      fill="black"
+                    />
+                  </svg>
+                </div>
               </button>
             </div>
+
             <hr />
             <div class="md:px-10 md:py-[100px] p-8 rounded-xl">
               <div class="md:flex justify-between items-center gap-4 mb-[90px]">
-                <NuxtLink
-                  :to="localePath('/')"
-                  class="transition-transform duration-300 hover:scale-105"
-                >
+                <NuxtLink :to="localePath('/')">
                   <img src="/images/footer-logo.svg" alt="logo" />
                 </NuxtLink>
                 <div
@@ -444,30 +526,64 @@ onBeforeUnmount(() => {
         </div>
       </footer>
     </div>
-
-    <!-- Overlay for Page Transitions -->
-    <div class="overlay" v-show="transitioning">
-      <div class="layer layer-1"></div>
-      <div class="layer layer-2"></div>
-      <div class="layer layer-3"></div>
-    </div>
   </div>
 </template>
 
 <style scoped>
-.overlay {
-  width: 100%;
-  height: 100vh;
-  position: fixed;
-  z-index: 9999;
-  display: flex;
-  top: 0;
+.card-cursor {
+  position: absolute;
   left: 0;
-  pointer-events: none; /* so it doesn't block clicks */
+  top: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: black; /* 👈 always black */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* so clicks pass through */
+  opacity: 0;
+  z-index: 20;
 }
 
-.layer {
-  flex: 1;
-  background-color: #fff; /* can be gradient or brand color */
+@media (max-width: 768px) {
+  .card-cursor {
+    display: none;
+  }
+}
+
+.eye-svg {
+  width: 30px;
+  height: 30px;
+  animation: blink 2s infinite;
+}
+
+/* Eyelid moves up and down */
+.eyelid {
+  animation: closeEye 2s infinite;
+  transform-origin: top;
+}
+
+@keyframes closeEye {
+  0%,
+  90%,
+  100% {
+    transform: translateY(-32px);
+  }
+  95% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
 }
 </style>

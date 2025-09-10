@@ -130,8 +130,6 @@ onMounted(() => {
 
   gsap.from(".hero-text", {
     opacity: 0,
-    duration: 1,
-    scale: 0.3,
   });
 
   gsap.from(".hero-btns", {
@@ -150,7 +148,7 @@ onMounted(() => {
   {
     scale: 1,
     opacity: 1,
-    duration: 4,
+    duration: 3,
     ease: "power3.out",
     backgroundPosition: "0% 0", // move gradient like a snake across text
   }
@@ -184,7 +182,8 @@ onMounted(() => {
     <div class="relative z-10 text-center text-white flex-1">
       <div class="flex justify-center items-center">
         <h1
-          class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text md:w-[820px] md:h-[300px]"
+          class="text-2xl md:text-[92px] font-extrabold md:leading-[96px] hero-text md:w-[970px] md:h-[300px] hidden md:block "
+          :style="{ height: $i18n.locale === 'uz' ? '300px' : '200px' }"
         >
           {{ $t("second_hero.title") }}
         </h1>
@@ -254,5 +253,10 @@ onMounted(() => {
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
+}
+@media (min-width: 768px) {
+  .hero-text {
+    height: 300px;
+  }
 }
 </style>
