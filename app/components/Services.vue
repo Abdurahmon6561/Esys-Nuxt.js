@@ -20,9 +20,9 @@ const { t } = useI18n();
         {{ t("services.title") }}
       </h1>
     </div>
-    <div class="grid md:grid-cols-3 bg-[#ededed] p-8 rounded-xl mt-[48px]">
+    <div class="grid md:grid-cols-3 bg-[#ededed] md:p-8 p-4 rounded-xl mt-[48px]">
       <!-- Card -->
-      <div class="md:p-10 p-2 bg-white md:rounded-l-xl">
+      <div class="md:p-10 bg-white md:rounded-l-xl rounded-t-md p-4 md:rounded-t-none">
         <div>
           <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
             {{ t("projects.tags.websites") }}
@@ -60,9 +60,9 @@ const { t } = useI18n();
 
       <!-- Card -->
       <div
-        class="md:p-10 p-2 bg-white flex flex-col md:border-l-2 md:border-r-2 border-b-2 border-t-2 md:border-t-0 md:border-b-0"
+        class="md:p-10 p-4 bg-white flex flex-col md:border-l-2 md:border-r-2 border-b-2 border-t-2 md:border-t-0 md:border-b-0"
       >
-        <div>
+        <div class="mb-8 md:mb-0">
           <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
             {{ t("projects.tags.mobile_apps") }}
           </h2>
@@ -97,7 +97,7 @@ const { t } = useI18n();
       </div>
 
       <!-- Card -->
-      <div class="md:p-10 p-2 bg-white md:rounded-r-xl">
+      <div class="md:p-10 p-4 rounded-b-md bg-white md:rounded-r-xl md:rounded-b-none">
         <div>
           <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
             {{ t("projects.tags.crm") }}

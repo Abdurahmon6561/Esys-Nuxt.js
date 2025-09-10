@@ -226,7 +226,7 @@ onMounted(() => {
   <section
     ref="heroSection"
     id="smooth-wrapper"
-    class="min-h-[calc(100vh-3rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
+    class="md:min-h-[calc(100vh-3rem)] min-h-[calc(100vh-1.5rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
     style="background-image: url('/images/bg-hero.webp')"
   >
     <div class="flex justify-between w-full items-center" id="smooth-content">

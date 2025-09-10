@@ -377,8 +377,8 @@ onMounted(async () => {
       </main>
 
       <footer>
-        <div class="px-10 py-10 bg-[#e8e8e8]">
-          <div class="bg-white rounded-xl p-6">
+        <div class="md:px-10 md:py-10 p-4 bg-[#e8e8e8]">
+          <div class="bg-white rounded-xl md:p-6 p-2">
             <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
               <button
                 v-for="(img, i) in [
