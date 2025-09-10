@@ -1,6 +1,59 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import gsap from "gsap";
+
+const transitioning = ref(true); // show overlay initially
+const router = useRouter();
+
+function playIntro() {
+  // On initial load
+  gsap.to(".layer-1", { y: "-100vh", delay: 0.5, duration: 1 });
+  gsap.to(".layer-2", { y: "-100vh", delay: 0.7, duration: 1 });
+  gsap.to(".layer-3", { y: "-100vh", delay: 0.9, duration: 1 });
+  gsap.to(".overlay", {
+    y: "-100vh",
+    delay: 1.5,
+    duration: 1,
+    onComplete: () => (transitioning.value = false),
+  });
+}
+
+function playPageTransition(to, from, next) {
+  transitioning.value = true;
+
+  // Reset overlay (cover screen instantly)
+  gsap.set(".overlay", { y: 0 });
+  gsap.set(".layer", { y: "0" });
+
+  // Allow Nuxt to load the next page immediately
+  next();
+
+  // Play overlay exit animation
+  gsap.to(".layer-1", { y: "-100vh", delay: 0.5, duration: 1 });
+  gsap.to(".layer-2", { y: "-100vh", delay: 0.7, duration: 1 });
+  gsap.to(".layer-3", { y: "-100vh", delay: 0.9, duration: 1 });
+  gsap.to(".overlay", {
+    y: "-100vh",
+    delay: 1.5,
+    duration: 1,
+    onComplete: () => (transitioning.value = false),
+  });
+}
+
+onMounted(() => {
+  playIntro();
+
+  // Hook into Nuxt router
+  router.beforeEach((to, from, next) => {
+    if (from.fullPath !== to.fullPath) {
+      playPageTransition(to, from, next);
+    } else {
+      next();
+    }
+  });
+});
 
 const open = ref(false);
 const menuOpen = ref(false);
@@ -45,19 +98,19 @@ onMounted(async () => {
     // Load saved locale
     const saved = localStorage.getItem("locale");
     if (saved) setLocale(saved); // Use setLocale instead of directly setting locale.value
-    
+
     // Add click outside listener
     window.addEventListener("click", handleClickOutside);
-    
+
     // Dynamic import GSAP and plugins
     const { gsap } = await import("gsap");
     const { ScrollTrigger } = await import("gsap/ScrollTrigger");
     const { ScrollSmoother } = await import("gsap/ScrollSmoother");
-    
+
     // Register GSAP plugins
     gsap.registerPlugin(ScrollTrigger);
     gsap.registerPlugin(ScrollSmoother);
-    
+
     // Initialize ScrollSmoother
     smoother = ScrollSmoother.create({
       wrapper: "#smooth-wrapper",
@@ -66,7 +119,7 @@ onMounted(async () => {
       effects: true,
     });
     smoother.effects("header", { speed: 1, lag: 0 });
-    
+
     // Create ScrollTrigger for header
     ScrollTrigger.create({
       trigger: ".hero-section",
@@ -74,7 +127,7 @@ onMounted(async () => {
       onEnter: () => (headerScrolled.value = true),
       onLeaveBack: () => (headerScrolled.value = false),
     });
-    
+
     // Animate header on mount
     gsap.fromTo(
       "header",
@@ -129,7 +182,7 @@ onBeforeUnmount(() => {
             :class="headerScrolled ? 'invert' : ''"
           />
         </NuxtLink>
-        
+
         <!-- Desktop Nav -->
         <nav>
           <ul class="md:flex hidden gap-8 font-medium">
@@ -174,7 +227,7 @@ onBeforeUnmount(() => {
             </li>
           </ul>
         </nav>
-        
+
         <!-- Desktop Locale Dropdown -->
         <div
           class="relative hidden md:block"
@@ -206,7 +259,7 @@ onBeforeUnmount(() => {
               class="w-4 transition-transform duration-200"
             />
           </button>
-          
+
           <!-- Dropdown -->
           <Transition
             enter-active-class="transition ease-out duration-200"
@@ -245,13 +298,13 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </header>
-    
+
     <div id="smooth-content" class="flex flex-col md:p-6 p-3 bg-white">
       <div class="w-full top-0 left-0 right-0"></div>
       <main class="min-h-screen">
         <slot />
       </main>
-      
+
       <footer>
         <div class="px-10 py-10 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl p-6">
@@ -391,5 +444,30 @@ onBeforeUnmount(() => {
         </div>
       </footer>
     </div>
+
+    <!-- Overlay for Page Transitions -->
+    <div class="overlay" v-show="transitioning">
+      <div class="layer layer-1"></div>
+      <div class="layer layer-2"></div>
+      <div class="layer layer-3"></div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.overlay {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  top: 0;
+  left: 0;
+  pointer-events: none; /* so it doesn't block clicks */
+}
+
+.layer {
+  flex: 1;
+  background-color: #fff; /* can be gradient or brand color */
+}
+</style>
