@@ -20,9 +20,13 @@ const { t } = useI18n();
         {{ t("services.title") }}
       </h1>
     </div>
-    <div class="grid md:grid-cols-3 bg-[#ededed] md:p-8 p-4 rounded-xl mt-[48px]">
+    <div
+      class="grid md:grid-cols-3 bg-[#ededed] md:p-8 p-4 rounded-xl mt-[48px]"
+    >
       <!-- Card -->
-      <div class="md:p-10 bg-white md:rounded-l-xl rounded-t-md p-4 md:rounded-t-none">
+      <div
+        class="md:p-10 bg-white md:rounded-l-xl rounded-t-md p-4 md:rounded-t-none"
+      >
         <div>
           <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
             {{ t("projects.tags.websites") }}
@@ -97,7 +101,9 @@ const { t } = useI18n();
       </div>
 
       <!-- Card -->
-      <div class="md:p-10 p-4 rounded-b-md bg-white md:rounded-r-xl md:rounded-b-none">
+      <div
+        class="md:p-10 p-4 rounded-b-md bg-white md:rounded-r-xl md:rounded-b-none flex flex-col h-full"
+      >
         <div>
           <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
             {{ t("projects.tags.crm") }}
@@ -106,8 +112,9 @@ const { t } = useI18n();
             {{ t("services.cards.third_title") }}
           </p>
         </div>
+
         <button
-          class="w-full bg-white rounded-xl md:p-4 p-2 flex items-center justify-between mt-[50px] border-2 border-[#e0e0e0] hover:bg-gray-100 transition"
+          class="w-full bg-white rounded-xl md:p-4 p-2 flex items-center justify-between border-2 border-[#e0e0e0] hover:bg-gray-100 transition mt-auto"
         >
           <span class="text-[16px] font-medium">{{ t("services.order") }}</span>
           <span
