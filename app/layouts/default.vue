@@ -2,9 +2,9 @@
 import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import { gsap } from "gsap";
-import { useRoute } from "vue-router"; // ✅ import route
+import { useRoute } from "vue-router";
 
-const route = useRoute(); // ✅ get current route
+const route = useRoute();
 
 
 const mobileMenuOpen = ref(false);
