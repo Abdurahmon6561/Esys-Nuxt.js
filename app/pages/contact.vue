@@ -71,17 +71,20 @@ const showToast = (text, type) => {
 };
 </script>
 
+<!-- in this code made the Contact Form  responsive responsible -->
 <template>
   <div class="mb-[80px]">
     <section
       ref="heroSection"
       id="smooth-wrapper"
-      class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden bg-black"
+      class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden bg-[#011424]"
     >
       <!-- Lottie Background -->
-      <div class="absolute inset-0 w-full h-full">
-
-        <iframe src="https://lottie.host/embed/0eb4ebac-df57-4850-845c-755be4c8d7b4/MmeARlMjOt.lottie" class="w-full h-full border-0"></iframe>
+      <div class="absolute inset-0 w-full h-full ml-[333px]">
+        <iframe
+          src="https://lottie.host/embed/26a23b78-f8b5-47be-bb92-563ca44820d6/v0gXWgZoaH.lottie"
+          class="w-full h-full"
+        ></iframe>
       </div>
 
       <!-- Overlay -->
@@ -89,9 +92,18 @@ const showToast = (text, type) => {
 
       <!-- Contact Form -->
       <div
-        class="relative z-10 w-full max-w-lg p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
+        class="relative z-10 w-full max-w-lg md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
-        <h2 class="text-3xl font-bold text-white mb-6">{{ t("contact.title") }}</h2>
+        <h2 v-if="locale === 'en'" class="text-3xl font-bold text-white mb-6">
+          Get in Touch
+        </h2>
+        <h2 v-if="locale === 'uz'" class="text-3xl font-bold text-white mb-6">
+          Aloqa qiling
+        </h2>
+        <h2 v-if="locale === 'ru'" class="text-3xl font-bold text-white mb-6">
+          Свяжитесь с нами
+        </h2>
+
         <form class="space-y-6" @submit="handleSubmit">
           <!-- Name -->
           <div class="relative">
@@ -99,15 +111,17 @@ const showToast = (text, type) => {
               for="name"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ t("contact.name") }}
+              <span v-if="locale === 'en'">Your name</span>
+              <span v-if="locale === 'uz'">Ismingiz</span>
+              <span v-if="locale === 'ru'">Ваше имя</span>
             </label>
+
             <input
               type="text"
               id="name"
               v-model="name"
               required
               class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none"
-              placeholder="Enter your name"
             />
           </div>
 
@@ -123,7 +137,9 @@ const showToast = (text, type) => {
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
-              {{ t("contact.tab_email") }}
+              <span v-if="locale === 'en'">Email</span>
+              <span v-if="locale === 'uz'">Email</span>
+              <span v-if="locale === 'ru'">Почта</span>
             </button>
             <button
               type="button"
@@ -135,7 +151,9 @@ const showToast = (text, type) => {
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
-              {{ t("contact.tab_phone") }}
+              <span v-if="locale === 'en'">Phone</span>
+              <span v-if="locale === 'uz'">Telefon</span>
+              <span v-if="locale === 'ru'">Телефон</span>
             </button>
           </div>
 
@@ -145,15 +163,17 @@ const showToast = (text, type) => {
               for="email"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ t("contact.email") }}
+              <span v-if="locale === 'en'">Your email</span>
+              <span v-if="locale === 'uz'">Elektron pochta</span>
+              <span v-if="locale === 'ru'">Ваша почта</span>
             </label>
+
             <input
               type="email"
               id="email"
               v-model="email"
               required
               class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none"
-              placeholder="Enter your email"
             />
           </div>
 
@@ -163,8 +183,11 @@ const showToast = (text, type) => {
               for="phone"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ t("contact.phone") }}
+              <span v-if="locale === 'en'">Your phone</span>
+              <span v-if="locale === 'uz'">Telefon raqamingiz</span>
+              <span v-if="locale === 'ru'">Ваш телефон</span>
             </label>
+
             <input
               type="tel"
               id="phone"
@@ -182,7 +205,9 @@ const showToast = (text, type) => {
               for="message"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ t("contact.message") }}
+              <span v-if="locale === 'en'">Your message</span>
+              <span v-if="locale === 'uz'">Xabaringiz</span>
+              <span v-if="locale === 'ru'">Ваше сообщение</span>
             </label>
             <textarea
               id="message"
@@ -190,7 +215,6 @@ const showToast = (text, type) => {
               rows="4"
               required
               class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none resize-none"
-              placeholder="Enter your message"
             ></textarea>
           </div>
 
@@ -199,7 +223,9 @@ const showToast = (text, type) => {
             type="submit"
             class="w-full py-3 rounded-xl bg-[#1aab9a] text-white font-semibold shadow-lg hover:bg-[#159482] transition-all"
           >
-            {{ t("contact.send") }}
+            <span v-if="locale === 'en'">Send</span>
+            <span v-if="locale === 'uz'">Yuborish</span>
+            <span v-if="locale === 'ru'">Отправить</span>
           </button>
         </form>
       </div>
