@@ -1,10 +1,18 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+  nextTick,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import { gsap } from "gsap";
+
 import { useRoute } from "vue-router";
 
-const route = useRoute();
+const route = useRoute();;
 
 const mobileMenuOpen = ref(false);
 
@@ -82,7 +90,7 @@ onMounted(async () => {
     gsap.fromTo(
       "header",
       { y: -100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }
+      { y: 0, opacity: 1, duration: 1.2, ease: "power2.out" }
     );
   }
 });
@@ -117,12 +125,12 @@ onMounted(async () => {
     });
 
     btn.addEventListener("mouseenter", () => {
-      btn.classList.add("brightness-75"); // darker effect
+      btn.classList.add("opacity-60"); // 👈 make button 60% opacity
       gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
     });
 
     btn.addEventListener("mouseleave", () => {
-      btn.classList.remove("brightness-75");
+      btn.classList.remove("opacity-60"); // 👈 reset button opacity
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     });
   });
@@ -131,17 +139,18 @@ onMounted(async () => {
 
 <template>
   <div id="smooth-wrapper">
+    <!-- when in route.path.includes('/view') bg have to be blur bg-black/10 -->
     <header
-      :class="[
-        'fixed top-0 left-0 w-full z-50 transition-all duration-300',
-        route.path.includes('/view')
-          ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1'
-          : passedHero
-          ? 'bg-white/80 backdrop-blur-md text-black shadow-lg p-1 rounded-xl'
-          : hasScrolled
-          ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-1 rounded-xl'
-          : 'bg-transparent text-white py-7 px-6',
-      ]"
+    :class="[
+      'fixed top-0 left-0 w-full z-50 transition-all duration-300',
+      route.path.includes('/view')
+        ? 'backdrop-blur-md bg-black/10 text-white p-2'
+        : passedHero
+        ? 'bg-white/80 backdrop-blur-md text-black shadow-sm p-2'
+        : hasScrolled
+        ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-2'
+        : 'bg-transparent text-white py-7 px-6'
+    ]"
     >
       <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
         <!-- Logo -->
@@ -149,7 +158,7 @@ onMounted(async () => {
           :to="localePath('/')"
           class="transition-transform duration-300 hover:scale-105 w-[94px]"
         >
-          <div v-if="passedHero || route.path.includes('/view')">
+          <div v-if="passedHero">
             <img src="/images/footer-logo.svg" alt="logo" class="h-8" />
           </div>
           <div v-else>
@@ -170,7 +179,7 @@ onMounted(async () => {
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  passedHero || route.path.includes('/view')
+                  passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -183,7 +192,7 @@ onMounted(async () => {
                 :to="localePath('/projects')"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
                 :class="
-                  passedHero || route.path.includes('/view')
+                  passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -195,8 +204,8 @@ onMounted(async () => {
               <NuxtLink
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
-                :class="
-                  passedHero || route.path.includes('/view')
+                    :class="
+                  passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
                 "
@@ -219,7 +228,7 @@ onMounted(async () => {
             style="padding: 8px 10px"
             :class="[
               'flex items-center justify-center gap-1 border-2 rounded-full cursor-pointer transition-all duration-300',
-              passedHero || route.path.includes('/view')
+              passedHero
                 ? 'text-black border-gray-400 hover:border-black hover:bg-black/10'
                 : 'text-white border-[#8198a6] hover:border-white hover:bg-white/10',
             ]"
@@ -228,19 +237,14 @@ onMounted(async () => {
               src="/images/locale.svg"
               alt="locale"
               class="w-[22px]"
-              :class="[
-                passedHero || route.path.includes('/view') ? 'invert' : '',
-              ]"
+              :class="passedHero ? 'invert' : ''"
             />
             <span class="ml-1 text-[14px]">{{ currentLocaleName }}</span>
             <img
               src="/images/arrow-down.webp"
               alt="arrow"
+              :class="[{ 'rotate-180': open }, passedHero ? 'invert' : '']"
               class="w-4 transition-transform duration-200"
-              :class="[
-                open ? 'rotate-180' : '',
-                passedHero || route.path.includes('/view') ? 'invert' : '',
-              ]"
             />
           </button>
 
@@ -257,7 +261,7 @@ onMounted(async () => {
               v-if="open"
               :class="[
                 'absolute right-0 mt-2 shadow-lg rounded-lg overflow-hidden z-50 w-full backdrop-blur-md',
-                passedHero || route.path.includes('/view')
+                passedHero
                   ? 'bg-white/90 text-black'
                   : 'bg-white/30 text-white',
               ]"
@@ -552,7 +556,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none; /* so clicks pass through */
+  pointer-events: none;
   opacity: 0;
   z-index: 20;
 }

@@ -7,7 +7,7 @@ import { useRouter } from "vue-router"; // ✅ import router
 
 const { t } = useI18n();
 const router = useRouter(); // ✅ init router
-
+const localePath = useLocalePath();
 
 const cardsRef = ref([]);
 
@@ -44,7 +44,7 @@ const cards = [
 // ✅ when clicking eye
 const openProject = (card) => {
   localStorage.setItem("selectedProject", JSON.stringify(card)); // save project
-  router.push("/view"); // go to view.vue
+  router.push(`${localePath("/view")}`); // go to view.vue
 };
 
 onMounted(async () => {

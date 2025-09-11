@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router"; // ✅ import router
+import { useRouter } from "vue-router";
 import gsap from "gsap";
 
 const cardsRef = ref([]);
 const { t } = useI18n();
-const router = useRouter(); // ✅ init router
-
+const router = useRouter();
+const localePath = useLocalePath();
 const cards = [
   {
     id: 1,
@@ -15,6 +15,7 @@ const cards = [
     title: "Wonder Comfort",
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     tags: [t("projects.tags.websites")],
+    img_color: "black"
   },
   {
     id: 2,
@@ -23,6 +24,7 @@ const cards = [
     tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
     link: "https://soundbar010.com/",
     tags: [t("projects.tags.websites"), t("projects.tags.mobile_apps")],
+    img_color: "white"
   },
   {
     id: 3,
@@ -31,6 +33,7 @@ const cards = [
     tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
     link: "https://asacar.uz/",
     tags: [t("projects.tags.websites")],
+    img_color: "black"
   },
   {
     id: 4,
@@ -39,13 +42,15 @@ const cards = [
     tech: "Laravel, PHP, MySQL, JavaScript",
     link: "https://bbd.uz/",
     tags: [t("projects.tags.websites")],
+    img_color: "white"
   },
 ];
 
 // ✅ when clicking eye
 const openProject = (card) => {
-  localStorage.setItem("selectedProject", JSON.stringify(card)); // save project
-  router.push("/view"); // go to view.vue
+  localStorage.setItem("selectedProject", JSON.stringify(card)); 
+  localStorage.setItem("headerColor", card.img_color); 
+  router.push(`${localePath("/view")}`);
 };
 
 onMounted(async () => {
