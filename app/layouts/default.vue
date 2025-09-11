@@ -12,7 +12,7 @@ import { gsap } from "gsap";
 
 import { useRoute } from "vue-router";
 
-const route = useRoute();;
+const route = useRoute();
 
 const mobileMenuOpen = ref(false);
 
@@ -125,12 +125,12 @@ onMounted(async () => {
     });
 
     btn.addEventListener("mouseenter", () => {
-      btn.classList.add("opacity-60"); // 👈 make button 60% opacity
+      btn.classList.add("brightness-75");
       gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
     });
 
     btn.addEventListener("mouseleave", () => {
-      btn.classList.remove("opacity-60"); // 👈 reset button opacity
+      btn.classList.remove("brightness-75");
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     });
   });
@@ -141,16 +141,16 @@ onMounted(async () => {
   <div id="smooth-wrapper">
     <!-- when in route.path.includes('/view') bg have to be blur bg-black/10 -->
     <header
-    :class="[
-      'fixed top-0 left-0 w-full z-50 transition-all duration-300',
-      route.path.includes('/view')
-        ? 'backdrop-blur-md bg-black/10 text-white p-2'
-        : passedHero
-        ? 'bg-white/80 backdrop-blur-md text-black shadow-sm p-2'
-        : hasScrolled
-        ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-2'
-        : 'bg-transparent text-white py-7 px-6'
-    ]"
+      :class="[
+        'fixed top-0 left-0 w-full z-50 transition-all duration-300',
+        route.path.includes('/view')
+          ? 'backdrop-blur-md bg-black/10 text-white p-2'
+          : passedHero
+          ? 'bg-white/80 backdrop-blur-md text-black shadow-sm p-2'
+          : hasScrolled
+          ? 'bg-white/10 backdrop-blur-md text-white shadow-sm p-2'
+          : 'bg-transparent text-white py-7 px-6',
+      ]"
     >
       <div class="flex justify-between items-center px-6 py-4 rounded-t-xl">
         <!-- Logo -->
@@ -204,7 +204,7 @@ onMounted(async () => {
               <NuxtLink
                 to="#"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
-                    :class="
+                :class="
                   passedHero
                     ? 'text-black after:bg-black'
                     : 'text-white after:bg-white'
