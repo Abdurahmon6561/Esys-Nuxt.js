@@ -231,48 +231,45 @@ onMounted(() => {
         </div>
       </div>
 
-      <div
-        class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4"
-      >
-<button
-  v-for="(btn, index) in buttons"
-  :key="index"
-  :class="[
-    'relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
-    `hero-btn-${index + 1}` // ✅ unique GSAP class
-  ]"
-  @mouseenter="updatePosition($event, index)"
-  @mousemove="updatePosition($event, index)"
-  @mouseleave="resetPosition(index)"
-  @click="selectButton(index)"
->
-  <!-- expanding circle -->
-  <span
-    class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
-    :style="{
-      top: btn.yPos,
-      left: btn.xPos,
-      transform: 'translate(-50%, -50%)',
-      width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
-      height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
-    }"
-  ></span>
+      <div class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4">
+        <button
+          v-for="(btn, index) in buttons"
+          :key="index"
+          :class="[
+            'relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
+            `hero-btn-${index + 1}`, // ✅ unique GSAP class
+          ]"
+          @mouseenter="updatePosition($event, index)"
+          @mousemove="updatePosition($event, index)"
+          @mouseleave="resetPosition(index)"
+          @click="selectButton(index)"
+        >
+          <!-- expanding circle -->
+          <span
+            class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
+            :style="{
+              top: btn.yPos,
+              left: btn.xPos,
+              transform: 'translate(-50%, -50%)',
+              width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+              height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+            }"
+          ></span>
 
-  <!-- text -->
-  <span
-    class="relative z-10 transition-colors duration-300"
-    :class="
-      isActive(index)
-        ? 'text-black'
-        : btn.isHover
-        ? 'text-black'
-        : 'text-white'
-    "
-  >
-    {{ btn.text }}
-  </span>
-</button>
-
+          <!-- text -->
+          <span
+            class="relative z-10 transition-colors duration-300"
+            :class="
+              isActive(index)
+                ? 'text-black'
+                : btn.isHover
+                ? 'text-black'
+                : 'text-white'
+            "
+          >
+            {{ btn.text }}
+          </span>
+        </button>
       </div>
     </div>
 

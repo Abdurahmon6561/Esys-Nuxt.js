@@ -3,8 +3,11 @@ import { ref } from "vue";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import { useI18n } from "vue-i18n";
+const { t, locale, availableLocales } = useI18n();
 
-const { t } = useI18n();
+console.log("current locale:", locale.value);
+console.log("available:", availableLocales);
+console.log("test key:", t("contact.title"));
 
 const selectedTab = ref("email");
 const phone = ref("");
@@ -24,7 +27,6 @@ const formatPhone = (e) => {
 
   phone.value = value;
 };
-
 // Submit form
 const handleSubmit = (e) => {
   e.preventDefault();
@@ -89,7 +91,7 @@ const showToast = (text, type) => {
       <div
         class="relative z-10 w-full max-w-lg p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
-        <h2 class="text-3xl font-bold text-white mb-6">{{ $t("contact.title") }}</h2>
+        <h2 class="text-3xl font-bold text-white mb-6">{{ t("contact.title") }}</h2>
         <form class="space-y-6" @submit="handleSubmit">
           <!-- Name -->
           <div class="relative">
@@ -97,7 +99,7 @@ const showToast = (text, type) => {
               for="name"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ $t("contact.name") }}
+              {{ t("contact.name") }}
             </label>
             <input
               type="text"
@@ -121,7 +123,7 @@ const showToast = (text, type) => {
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
-              {{ $t("contact.tab_email") }}
+              {{ t("contact.tab_email") }}
             </button>
             <button
               type="button"
@@ -133,7 +135,7 @@ const showToast = (text, type) => {
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
-              {{ $t("contact.tab_phone") }}
+              {{ t("contact.tab_phone") }}
             </button>
           </div>
 
@@ -143,7 +145,7 @@ const showToast = (text, type) => {
               for="email"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ $t("contact.email") }}
+              {{ t("contact.email") }}
             </label>
             <input
               type="email"
@@ -161,7 +163,7 @@ const showToast = (text, type) => {
               for="phone"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ $t("contact.phone") }}
+              {{ t("contact.phone") }}
             </label>
             <input
               type="tel"
@@ -180,7 +182,7 @@ const showToast = (text, type) => {
               for="message"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              {{ $t("contact.message") }}
+              {{ t("contact.message") }}
             </label>
             <textarea
               id="message"
@@ -197,7 +199,7 @@ const showToast = (text, type) => {
             type="submit"
             class="w-full py-3 rounded-xl bg-[#1aab9a] text-white font-semibold shadow-lg hover:bg-[#159482] transition-all"
           >
-            {{ $t("contact.send") }}
+            {{ t("contact.send") }}
           </button>
         </form>
       </div>
