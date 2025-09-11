@@ -299,28 +299,25 @@ onMounted(() => {
         <div class="flex justify-center items-center">
           <div v-if="$i18n.locale === 'ru'">
             <h1
-              class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[1218px]"
+              class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text mx-auto" 
             >
-              Цифровые решения,<br />
-              которые помогают вашему <br />
-              бизнесу расти быстрее
+              Цифровые решения, <br> которые помогают вашему<br> бизнесу расти быстрее
             </h1>
           </div>
 
           <div v-if="$i18n.locale === 'uz'">
             <h1
-              class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[1218px]"
+              class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text"
             >
-              Biznesingizni tezroq o‘sishiga yordam beradigan raqamli yechimlar
+              Biznesingizni tezroq <br> o‘sishiga yordam beradigan <br> raqamli yechimlar
             </h1>
           </div>
 
           <div v-if="$i18n.locale === 'en'">
             <h1
-              class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[1218px]"
+              class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text"
             >
-              Digital solutions that help <br />
-              your business grow faster
+              Digital solutions that help <br /> your business grow faster
             </h1>
           </div>
         </div>
