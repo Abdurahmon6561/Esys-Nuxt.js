@@ -43,7 +43,16 @@
     "text": "We design and launch IT systems that simplify processes and accelerate company growth.",
     "book_call": "Book a call"
   },
-
+  "contact": {
+    "title": "Get in Touch",
+    "name": "Your name",
+    "email": "Your email",
+    "phone": "Your phone",
+    "message": "Your message",
+    "tab_phone": "Phone",
+    "tab_email": "Email",
+    "send": "Send"
+  },
   "footer": {
     "home": "Home",
     "company": "Company",

@@ -43,6 +43,16 @@
     "text": "Biz jarayonlarni soddalashtiradigan va kompaniyalar o‘sishini tezlashtiradigan IT tizimlarini loyihalashtiramiz va ishga tushiramiz.",
     "book_call": "Qo‘ng‘iroqni bron qiling"
   },
+  "contact": {
+    "title": "Aloqa qiling",
+    "name": "Ismingiz",
+    "email": "Elektron pochta",
+    "phone": "Telefon raqamingiz",
+    "message": "Xabaringiz",
+    "tab_phone": "Telefon",
+    "tab_email": "Email",
+    "send": "Yuborish"
+  },
   "footer": {
     "home": "Bosh sahifa",
     "company": "Kompaniya",

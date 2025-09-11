@@ -6,6 +6,8 @@ import { ScrollSmoother } from "gsap/ScrollSmoother";
 
 const { locale, locales, setLocale, t } = useI18n();
 
+const localePath = useLocalePath();
+
 const currentIndex = ref(0);
 const heroSection = ref(null);
 
@@ -333,7 +335,8 @@ onMounted(() => {
           </div>
 
           <div class="hero-btn-2">
-            <button
+            <NuxtLink :to="localePath('/contact')">
+              <button
               v-for="(btn, index) in buttons"
               :key="index"
               @mouseenter="updatePosition($event, index)"
@@ -369,6 +372,7 @@ onMounted(() => {
                 "
               />
             </button>
+          </NuxtLink>
           </div>
         </div>
 
