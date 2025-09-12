@@ -3,6 +3,7 @@ import { ref, onMounted, reactive } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 

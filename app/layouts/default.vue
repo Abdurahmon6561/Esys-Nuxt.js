@@ -5,17 +5,14 @@ import {
   onBeforeUnmount,
   computed,
   nextTick,
-  watch,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { gsap } from "gsap";
-
 import { useRoute } from "vue-router";
 
 const route = useRoute();
 
 const mobileMenuOpen = ref(false);
-
 const open = ref(false);
 const menuOpen = ref(false);
 const dropdownRef = ref(null);
@@ -40,9 +37,9 @@ const switchLocale = (code) => {
 
 let smoother = null;
 
-// 👇 Two states instead of one
-const hasScrolled = ref(false); // user started scrolling
-const passedHero = ref(false); // hero section completely passed
+// Two states instead of one
+const hasScrolled = ref(false);
+const passedHero = ref(false);
 
 const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
@@ -72,14 +69,14 @@ onMounted(async () => {
 
     smoother.effects("header", { speed: 1, lag: 0 });
 
-    // ✅ Detect if user has started scrolling
+    // Detect if user has started scrolling
     ScrollTrigger.create({
       start: 1,
       onEnter: () => (hasScrolled.value = true),
       onLeaveBack: () => (hasScrolled.value = false),
     });
 
-    // ✅ Detect if hero section is fully passed
+    // Detect if hero section is fully passed
     ScrollTrigger.create({
       trigger: ".hero-section",
       start: "bottom top",

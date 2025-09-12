@@ -173,6 +173,7 @@ const showToast = (text, type) => {
               id="email"
               v-model="email"
               required
+              placeholder="example@gmail.com"
               class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none"
             />
           </div>
