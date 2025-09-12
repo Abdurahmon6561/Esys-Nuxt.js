@@ -59,7 +59,7 @@ const createOverlay = () => {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #000;
+    background: #f2f1f0;
     z-index: 99999;
     pointer-events: none;
     display: none;
