@@ -152,7 +152,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       clipPath: 'circle(0% at 50% 0%)',
       duration: 0.8,
       ease: "power2.inOut",
-      delay: 0,
+      delay: 0.1,
       onComplete: () => {
         gsap.set(overlay, { display: 'none' })
       }
