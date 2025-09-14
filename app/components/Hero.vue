@@ -6,7 +6,6 @@ import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useI18n } from "vue-i18n";
 
 const { locale, locales, setLocale, t } = useI18n();
-
 const localePath = useLocalePath();
 
 const currentIndex = ref(0);

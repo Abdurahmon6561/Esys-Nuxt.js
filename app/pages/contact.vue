@@ -94,14 +94,8 @@ const showToast = (text, type) => {
       <div
         class="relative z-10 w-full max-w-lg md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
-        <h2 v-if="locale === 'en'" class="text-3xl font-bold text-white mb-6">
-          Get in Touch
-        </h2>
-        <h2 v-if="locale === 'uz'" class="text-3xl font-bold text-white mb-6">
-          Aloqa qiling
-        </h2>
-        <h2 v-if="locale === 'ru'" class="text-3xl font-bold text-white mb-6">
-          Свяжитесь с нами
+        <h2 class="text-3xl font-bold text-white mb-6">
+          {{ t("contact.title") }}
         </h2>
 
         <form class="space-y-6" @submit="handleSubmit">
@@ -111,9 +105,7 @@ const showToast = (text, type) => {
               for="name"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              <span v-if="locale === 'en'">Your name</span>
-              <span v-if="locale === 'uz'">Ismingiz</span>
-              <span v-if="locale === 'ru'">Ваше имя</span>
+              <span>{{ t("contact.name") }}</span>
             </label>
 
             <input
@@ -137,9 +129,7 @@ const showToast = (text, type) => {
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
-              <span v-if="locale === 'en'">Email</span>
-              <span v-if="locale === 'uz'">Email</span>
-              <span v-if="locale === 'ru'">Почта</span>
+              <span>{{ t("contact.email") }}</span>
             </button>
             <button
               type="button"
@@ -151,9 +141,7 @@ const showToast = (text, type) => {
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
-              <span v-if="locale === 'en'">Phone</span>
-              <span v-if="locale === 'uz'">Telefon</span>
-              <span v-if="locale === 'ru'">Телефон</span>
+              <span>{{ t("contact.phone") }}</span>
             </button>
           </div>
 
@@ -163,9 +151,7 @@ const showToast = (text, type) => {
               for="email"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              <span v-if="locale === 'en'">Your email</span>
-              <span v-if="locale === 'uz'">Elektron pochta</span>
-              <span v-if="locale === 'ru'">Ваша почта</span>
+              <span>{{ t("contact.email") }}</span>
             </label>
 
             <input
@@ -184,9 +170,7 @@ const showToast = (text, type) => {
               for="phone"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              <span v-if="locale === 'en'">Your phone</span>
-              <span v-if="locale === 'uz'">Telefon raqamingiz</span>
-              <span v-if="locale === 'ru'">Ваш телефон</span>
+              <span>{{ t("contact.phone") }}</span>
             </label>
 
             <input
@@ -206,9 +190,7 @@ const showToast = (text, type) => {
               for="message"
               class="block mb-1 text-sm font-medium text-gray-300"
             >
-              <span v-if="locale === 'en'">Your message</span>
-              <span v-if="locale === 'uz'">Xabaringiz</span>
-              <span v-if="locale === 'ru'">Ваше сообщение</span>
+              <span>{{ t("contact.message") }}</span>
             </label>
             <textarea
               id="message"
@@ -224,9 +206,7 @@ const showToast = (text, type) => {
             type="submit"
             class="w-full py-3 rounded-xl bg-[#1aab9a] text-white font-semibold shadow-lg hover:bg-[#159482] transition-all"
           >
-            <span v-if="locale === 'en'">Send</span>
-            <span v-if="locale === 'uz'">Yuborish</span>
-            <span v-if="locale === 'ru'">Отправить</span>
+            <span>{{ t("contact.send") }}</span>
           </button>
         </form>
       </div>
