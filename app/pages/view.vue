@@ -1,5 +1,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { gsap } from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+
+gsap.registerPlugin(ScrollToPlugin);
 
 const project = ref(null);
 
@@ -8,8 +12,16 @@ onMounted(() => {
   if (stored) {
     project.value = JSON.parse(stored);
   }
+
+  // Smooth scroll to top
+  gsap.to(window, {
+    scrollTo: 0,
+    duration: 0.1,
+    ease: "power2.inOut",
+  });
 });
 </script>
+
 
 <template>
   <div v-if="project" class="mb-[80px] mt-[80px]">
