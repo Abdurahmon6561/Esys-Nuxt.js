@@ -148,7 +148,7 @@ onMounted(async () => {
           :to="localePath('/')"
           class="transition-transform duration-300 hover:scale-105 w-[94px]"
         >
-          <div v-if="passedHero">
+          <div v-if="passedHero || route.path.includes('/view')">
             <img src="/images/footer-logo.svg" alt="logo" class="h-8" />
           </div>
           <div v-else>
@@ -157,7 +157,7 @@ onMounted(async () => {
               alt="logo"
               class="h-8"
               :class="
-                passedHero || route.path.includes('/view') ? 'invert' : ''
+                passedHero ? 'invert' : ''
               "
             />
           </div>
