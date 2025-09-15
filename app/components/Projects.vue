@@ -79,7 +79,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4">
+  <div class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4" id="projects">
     <!-- Small Section Title -->
     <div class="flex justify-center items-center">
       <h3
