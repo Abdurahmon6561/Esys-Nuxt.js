@@ -495,7 +495,7 @@ onMounted(async () => {
                   <NuxtLink
                     :to="localePath('/blog')"
                     :class="[
-                      $route.path.includes('/blog-view')
+                      $route.path.includes('/blog')
                         ? 'after:w-full'
                         : 'after:w-0',
                     ]"
