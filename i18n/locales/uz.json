@@ -53,6 +53,10 @@
     "tab_email": "Email",
     "send": "Yuborish"
   },
+  "blog_cards": {
+    "first_title": "Avtomatlashtirish va sun'iy intellekt veb-sayt ishlab chiqishni qanday o'zgartiradi ?",
+    "second_title": "Sayt ishlab chiqish qancha turadi va narxi nimalarga bog'liq ?"
+  },
   "footer": {
     "home": "Bosh sahifa",
     "company": "Kompaniya",
