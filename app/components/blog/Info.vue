@@ -10,14 +10,14 @@ const localePath = useLocalePath();
 
 const blogs = [
   {
-    title: t("blog_cards.first_title"),
+    title: "Avtomatlashtirish va sun'iy intellekt veb-sayt ishlab chiqishni qanday o'zgartiradi?",
     image:
       "https://xrn-a2s-98a-sa7.esys.pro/storage/blogs/main-images/2/lyHb6yFSDNdzDSMrII3iptLs0ekGoKWQ8rzOWH6W.webp",
     date: "2025-08-11",
     tech: ["AI", "Web", "No-code", "Low-code"],
   },
   {
-    title: t("blog_cards.second_title"),
+    title: "Sayt ishlab chiqish qancha turadi va narxi nimalarga bog'liq?",
     image:
       "https://xrn-a2s-98a-sa7.esys.pro/storage/blogs/main-images/1/Z8x2Q2tC1jwsJs4Gc8vWiJMtm9ORLgPWqxJnrlDS.webp",
     date: "2025-08-11",
