@@ -80,7 +80,7 @@ const showToast = (text, type) => {
       class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden bg-[#011424]"
     >
       <!-- Lottie Background -->
-      <div class="absolute inset-0 w-full h-full ml-[333px]">
+      <div class="absolute inset-0 w-full h-full md:ml-[333px]">
         <iframe
           src="https://lottie.host/embed/26a23b78-f8b5-47be-bb92-563ca44820d6/v0gXWgZoaH.lottie"
           class="w-full h-full"
@@ -92,9 +92,9 @@ const showToast = (text, type) => {
 
       <!-- Contact Form -->
       <div
-        class="relative z-10 w-full max-w-lg md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
+        class="relative z-10 w-[90%] sm:w-[85%] md:w-full max-w-lg p-6 md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
-        <h2 class="text-3xl font-bold text-white mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-white mb-6 text-center md:text-left">
           {{ t("contact.title") }}
         </h2>
 
@@ -118,7 +118,7 @@ const showToast = (text, type) => {
           </div>
 
           <!-- Tabs -->
-          <div class="flex space-x-2">
+          <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
             <button
               type="button"
               @click="selectedTab = 'email'"

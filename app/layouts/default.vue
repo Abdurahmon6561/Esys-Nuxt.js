@@ -328,11 +328,13 @@ onMounted(async () => {
         <div
           class="absolute top-6 left-6 right-6 flex items-center justify-between mt-[14px]"
         >
-          <img
+          <NuxtLink :to="localePath('/')">
+                    <img
             src="/images/footer-logo.svg"
             alt="Logo"
             class="h-8 object-contain ml-4"
           />
+          </NuxtLink>
 
           <button
             @click="mobileMenuOpen = false"
