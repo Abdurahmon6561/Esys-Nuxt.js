@@ -156,9 +156,7 @@ onMounted(async () => {
               src="/images/logo.webp"
               alt="logo"
               class="h-8"
-              :class="
-                passedHero ? 'invert' : ''
-              "
+              :class="passedHero ? 'invert' : ''"
             />
           </div>
         </NuxtLink>
@@ -183,11 +181,14 @@ onMounted(async () => {
               <NuxtLink
                 :to="localePath('/projects')"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
-                :class="
+                :class="[
                   passedHero || route.path.includes('/view')
                     ? 'text-black after:bg-black'
-                    : 'text-white after:bg-white'
-                "
+                    : 'text-white after:bg-white',
+                  route.path.includes('/projects')
+                    ? 'font-semibold after:w-full'
+                    : '',
+                ]"
               >
                 {{ t("header.projects") }}
               </NuxtLink>
@@ -329,11 +330,11 @@ onMounted(async () => {
           class="absolute top-6 left-6 right-6 flex items-center justify-between mt-[14px]"
         >
           <NuxtLink :to="localePath('/')">
-                    <img
-            src="/images/footer-logo.svg"
-            alt="Logo"
-            class="h-8 object-contain ml-4"
-          />
+            <img
+              src="/images/footer-logo.svg"
+              alt="Logo"
+              class="h-8 object-contain ml-4"
+            />
           </NuxtLink>
 
           <button
