@@ -22,14 +22,16 @@ onMounted(() => {
 });
 </script>
 
-
 <template>
-  <div v-if="project" class="mb-[80px] mt-[80px]">
-    <div class="max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden">
-      
+  <div v-if="project" class="mb-[40px] mt-[60px] md:mb-[80px] md:mt-[80px] px-4">
+    <div
+      class="w-full max-w-4xl mx-auto bg-white rounded-xl md:rounded-2xl overflow-hidden  "
+    >
       <!-- Title -->
-      <div class="px-6 pt-6">
-        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+      <div class="px-4 md:px-6 pt-4 md:pt-6">
+        <h1
+          class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight text-center md:text-left"
+        >
           {{ project.title }}
         </h1>
       </div>
@@ -39,19 +41,23 @@ onMounted(() => {
         <img
           :src="project.image"
           alt="Project Image"
-          class="w-full h-[420px] object-cover rounded-lg"
+          class="w-full h-[220px] sm:h-[300px] md:h-[420px] object-cover rounded-lg"
         />
       </div>
 
       <!-- Content -->
-      <div class="px-6 py-8 space-y-6">
+      <div class="px-4 md:px-6 py-6 md:py-8 space-y-4 md:space-y-6">
         <!-- Tech -->
-        <p class="inline-block px-4 py-1 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full">
+        <p
+          class="inline-block px-3 py-1 text-xs sm:text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full"
+        >
           {{ project.tech }}
         </p>
 
         <!-- Description -->
-        <p class="text-lg text-gray-700 leading-relaxed">
+        <p
+          class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left"
+        >
           Bang & Olufsen partnered with HELLO MONDAY/DEPT® to create a web app
           that gives every user a uniquely sensory experience. ‘See Yourself in
           Sound’ is designed to generate a vibrant, one-of-a-kind avatar for every

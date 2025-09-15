@@ -342,7 +342,7 @@ onMounted(() => {
               @mouseenter="updatePosition($event, index)"
               @mousemove="updatePosition($event, index)"
               @mouseleave="resetPosition(index)"
-              class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700 group"
+              class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-[30px] py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700 group"
             >
               <span
                 class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"

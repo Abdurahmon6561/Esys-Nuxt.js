@@ -325,12 +325,23 @@ onMounted(async () => {
         class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xl text-black p-8"
       >
         <!-- Close Button -->
-        <button
-          @click="mobileMenuOpen = false"
-          class="absolute top-6 right-6 text-2xl font-light hover:rotate-90 transition-transform"
+        <div
+          class="absolute top-6 left-6 right-6 flex items-center justify-between mt-[14px]"
         >
-          ✕
-        </button>
+          <img
+            src="/images/footer-logo.svg"
+            alt="Logo"
+            class="h-8 object-contain ml-4"
+          />
+
+          <button
+            @click="mobileMenuOpen = false"
+            class="text-2xl font-light hover:rotate-90 transition-transform"
+            style="margin-right: 29px"
+          >
+            ✕
+          </button>
+        </div>
 
         <!-- Menu Items -->
         <nav class="flex flex-col items-center gap-8 text-center">
@@ -392,7 +403,9 @@ onMounted(async () => {
       <footer>
         <div class="md:px-10 md:py-10 p-4 bg-[#e8e8e8]">
           <div class="bg-white rounded-xl md:p-6 p-2">
-            <div class="md:flex justify-center gap-1 mb-[40px] mt-[20px]">
+            <div
+              class="md:flex justify-center gap-1 mb-[40px] mt-[20px] hidden"
+            >
               <button
                 v-for="(img, i) in [
                   '/images/women-footer.webp',
@@ -443,7 +456,7 @@ onMounted(async () => {
               </button>
             </div>
 
-            <hr />
+            <hr class="hidden md:block" />
             <div class="md:px-10 md:py-[100px] p-8 rounded-xl">
               <div class="md:flex justify-between items-center gap-4 mb-[90px]">
                 <NuxtLink :to="localePath('/')">
@@ -528,7 +541,7 @@ onMounted(async () => {
                   2025 © Evolution Systems — {{ t("footer.security") }}.
                 </p>
                 <p
-                  class="font-semibold text-[14px] text-[#080808] flex items-center gap-1 text-center"
+                  class="font-semibold text-[14px] mt-3 mb-3 md:mt-0 md:mb-0 text-[#080808] flex items-center gap-1 text-center"
                 >
                   Design by
                   <span class="opacity-50 font-normal">Crave Studio</span>

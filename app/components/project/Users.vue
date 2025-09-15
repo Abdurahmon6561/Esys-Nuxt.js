@@ -94,50 +94,54 @@ onBeforeUnmount(() => {
 
 
 <template>
-  <div class="p-6 bg-[#ededed] rounded-xl">
+<div class="p-4 sm:p-6 bg-[#ededed] rounded-xl">
     <div
       class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg"
       style="background-image: url('/images/users-bg.webp')"
     >
-      <div class="md:w-[576px] p-8 md:p-0">
+      <!-- Card wrapper -->
+      <div class="w-full max-w-[576px] px-4 sm:px-6 lg:px-0">
         <Transition name="fade-slide" mode="out-in">
           <div
             :key="testimonials[current].id"
-            class="bg-white rounded-2xl shadow-md p-8 text-center relative"
+            class="bg-white rounded-2xl shadow-md p-6 sm:p-8 text-center relative"
           >
-            <div class="flex justify-center -mt-20 mb-4">
+            <!-- Avatar -->
+            <div class="flex justify-center -mt-16 sm:-mt-20 mb-4">
               <img
                 :src="testimonials[current].avatar"
                 alt="avatar"
-                class="w-24 h-24 rounded-xl object-cover shadow-md p-1 bg-white"
+                class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover shadow-md p-1 bg-white"
               />
             </div>
 
-            <p class="text-gray-700 text-sm leading-relaxed">
+            <!-- Text -->
+            <p class="text-gray-700 text-sm sm:text-base leading-relaxed">
               {{ testimonials[current].text }}
             </p>
 
+            <!-- Name + Role -->
             <div class="mt-6">
-              <h3 class="font-semibold text-gray-900 text-[18px]">
+              <h3 class="font-semibold text-gray-900 text-base sm:text-lg">
                 {{ testimonials[current].name }}
               </h3>
-              <p class="text-[#080808] text-sm">
+              <p class="text-[#080808] text-xs sm:text-sm">
                 {{ testimonials[current].role }}
               </p>
             </div>
 
             <!-- Arrows -->
             <div
-              class="flex justify-between mt-2"
+              class="flex justify-between mt-4 sm:mt-6"
               v-if="testimonials.length > 1"
             >
               <button
                 @click="prev"
-                class="flex items-center justify-center w-12 h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 rotate-180 transition-all duration-300"
+                class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 rotate-180 transition-all duration-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-gray-700"
+                  class="h-5 w-5 sm:h-6 sm:w-6 text-gray-700"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -153,11 +157,11 @@ onBeforeUnmount(() => {
 
               <button
                 @click="next"
-                class="flex items-center justify-center w-12 h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 transition-all duration-300"
+                class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 transition-all duration-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-gray-700"
+                  class="h-5 w-5 sm:h-6 sm:w-6 text-gray-700"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -176,26 +180,25 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <!-- this have to work -->
-<!-- Floating + interactive users arrow -->
-<div class="flex justify-center">
-  <button
-  ref="usersArrow"
-  @click="scrollDown"
-  class="relative mt-[-50px] cursor-pointer z-50"
->
-  <!-- Main Shape -->
-  <img src="/images/users-arrow.svg" alt="users arrow" />
-
-  <!-- Small Down Arrow inside -->
-  <div
-    class="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-  >
-<img src="/images/arrow-down-hero.png" alt="arrow" class="z-50 w-4 h-4" />
-  </div>
-</button>
-</div>
-
+    <!-- Floating users arrow (hidden on small screens) -->
+    <div class="flex justify-center">
+      <button
+        ref="usersArrow"
+        @click="scrollDown"
+        class="relative mt-[-40px] sm:mt-[-50px] cursor-pointer z-50 hidden md:block"
+      >
+        <img src="/images/users-arrow.svg" alt="users arrow" />
+        <div
+          class="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        >
+          <img
+            src="/images/arrow-down-hero.png"
+            alt="arrow"
+            class="z-50 w-3 h-3 sm:w-4 sm:h-4"
+          />
+        </div>
+      </button>
+    </div>
   </div>
 </template>
 

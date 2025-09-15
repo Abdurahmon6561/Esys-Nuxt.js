@@ -79,56 +79,55 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container mx-auto mb-[80px] mt-[64px]" id="projects">
+  <div class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4">
+    <!-- Small Section Title -->
     <div class="flex justify-center items-center">
       <h3
-        class="text-sm text-[#080808] border-2 rounded-full p-2 border-[#EEE]"
+        class="text-xs sm:text-sm text-[#080808] border-2 rounded-full px-3 py-1 border-[#EEE]"
       >
         {{ t("hero.our_projects") }}
       </h3>
     </div>
 
+    <!-- Section Title -->
     <div class="flex justify-center">
       <h2
-        class="md:text-5xl text-2xl text-[#080808] font-medium text-center mt-5 md:w-[1070px]"
+        class="text-xl sm:text-2xl md:text-5xl text-[#080808] font-medium text-center mt-4 md:mt-5 md:w-[1070px] leading-snug"
       >
         {{ t("projects.title") }}
       </h2>
     </div>
 
-    <div class="flex flex-wrap justify-center gap-[32px] mt-12">
-      <!-- Cards -->
+    <!-- Cards -->
+    <div class="flex flex-wrap justify-center gap-6 md:gap-[32px] mt-8 md:mt-12">
       <div
         v-for="(card, i) in cards"
         :key="i"
         ref="cardsRef"
-        class="relative rounded-xl overflow-hidden shadow-xl md:h-[501px] md:w-[656px] project-cards"
+        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
       >
+        <!-- Image -->
         <img
           :src="card.image"
           alt="Project"
           class="w-full h-full object-cover"
         />
 
-        <!-- Eye Cursor -->
+        <!-- Eye Cursor (desktop only) -->
         <div class="card-cursor" @click="openProject(card)">
           <svg
             class="eye-svg"
             viewBox="0 0 64 64"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <!-- Eye outline -->
             <path
               d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
               fill="none"
               stroke="white"
               stroke-width="4"
             />
-            <!-- Eyeball -->
             <circle cx="32" cy="32" r="8" fill="white" />
-            <!-- Pupil -->
             <circle cx="32" cy="32" r="4" fill="black" />
-            <!-- Eyelid -->
             <rect
               class="eyelid"
               x="0"
@@ -141,11 +140,11 @@ onMounted(async () => {
         </div>
 
         <!-- Category -->
-        <div class="absolute top-3 left-3 flex gap-1 z-10">
+        <div class="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-wrap gap-1 z-10">
           <span
             v-for="(tag, t) in card.tags"
             :key="t"
-            class="bg-white text-gray-800 text-sm px-3 py-1 rounded-full shadow"
+            class="bg-white text-gray-800 text-xs sm:text-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow"
           >
             {{ tag }}
           </span>
@@ -154,12 +153,12 @@ onMounted(async () => {
         <!-- Button -->
         <a :href="card.link" target="_blank">
           <button
-            class="absolute bottom-6 left-[20px] right-[20px] backdrop-blur-md bg-white/30 rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between hover:bg-white/40 transition"
+            class="absolute bottom-3 sm:bottom-6 left-3 sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/40 transition"
           >
             <div class="text-left">
               <h3
                 :class="[
-                  'md:text-[24px] font-medium',
+                  'text-sm sm:text-lg md:text-[24px] font-medium leading-tight',
                   i === 1 ? 'text-black' : 'text-white',
                 ]"
               >
@@ -167,7 +166,7 @@ onMounted(async () => {
               </h3>
               <p
                 :class="[
-                  'md:text-[14px]',
+                  'text-xs sm:text-sm md:text-[14px]',
                   i === 1 ? 'text-black' : 'text-white',
                 ]"
               >
@@ -175,11 +174,11 @@ onMounted(async () => {
               </p>
             </div>
             <div
-              class="flex items-center justify-center md:w-12 md:h-12 w-[30px] h-[30px] rounded-xl border-2 border-gray-100"
+              class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl border-2 border-gray-100"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-white"
+                class="h-4 w-4 sm:h-5 sm:w-5 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -198,6 +197,7 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .card-cursor {

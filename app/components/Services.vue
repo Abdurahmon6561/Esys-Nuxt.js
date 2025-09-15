@@ -114,7 +114,7 @@ const { t } = useI18n();
         </div>
 
         <button
-          class="w-full bg-white rounded-xl md:p-4 p-2 flex items-center justify-between border-2 border-[#e0e0e0] hover:bg-gray-100 transition mt-auto"
+          class="w-full bg-white rounded-xl mt-7 md:p-4 p-2 flex items-center justify-between border-2 border-[#e0e0e0] hover:bg-gray-100 transition md:mt-auto"
         >
           <span class="text-[16px] font-medium">{{ t("services.order") }}</span>
           <span

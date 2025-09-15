@@ -85,14 +85,18 @@ onMounted(async () => {
   <div class="container mx-auto mb-[80px] mt-[64px]" id="projects">
     <div>
       <div>
-        <div class="flex flex-wrap justify-center gap-[32px] mt-12">
+        <!-- Responsive Grid -->
+        <div
+          class="flex flex-wrap justify-center gap-6 sm:gap-8 mt-12"
+        >
           <!-- Cards -->
           <div
             v-for="(card, i) in cards"
             :key="i"
             :ref="(el) => (cardsRef[i] = el)"
-            class="relative rounded-xl overflow-hidden shadow-xl md:h-[501px] md:w-[656px] project-cards"
+            class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[300px] sm:h-[400px] md:h-[501px] project-cards"
           >
+            <!-- Image -->
             <img
               :src="card.image"
               alt="Project"
@@ -101,40 +105,36 @@ onMounted(async () => {
 
             <!-- Custom Cursor INSIDE Card (Clickable) -->
             <div class="card-cursor" @click="openProject(card)">
-          <svg
-            class="eye-svg"
-            viewBox="0 0 64 64"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <!-- Eye outline -->
-            <path
-              d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
-              fill="none"
-              stroke="white"
-              stroke-width="4"
-            />
-            <!-- Eyeball -->
-            <circle cx="32" cy="32" r="8" fill="white" />
-            <!-- Pupil -->
-            <circle cx="32" cy="32" r="4" fill="black" />
-            <!-- Eyelid -->
-            <rect
-              class="eyelid"
-              x="0"
-              y="0"
-              width="64"
-              height="32"
-              fill="black"
-            />
-          </svg>
-        </div>
+              <svg
+                class="eye-svg"
+                viewBox="0 0 64 64"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 32C10 16 22 8 32 8s22 8 30 24c-8 16-20 24-30 24S10 48 2 32Z"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="4"
+                />
+                <circle cx="32" cy="32" r="8" fill="white" />
+                <circle cx="32" cy="32" r="4" fill="black" />
+                <rect
+                  class="eyelid"
+                  x="0"
+                  y="0"
+                  width="64"
+                  height="32"
+                  fill="black"
+                />
+              </svg>
+            </div>
 
             <!-- Category -->
-            <div class="absolute top-3 left-3 flex gap-1 z-10">
+            <div class="absolute top-3 left-3 flex gap-1 z-10 flex-wrap">
               <span
                 v-for="(tag, t) in card.tags"
                 :key="t"
-                class="bg-white text-gray-800 text-sm px-3 py-1 rounded-full shadow"
+                class="bg-white text-gray-800 text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full shadow"
               >
                 {{ tag }}
               </span>
@@ -143,12 +143,13 @@ onMounted(async () => {
             <!-- Button -->
             <a :href="card.link" target="_blank">
               <button
-                class="absolute bottom-6 left-[20px] right-[20px] backdrop-blur-md bg-white/30 rounded-xl shadow md:p-4 p-2 md:w-[608px] md:h-[89px] flex items-center justify-between hover:bg-white/40 transition"
+                class="absolute bottom-4 sm:bottom-6 left-3 sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-xl shadow p-2 sm:p-4 flex items-center justify-between hover:bg-white/40 transition"
               >
+                <!-- Text -->
                 <div class="text-left">
                   <h3
                     :class="[
-                      'md:text-[24px] font-medium',
+                      'text-sm sm:text-lg md:text-[24px] font-medium',
                       i === 1 ? 'text-black' : 'text-white',
                     ]"
                   >
@@ -156,19 +157,20 @@ onMounted(async () => {
                   </h3>
                   <p
                     :class="[
-                      'md:text-[14px]',
+                      'text-xs sm:text-sm md:text-[14px]',
                       i === 1 ? 'text-black' : 'text-white',
                     ]"
                   >
                     {{ card.tech }}
                   </p>
                 </div>
+                <!-- Arrow -->
                 <div
-                  class="flex items-center justify-center md:w-12 md:h-12 w-[30px] h-[30px] rounded-xl border-2 border-gray-100"
+                  class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl border-2 border-gray-100"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-white"
+                    class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-white"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -186,9 +188,11 @@ onMounted(async () => {
           </div>
         </div>
       </div>
+
+      <!-- More Projects Button -->
       <div class="flex justify-center items-center mt-12">
         <button
-          class="px-5 text-[#080808] border-2 rounded-full p-2 border-[#EEE] font-medium"
+          class="px-5 text-[#080808] border-2 rounded-full py-2 border-[#EEE] font-medium text-sm sm:text-base"
         >
           {{ t("projects.more_projects") }}
         </button>
