@@ -195,14 +195,14 @@ onMounted(() => {
     ".hero-text",
     {
       scale: 0.3,
-      backgroundPosition: "100% 0", // start with black
+      backgroundPosition: "100% 0",
     },
     {
       scale: 1,
       opacity: 1,
       duration: 2.5,
       ease: "power3.out",
-      backgroundPosition: "0% 0", // move gradient like a snake across text
+      backgroundPosition: "0% 0",
     }
   );
 
