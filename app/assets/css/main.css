@@ -3,7 +3,68 @@
 @tailwind utilities;
 
 @layer base {
-  h1, h2, h3, h4, h5, h6, p, span {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span {
     font-family: var(--font-family-Font-1, "Helvetica Neue"), sans-serif;
   }
 }
+/* .col-center {
+  @apply flex flex-col justify-center items-center;
+}
+.abs-center {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+.abs-center {
+  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+.general-title {
+  @apply 2xl:text-[8.5rem] md:text-8xl text-5xl font-bold uppercase leading-[9vw] tracking-[-.35vw];
+}
+
+.spin-circle {
+  animation: spin 20s linear infinite;
+}
+
+.paragraph-line {
+  @apply text-nowrap overflow-hidden;
+}
+
+.benefit-section {
+  .first-title {
+    @apply rotate-[3deg] relative z-10;
+  }
+
+  .second-title {
+    @apply rotate-[-1deg] md:-translate-y-5;
+  }
+
+  .third-title {
+    @apply rotate-[1deg] md:-translate-y-12 relative z-10;
+  }
+
+  .fourth-title {
+    @apply rotate-[-5deg] md:-translate-y-12;
+  }
+
+  .vd-pin-section {
+    @apply md:h-[110vh] h-dvh overflow-hidden md:!-translate-y-[15%] md:mt-0 mt-20;
+
+    video {
+      @apply size-full absolute inset-0 object-cover;
+    }
+
+    .play-btn {
+      @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[9vw] flex justify-center items-center bg-[#ffffff1a] backdrop-blur-xl rounded-full;
+    }
+
+    img:first-of-type {
+      @apply size-[15vw];
+    }
+  }
+} */

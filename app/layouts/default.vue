@@ -354,7 +354,7 @@ onMounted(async () => {
           <NuxtLink
             @click="mobileMenuOpen = false"
             to="#"
-            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-[#B88E2F] after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
+            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
           >
             {{ t("header.company") }}
           </NuxtLink>
@@ -362,15 +362,25 @@ onMounted(async () => {
           <NuxtLink
             @click="mobileMenuOpen = false"
             :to="localePath('/projects')"
-            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-[#B88E2F] after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
+            :class="[
+              $route.path.includes('/projects')
+                ? 'after:w-full'
+                : 'after:w-0',
+            ]"
+            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
           >
             {{ t("header.projects") }}
           </NuxtLink>
 
           <NuxtLink
             @click="mobileMenuOpen = false"
-            to="#"
-            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-[#B88E2F] after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
+            :to="localePath('/blog')"
+            :class="[
+              $route.path.includes('/blog')
+                ? 'after:w-full'
+                : 'after:w-0',
+            ]"
+            class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
           >
             {{ t("header.blog") }}
           </NuxtLink>

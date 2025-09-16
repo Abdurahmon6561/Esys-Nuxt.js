@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import Hero from "~/components/blog/Hero.vue";
 import Info from "~/components/blog/Info.vue";
+// import BenefitSection from "~/components/video/BenefitSection.vue";
 
 gsap.registerPlugin(ScrollToPlugin);
 
@@ -42,5 +43,6 @@ onMounted(async () => {
   <div>
     <div class="page-section hero-section"><Hero /></div>
     <div class="page-section"><Info /></div>
+    <!-- <div class="page-section"><BenefitSection /></div> -->
   </div>
 </template>
