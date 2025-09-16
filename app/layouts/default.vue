@@ -1,18 +1,18 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
-import { useI18n } from "vue-i18n";
 import { gsap } from "gsap";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
+const { locale, locales, setLocale, t } = useI18n();
+const localePath = useLocalePath();
 const route = useRoute();
 
 const mobileMenuOpen = ref(false);
 const open = ref(false);
 const menuOpen = ref(false);
 const dropdownRef = ref(null);
-const { locale, locales, setLocale, t } = useI18n();
 const cardsRef = ref([]);
-const localePath = useLocalePath();
 
 const currentLocaleName = computed(() => {
   const lang = locales.value.find((l) => l.code === locale.value);

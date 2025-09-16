@@ -172,7 +172,7 @@ onMounted(() => {
     {
       scale: 1,
       opacity: 1,
-      duration: 1,
+      duration: 2,
       ease: "power3.out",
       backgroundPosition: "0% 0", // move gradient like a snake across text
     }
@@ -238,7 +238,7 @@ onMounted(() => {
           :key="index"
           :class="[
             'relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
-            `hero-btn-${index + 1}`, // ✅ unique GSAP class
+            `hero-btn-${index + 1}`,
           ]"
           @mouseenter="updatePosition($event, index)"
           @mousemove="updatePosition($event, index)"
