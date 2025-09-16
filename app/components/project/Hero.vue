@@ -172,7 +172,7 @@ onMounted(() => {
     {
       scale: 1,
       opacity: 1,
-      duration: 2,
+      duration: 2.5,
       ease: "power3.out",
       backgroundPosition: "0% 0", // move gradient like a snake across text
     }
