@@ -96,7 +96,7 @@ const showToast = (text, type) => {
         class="relative z-10 w-[90%] sm:w-[85%] md:w-full max-w-lg p-6 md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
         <h2
-          class="text-xl sm:text-2xl md:text-5xl font-medium text-white mb-6 text-center md:text-left leading-snug"
+          class="text-xl sm:text-2xl md:text-[46px] font-medium text-white mb-9 text-center md:text-left leading-snug"
         >
           {{ t("contact.title") }}
         </h2>
@@ -120,23 +120,33 @@ const showToast = (text, type) => {
           >
             <!-- Sliding background indicator -->
             <div
-              class="absolute top-0 bottom-0 w-1/2 bg-white transition-all duration-500 ease-in-out"
-              :class="selectedTab === 'email' ? 'left-0' : 'left-1/2'"
+              class="absolute bg-white transition-all duration-500 ease-in-out"
+              :class="[
+                // Desktop (row layout)
+                'sm:top-0 sm:bottom-0 sm:w-1/2 sm:h-full',
+                // Mobile (col layout)
+                'top-0 left-0 w-full h-1/2',
+                selectedTab === 'email'
+                  ? 'sm:left-0 sm:top-0 left-0 top-0'
+                  : 'sm:left-1/2 sm:top-0 left-0 top-1/2',
+              ]"
             ></div>
 
+            <!-- Email -->
             <button
               type="button"
               @click="selectedTab = 'email'"
-              class="flex-1 h-[41px] z-10 relative text-sm md:text-base font-medium transition-all"
+              class="flex-1 sm:h-[41px] h-12 z-10 relative text-sm md:text-base font-medium transition-all"
               :class="selectedTab === 'email' ? 'text-black' : 'text-gray-300'"
             >
               {{ t("contact.email") }}
             </button>
 
+            <!-- Phone -->
             <button
               type="button"
               @click="selectedTab = 'phone'"
-              class="flex-1 h-[41px] z-10 relative text-sm md:text-base font-medium transition-all"
+              class="flex-1 sm:h-[41px] h-12 z-10 relative text-sm md:text-base font-medium transition-all"
               :class="selectedTab === 'phone' ? 'text-black' : 'text-gray-300'"
             >
               {{ t("contact.phone") }}
