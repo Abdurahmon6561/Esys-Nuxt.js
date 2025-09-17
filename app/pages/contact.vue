@@ -1,4 +1,5 @@
-in this code when i swiching the tabs the bg color have to go to other tab with animation smooth
+in this code when i swiching the tabs the bg color have to go to other tab with
+animation smooth
 <script setup>
 import { ref } from "vue";
 import Toastify from "toastify-js";
@@ -95,7 +96,9 @@ const showToast = (text, type) => {
       <div
         class="relative z-10 w-[90%] sm:w-[85%] md:w-full max-w-lg p-6 md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
-        <h2 class="text-xl sm:text-2xl md:text-5xl font-medium text-white mb-6 text-center md:text-left leading-snug">
+        <h2
+          class="text-xl sm:text-2xl md:text-5xl font-medium text-white mb-6 text-center md:text-left leading-snug"
+        >
           {{ t("contact.title") }}
         </h2>
 
@@ -113,30 +116,31 @@ const showToast = (text, type) => {
           </div>
 
           <!-- Tabs -->
-          <div class="flex flex-col sm:flex-row">
+          <div
+            class="relative flex flex-col sm:flex-row rounded-lg bg-white/10 overflow-hidden"
+          >
+            <!-- Sliding background indicator -->
+            <div
+              class="absolute top-0 bottom-0 w-1/2 bg-white transition-all duration-500 ease-in-out"
+              :class="selectedTab === 'email' ? 'left-0' : 'left-1/2'"
+            ></div>
+
             <button
               type="button"
               @click="selectedTab = 'email'"
-              :class="[
-                'flex-1 h-[41px] rounded-lg font-medium transition-all rounded-r-none',
-                selectedTab === 'email'
-                  ? ' text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl rounded-r-none transition-transform duration-700'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20',
-              ]"
+              class="flex-1 h-[41px] z-10 relative text-sm md:text-base font-medium transition-all"
+              :class="selectedTab === 'email' ? 'text-black' : 'text-gray-300'"
             >
-              <span>{{ t("contact.email") }}</span>
+              {{ t("contact.email") }}
             </button>
+
             <button
               type="button"
               @click="selectedTab = 'phone'"
-              :class="[
-                'flex-1 h-[41px] rounded-lg font-medium transition-all rounded-l-none',
-                selectedTab === 'phone'
-                  ? ' text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 rounded-l-none hover:shadow-2xl transition-transform duration-700'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20',
-              ]"
+              class="flex-1 h-[41px] z-10 relative text-sm md:text-base font-medium transition-all"
+              :class="selectedTab === 'phone' ? 'text-black' : 'text-gray-300'"
             >
-              <span>{{ t("contact.phone") }}</span>
+              {{ t("contact.phone") }}
             </button>
           </div>
 
