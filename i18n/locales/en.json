@@ -57,6 +57,10 @@
     "first_title": "How Automation and AI Are Transforming Website Development Forever",
     "second_title": "How Much Does Website Development Cost and What Does the Price Depend On ?"
   },
+  "toastify": {
+    "success_send": "Sent successfully",
+    "error": "Error"
+  },
   "footer": {
     "home": "Home",
     "company": "Company",

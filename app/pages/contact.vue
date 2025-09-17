@@ -1,5 +1,3 @@
-in this code when i swiching the tabs the bg color have to go to other tab with
-animation smooth
 <script setup>
 import { ref } from "vue";
 import Toastify from "toastify-js";
@@ -48,7 +46,7 @@ const handleSubmit = (e) => {
     return;
   }
 
-  showToast("Message sent successfully!", "success");
+  showToast(t("toastify.success_send"), "success");
 
   // reset
   name.value = "";
@@ -65,7 +63,8 @@ const showToast = (text, type) => {
     gravity: "top",
     position: "right",
     style: {
-      background: type === "success" ? "#1aab9a" : "crimson",
+      background: type === "success" ? "white" : "crimson",
+      color: type === "success" ? "black" : "white",
       borderRadius: "8px",
       padding: "10px 20px",
     },

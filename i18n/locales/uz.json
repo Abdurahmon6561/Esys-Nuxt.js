@@ -57,6 +57,10 @@
     "first_title": "Avtomatlashtirish va sun'iy intellekt veb-sayt ishlab chiqishni qanday o'zgartiradi ?",
     "second_title": "Sayt ishlab chiqish qancha turadi va narxi nimalarga bog'liq ?"
   },
+  "toastify": {
+    "success_send": "Muvaffaqiyatli yuborildi",
+    "error": "Xatolik"
+  },
   "footer": {
     "home": "Bosh sahifa",
     "company": "Kompaniya",
