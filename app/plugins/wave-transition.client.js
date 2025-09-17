@@ -6,6 +6,31 @@ let transitionOverlay = null
 let isTransitioning = false
 let isInitialLoad = true
 
+// Immediately hide page content with CSS until wave transition is ready
+if (process.client && !window.waveInitialized) {
+  window.waveInitialized = true
+  
+  // Create CSS to hide content immediately
+  const style = document.createElement('style')
+  style.id = 'wave-initial-hide'
+  style.textContent = `
+    body { visibility: hidden !important; }
+    #wave-transition-overlay { visibility: visible !important; }
+  `
+  
+  // Insert CSS as early as possible
+  if (document.head) {
+    document.head.appendChild(style)
+  } else {
+    // If head doesn't exist yet, create it
+    const head = document.createElement('head')
+    head.appendChild(style)
+    if (document.documentElement) {
+      document.documentElement.appendChild(head)
+    }
+  }
+}
+
 // Create overlay immediately when script loads
 const createOverlay = () => {
   if (transitionOverlay) return transitionOverlay
@@ -13,43 +38,44 @@ const createOverlay = () => {
   transitionOverlay = document.createElement('div')
   transitionOverlay.id = 'wave-transition-overlay'
   transitionOverlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #f2f1f0;
-    z-index: 99999;
-    pointer-events: none;
-    display: block;
-    clip-path: circle(150% at 50% 100%);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #f2f1f0 !important;
+    z-index: 999999 !important;
+    pointer-events: none !important;
+    display: block !important;
+    visibility: visible !important;
+    clip-path: circle(150% at 50% 100%) !important;
   `
-  document.body.appendChild(transitionOverlay)
+  
+  // Append to body or html if body doesn't exist
+  const target = document.body || document.documentElement
+  if (target) {
+    target.appendChild(transitionOverlay)
+  }
+  
   return transitionOverlay
 }
 
-// Initialize overlay immediately for first load
-if (process.client && !window.waveOverlayInitialized) {
-  window.waveOverlayInitialized = true
-  
+// Initialize overlay and styles immediately
+if (process.client) {
   // Create overlay as soon as possible
   const initializeOverlay = () => {
-    if (document.body) {
-      createOverlay()
-    } else {
-      // If body doesn't exist yet, wait for it
-      document.addEventListener('DOMContentLoaded', () => {
-        createOverlay()
-      })
-    }
+    createOverlay()
   }
   
-  // Try to initialize immediately
+  // Try multiple approaches to initialize as early as possible
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeOverlay)
   } else {
     initializeOverlay()
   }
+  
+  // Also try immediate initialization
+  setTimeout(initializeOverlay, 0)
 }
 
 // Create global transition function
@@ -63,6 +89,7 @@ const createWaveTransition = (callback, skipCallback = false) => {
     // Show overlay and start wave animation
     gsap.set(overlay, {
       display: 'block',
+      visibility: 'visible',
       clipPath: 'circle(0% at 50% 100%)',
     })
     
@@ -131,7 +158,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     
     // Intercept existing and future NuxtLinks
     const observer = new MutationObserver(() => {
-      // Get all links that look like navigation links including buttons with click handlers
       const links = document.querySelectorAll('a[href]:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]):not([href^="#"]), a[to], button[data-wave-transition]')
       
       links.forEach(link => {
@@ -159,27 +185,35 @@ export default defineNuxtPlugin((nuxtApp) => {
     }, 100)
   }
   
-  // Handle browser navigation (back/forward buttons)
+  // Handle browser navigation (back/forward buttons)  
   const handlePopState = () => {
-    createWaveTransition(null, true) // Skip callback for popstate
+    createWaveTransition(null, true)
   }
   
-  // Handle page load transition - now this just animates out
+  // Handle page load transition
   const handlePageLoad = () => {
     if (!isInitialLoad) return
     isInitialLoad = false
     
-    // The overlay should already be covering the screen
-    // Just animate it out to reveal the content
     const overlay = transitionOverlay || createOverlay()
     
-    // Ensure overlay is visible and covering screen
+    // Ensure overlay is covering the screen
     gsap.set(overlay, {
       display: 'block',
+      visibility: 'visible',
       clipPath: 'circle(150% at 50% 100%)',
     })
     
-    // Wait a moment then animate out from top
+    // Remove the initial hide styles and show content
+    const hideStyle = document.getElementById('wave-initial-hide')
+    if (hideStyle) {
+      hideStyle.remove()
+    }
+    
+    // Make body visible but keep it hidden behind overlay
+    document.body.style.visibility = 'visible'
+    
+    // Wait then animate wave out to reveal content
     setTimeout(() => {
       gsap.to(overlay, {
         clipPath: 'circle(0% at 50% 0%)',
@@ -189,36 +223,50 @@ export default defineNuxtPlugin((nuxtApp) => {
           gsap.set(overlay, { display: 'none' })
         }
       })
-    }, 300) // Increased delay to ensure content is fully loaded
+    }, 400)
   }
   
   // Setup on client-side
   if (process.client) {
     // Handle page load transition
     nuxtApp.hook('app:mounted', () => {
-      // Minimal delay to ensure everything is ready
       setTimeout(() => {
         handlePageLoad()
-      }, 200)
+      }, 100)
       
       setTimeout(() => {
         interceptNuxtLinks()
       }, 500)
     })
     
+    // Fallback in case app:mounted doesn't fire quickly enough
+    setTimeout(() => {
+      if (isInitialLoad) {
+        handlePageLoad()
+      }
+    }, 1000)
+    
     // Handle browser back/forward
     window.addEventListener('popstate', handlePopState)
     
-    // Handle page visibility changes (for better UX)
+    // Handle page visibility changes
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && isTransitioning) {
-        // Reset if stuck in transition state
         isTransitioning = false
         if (transitionOverlay) {
           gsap.set(transitionOverlay, { display: 'none' })
         }
       }
     })
+    
+    // Emergency fallback - ensure content is visible after 3 seconds
+    setTimeout(() => {
+      const hideStyle = document.getElementById('wave-initial-hide')
+      if (hideStyle) {
+        hideStyle.remove()
+        document.body.style.visibility = 'visible'
+      }
+    }, 3000)
     
     // Clean up on app unmount
     nuxtApp.hook('app:beforeUnmount', () => {
