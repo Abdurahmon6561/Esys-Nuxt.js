@@ -105,8 +105,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     // Intercept existing and future NuxtLinks
     const observer = new MutationObserver(() => {
-      // Get all links that look like navigation links
-      const links = document.querySelectorAll('a[href]:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]), a[to]')
+      // Get all links that look like navigation links including buttons with click handlers
+      const links = document.querySelectorAll('a[href]:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]):not([href^="#"]), a[to], button[data-wave-transition]')
       
       links.forEach(link => {
         if (!link.hasAttribute('data-wave-intercepted')) {
@@ -123,7 +123,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     // Initial setup for existing links
     setTimeout(() => {
-      const links = document.querySelectorAll('a[href]:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]), a[to]')
+      const links = document.querySelectorAll('a[href]:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]):not([href^="#"]), a[to], button[data-wave-transition]')
       links.forEach(link => {
         if (!link.hasAttribute('data-wave-intercepted')) {
           link.setAttribute('data-wave-intercepted', 'true')
@@ -140,33 +140,38 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // Handle page refresh/reload
   const handlePageLoad = () => {
-    // Show transition on page load
+    // Show full wave transition on page load
     const overlay = createOverlay()
     gsap.set(overlay, {
       display: 'block',
-      clipPath: 'circle(150% at 50% 0%)', // Start from top
+      clipPath: 'circle(150% at 50% 100%)', // Start from bottom like normal transition
     })
 
-    // Animate in from top
-    gsap.to(overlay, {
-      clipPath: 'circle(0% at 50% 0%)',
-      duration: 0.8,
-      ease: "power2.inOut",
-      delay: 0.1,
-      onComplete: () => {
-        gsap.set(overlay, { display: 'none' })
-      }
-    })
+    // Wait a moment then animate out from top
+    setTimeout(() => {
+      gsap.to(overlay, {
+        clipPath: 'circle(0% at 50% 0%)',
+        duration: 0.6,
+        delay: 0.2,
+        ease: "power2.inOut",
+        onComplete: () => {
+          gsap.set(overlay, { display: 'none' })
+        }
+      })
+    }, 200)
   }
 
   // Setup on client-side
   if (process.client) {
     // Handle page load transition
     nuxtApp.hook('app:mounted', () => {
-      handlePageLoad()
+      // Add small delay to ensure proper timing
+      setTimeout(() => {
+        handlePageLoad()
+      }, 100)
       setTimeout(() => {
         interceptNuxtLinks()
-      }, 500) // Small delay to ensure DOM is ready
+      }, 500) // Reduced delay
     })
 
     // Handle browser back/forward

@@ -15,21 +15,26 @@ async function onEnter(el, done) {
   if (process.client) {
     const { gsap } = await import("gsap")
 
-    // Сбрасываем скролл при входе
+    // Reset scroll when entering
     if (window.smoother) {
       window.smoother.scrollTo(0, true) 
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      window.scrollTo({ top: 0, behavior: "instant" }) // Use instant instead of smooth
     }
 
-    gsap.to(el, {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      duration: 0.6,
-      ease: "power2.out",
-      onComplete: done
-    })
+    // Add slight delay to ensure DOM is ready
+    setTimeout(() => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.6,
+        ease: "power2.out",
+        onComplete: done
+      })
+    }, 50)
+  } else {
+    done()
   }
 }
 
@@ -45,6 +50,8 @@ async function onLeave(el, done) {
       ease: "power2.in",
       onComplete: done
     })
+  } else {
+    done()
   }
 }
 </script>
