@@ -4,6 +4,53 @@ import { gsap } from 'gsap'
 // Global transition state
 let transitionOverlay = null
 let isTransitioning = false
+let isInitialLoad = true
+
+// Create overlay immediately when script loads
+const createOverlay = () => {
+  if (transitionOverlay) return transitionOverlay
+  
+  transitionOverlay = document.createElement('div')
+  transitionOverlay.id = 'wave-transition-overlay'
+  transitionOverlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #f2f1f0;
+    z-index: 99999;
+    pointer-events: none;
+    display: block;
+    clip-path: circle(150% at 50% 100%);
+  `
+  document.body.appendChild(transitionOverlay)
+  return transitionOverlay
+}
+
+// Initialize overlay immediately for first load
+if (process.client && !window.waveOverlayInitialized) {
+  window.waveOverlayInitialized = true
+  
+  // Create overlay as soon as possible
+  const initializeOverlay = () => {
+    if (document.body) {
+      createOverlay()
+    } else {
+      // If body doesn't exist yet, wait for it
+      document.addEventListener('DOMContentLoaded', () => {
+        createOverlay()
+      })
+    }
+  }
+  
+  // Try to initialize immediately
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeOverlay)
+  } else {
+    initializeOverlay()
+  }
+}
 
 // Create global transition function
 const createWaveTransition = (callback, skipCallback = false) => {
@@ -12,13 +59,13 @@ const createWaveTransition = (callback, skipCallback = false) => {
   return new Promise((resolve) => {
     isTransitioning = true
     const overlay = createOverlay()
-
+    
     // Show overlay and start wave animation
     gsap.set(overlay, {
       display: 'block',
       clipPath: 'circle(0% at 50% 100%)',
     })
-
+    
     // Wave expanding upward
     gsap.to(overlay, {
       clipPath: 'circle(150% at 50% 100%)',
@@ -48,27 +95,6 @@ const createWaveTransition = (callback, skipCallback = false) => {
   })
 }
 
-const createOverlay = () => {
-  if (transitionOverlay) return transitionOverlay
-
-  transitionOverlay = document.createElement('div')
-  transitionOverlay.id = 'wave-transition-overlay'
-  transitionOverlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #f2f1f0;
-    z-index: 99999;
-    pointer-events: none;
-    display: none;
-    clip-path: circle(0% at 50% 100%);
-  `
-  document.body.appendChild(transitionOverlay)
-  return transitionOverlay
-}
-
 // Make it globally available
 if (process.client) {
   window.waveTransition = createWaveTransition
@@ -86,14 +112,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (!href || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel') || href.startsWith('#')) {
         return
       }
-
+      
       // Skip if it's the same route
       const currentPath = window.location.pathname
       if (href === currentPath) {
         event.preventDefault()
         return
       }
-
+      
       // Prevent default navigation
       event.preventDefault()
       
@@ -102,7 +128,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         navigateTo(href)
       })
     }
-
+    
     // Intercept existing and future NuxtLinks
     const observer = new MutationObserver(() => {
       // Get all links that look like navigation links including buttons with click handlers
@@ -115,12 +141,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
       })
     })
-
+    
     observer.observe(document.body, {
       childList: true,
       subtree: true
     })
-
+    
     // Initial setup for existing links
     setTimeout(() => {
       const links = document.querySelectorAll('a[href]:not([href^="http"]):not([href^="mailto"]):not([href^="tel"]):not([href^="#"]), a[to], button[data-wave-transition]')
@@ -132,51 +158,57 @@ export default defineNuxtPlugin((nuxtApp) => {
       })
     }, 100)
   }
-
+  
   // Handle browser navigation (back/forward buttons)
   const handlePopState = () => {
     createWaveTransition(null, true) // Skip callback for popstate
   }
-
-  // Handle page refresh/reload
+  
+  // Handle page load transition - now this just animates out
   const handlePageLoad = () => {
-    // Show full wave transition on page load
-    const overlay = createOverlay()
+    if (!isInitialLoad) return
+    isInitialLoad = false
+    
+    // The overlay should already be covering the screen
+    // Just animate it out to reveal the content
+    const overlay = transitionOverlay || createOverlay()
+    
+    // Ensure overlay is visible and covering screen
     gsap.set(overlay, {
       display: 'block',
-      clipPath: 'circle(150% at 50% 100%)', // Start from bottom like normal transition
+      clipPath: 'circle(150% at 50% 100%)',
     })
-
+    
     // Wait a moment then animate out from top
     setTimeout(() => {
       gsap.to(overlay, {
         clipPath: 'circle(0% at 50% 0%)',
         duration: 0.6,
-        delay: 0.2,
         ease: "power2.inOut",
         onComplete: () => {
           gsap.set(overlay, { display: 'none' })
         }
       })
-    }, 200)
+    }, 300) // Increased delay to ensure content is fully loaded
   }
-
+  
   // Setup on client-side
   if (process.client) {
     // Handle page load transition
     nuxtApp.hook('app:mounted', () => {
-      // Add small delay to ensure proper timing
+      // Minimal delay to ensure everything is ready
       setTimeout(() => {
         handlePageLoad()
-      }, 100)
+      }, 200)
+      
       setTimeout(() => {
         interceptNuxtLinks()
-      }, 500) // Reduced delay
+      }, 500)
     })
-
+    
     // Handle browser back/forward
     window.addEventListener('popstate', handlePopState)
-
+    
     // Handle page visibility changes (for better UX)
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible' && isTransitioning) {
@@ -187,7 +219,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
       }
     })
-
+    
     // Clean up on app unmount
     nuxtApp.hook('app:beforeUnmount', () => {
       window.removeEventListener('popstate', handlePopState)
@@ -196,7 +228,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     })
   }
-
+  
   // Provide the function to Nuxt app
   return {
     provide: {

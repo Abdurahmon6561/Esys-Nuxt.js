@@ -1,3 +1,4 @@
+in this code when i swiching the tabs the bg color have to go to other tab with animation smooth
 <script setup>
 import { ref } from "vue";
 import Toastify from "toastify-js";
@@ -94,38 +95,32 @@ const showToast = (text, type) => {
       <div
         class="relative z-10 w-[90%] sm:w-[85%] md:w-full max-w-lg p-6 md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-6 text-center md:text-left">
+        <h2 class="text-xl sm:text-2xl md:text-5xl font-medium text-white mb-6 text-center md:text-left leading-snug">
           {{ t("contact.title") }}
         </h2>
 
         <form class="space-y-6" @submit="handleSubmit">
           <!-- Name -->
           <div class="relative">
-            <label
-              for="name"
-              class="block mb-1 text-sm font-medium text-gray-300"
-            >
-              <span>{{ t("contact.name") }}</span>
-            </label>
-
             <input
               type="text"
               id="name"
               v-model="name"
               required
-              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none"
+              :placeholder="t('contact.name')"
+              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-white focus:ring-0 outline-none"
             />
           </div>
 
           <!-- Tabs -->
-          <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+          <div class="flex flex-col sm:flex-row">
             <button
               type="button"
               @click="selectedTab = 'email'"
               :class="[
-                'flex-1 py-2 rounded-lg font-medium transition-all',
+                'flex-1 h-[41px] rounded-lg font-medium transition-all rounded-r-none',
                 selectedTab === 'email'
-                  ? 'bg-[#1aab9a] text-white shadow-md'
+                  ? ' text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl rounded-r-none transition-transform duration-700'
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
@@ -135,9 +130,9 @@ const showToast = (text, type) => {
               type="button"
               @click="selectedTab = 'phone'"
               :class="[
-                'flex-1 py-2 rounded-lg font-medium transition-all',
+                'flex-1 h-[41px] rounded-lg font-medium transition-all rounded-l-none',
                 selectedTab === 'phone'
-                  ? 'bg-[#1aab9a] text-white shadow-md'
+                  ? ' text-[13px] md:text-[15px] bg-white text-black rounded-full font-medium hover:bg-gray-200 rounded-l-none hover:shadow-2xl transition-transform duration-700'
                   : 'bg-white/10 text-gray-300 hover:bg-white/20',
               ]"
             >
@@ -147,64 +142,45 @@ const showToast = (text, type) => {
 
           <!-- Email Input -->
           <div v-if="selectedTab === 'email'" class="relative">
-            <label
-              for="email"
-              class="block mb-1 text-sm font-medium text-gray-300"
-            >
-              <span>{{ t("contact.email") }}</span>
-            </label>
-
             <input
               type="email"
               id="email"
               v-model="email"
               required
               placeholder="example@gmail.com"
-              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none"
+              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-white focus:ring-0 outline-none"
             />
           </div>
 
           <!-- Phone Input -->
           <div v-if="selectedTab === 'phone'" class="relative">
-            <label
-              for="phone"
-              class="block mb-1 text-sm font-medium text-gray-300"
-            >
-              <span>{{ t("contact.phone") }}</span>
-            </label>
-
             <input
               type="tel"
               id="phone"
               v-model="phone"
               @input="formatPhone"
               required
-              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none"
+              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-white focus:ring-0 outline-none"
               placeholder="+998901234567"
             />
           </div>
 
           <!-- Message -->
           <div class="relative">
-            <label
-              for="message"
-              class="block mb-1 text-sm font-medium text-gray-300"
-            >
-              <span>{{ t("contact.message") }}</span>
-            </label>
             <textarea
               id="message"
               v-model="message"
               rows="4"
               required
-              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-[#1aab9a] focus:ring-0 outline-none resize-none"
+              :placeholder="t('contact.message')"
+              class="w-full rounded-xl bg-transparent border border-white/30 px-4 py-3 text-white focus:border-white focus:ring-0 outline-none resize-none"
             ></textarea>
           </div>
 
           <!-- Button -->
           <button
             type="submit"
-            class="w-full py-3 rounded-xl bg-[#1aab9a] text-white font-semibold shadow-lg hover:bg-[#159482] transition-all"
+            class="w-full md:px-6 px-6 text-[13px] md:text-[15px] h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
           >
             <span>{{ t("contact.send") }}</span>
           </button>
