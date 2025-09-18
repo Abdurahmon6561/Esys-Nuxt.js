@@ -96,26 +96,27 @@ const createWaveTransition = (callback, skipCallback = false) => {
     // Wave expanding upward
     gsap.to(overlay, {
       clipPath: "circle(150% at 50% 100%)",
-      duration: 0.5,
-      ease: "power2.inOut",
-      onStart: () => {
-        // Navigate *while* the wave covers the screen
+      duration: 0.4, // Faster expand
+      ease: "power2.out", // More dynamic easing
+      onComplete: () => {
+        // Navigate *after* the wave has fully covered the screen
         if (callback && !skipCallback) {
           callback();
         }
-      },
-      onComplete: () => {
-        // Now close the wave to reveal new page
-        gsap.to(overlay, {
-          clipPath: "circle(0% at 50% 0%)",
-          duration: 0.5,
-          ease: "power2.inOut",
-          onComplete: () => {
-            gsap.set(overlay, { display: "none" });
-            isTransitioning = false;
-            resolve();
-          },
-        });
+        
+        // Small delay to ensure navigation is processed, then close the wave
+        setTimeout(() => {
+          gsap.to(overlay, {
+            clipPath: "circle(0% at 50% 0%)",
+            duration: 0.4, // Faster close
+            ease: "power2.in", // More dynamic easing
+            onComplete: () => {
+              gsap.set(overlay, { display: "none" });
+              isTransitioning = false;
+              resolve();
+            },
+          });
+        }, 50); // Reduced delay for smoother transition
       },
     });
   });

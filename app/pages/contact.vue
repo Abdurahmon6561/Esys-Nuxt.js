@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 import { useI18n } from "vue-i18n";
+import gsap from "gsap";
+
 const { t, locale, availableLocales } = useI18n();
 
 console.log("current locale:", locale.value);
@@ -70,6 +72,22 @@ const showToast = (text, type) => {
     },
   }).showToast();
 };
+
+onMounted(() => {
+  // Set initial state
+  gsap.set(".form-contact", {
+    opacity: 0,
+    scale: 0.8,
+  });
+  
+  // Animate to final state
+  gsap.to(".form-contact", {
+    opacity: 1,
+    scale: 1,
+    duration: 2.2,
+    ease: "power3.out",
+  });
+});
 </script>
 
 <!-- in this code made the Contact Form  responsive responsible -->
@@ -93,7 +111,7 @@ const showToast = (text, type) => {
 
       <!-- Contact Form -->
       <div
-        class="relative z-10 w-[90%] sm:w-[85%] md:w-full max-w-lg p-6 md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
+        class="relative form-contact z-10 w-[90%] sm:w-[85%] md:w-full max-w-lg p-6 md:p-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20"
       >
         <h2
           class="text-xl sm:text-2xl md:text-[46px] font-medium text-white mb-9 text-center md:text-left leading-snug"
