@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n';
 
 export function useAuth() {
   const config = useRuntimeConfig();
-  const apiUrl = config.public.apiUrl;
+  const apiUrl = config.public.apiUrl || 'https://xrn-a2s-98a-sa7.esys.pro/api/v1/';
 
   const { locale } = useI18n(); // Get current locale
   const username = config.apiUsername || 'esys_api';
