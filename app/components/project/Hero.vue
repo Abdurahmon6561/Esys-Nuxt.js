@@ -203,7 +203,7 @@ onMounted(() => {
     style="background-image: url('/images/blog-hero.webp')"
   >
     <!-- Center Content -->
-    <div class="relative z-10 text-center text-white flex-1">
+    <div class="relative z-10 text-center text-white flex-1 select-none">
       <div class="flex justify-center items-center">
         <div v-if="$i18n.locale === 'ru'">
           <h1

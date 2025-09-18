@@ -23,9 +23,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="project" class="mb-[40px] mt-[60px] md:mb-[80px] md:mt-[80px] px-4">
+  <div
+    v-if="project"
+    class="mb-[40px] mt-[60px] md:mb-[80px] md:mt-[80px] px-4"
+  >
     <div
-      class="w-full max-w-4xl mx-auto bg-white rounded-xl md:rounded-2xl overflow-hidden  "
+      class="w-full max-w-4xl mx-auto bg-white rounded-xl md:rounded-2xl overflow-hidden"
     >
       <!-- Title -->
       <div class="px-4 md:px-6 pt-4 md:pt-6">
@@ -49,24 +52,27 @@ onMounted(() => {
       <div class="px-4 md:px-6 py-6 md:py-8 space-y-4 md:space-y-6">
         <!-- Tech -->
         <p
+          v-for="(project, i) in project.services"
+          :key="i"
           class="inline-block px-3 py-1 text-xs sm:text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full"
         >
-          {{ project.tech }}
+          {{ project }}
         </p>
 
         <!-- Description -->
         <p
+          v-html="project.text"
+          v-if="project.text"
+          class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left"
+        ></p>
+        <p
+          v-else
           class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left"
         >
-          Bang & Olufsen partnered with HELLO MONDAY/DEPT® to create a web app
-          that gives every user a uniquely sensory experience. ‘See Yourself in
-          Sound’ is designed to generate a vibrant, one-of-a-kind avatar for every
-          visitor. Each character is crafted in real-time by analyzing your
-          Spotify sound profile and aligning your overall mood and energy levels
-          to all the aspects of a 3D character: texture, shapes, body movement and
-          more. Visitors without Spotify can also generate their avatar via a fun,
-          emoji-driven process. After your 3D character is generated, it can be
-          shared with the world via link or a video that’s created just for you.
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat sed
+          id, quis velit dolor sunt officia culpa perferendis architecto dolorum
+          impedit ab consequuntur illo exercitationem minus vel recusandae,
+          magnam esse.
         </p>
       </div>
     </div>

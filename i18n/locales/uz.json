@@ -68,5 +68,18 @@
     "blog": "Blog",
     "contact": "Aloqa",
     "security": "Barcha huquqlar himoyalangan"
+  },
+  "api": {
+    "loading": "Yuklanmoqda...",
+    "loading_blogs": "Bloglar yuklanmoqda...",
+    "loading_blog": "Blog yuklanmoqda...",
+    "error": "Xatolik",
+    "failed_to_fetch": "Ma'lumotlarni yuklashda xatolik",
+    "retry": "Qayta urinish",
+    "go_back": "Orqaga",
+    "back_to_blogs": "Bloglarga qaytish",
+    "no_blogs": "Bloglar mavjud emas",
+    "blog_not_found": "Blog topilmadi",
+    "read_time": "daqiqa o'qish"
   }
 }

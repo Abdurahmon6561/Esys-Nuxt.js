@@ -1,0 +1,3 @@
+# Placeholder for blog images
+# This is a simple text file representing a placeholder image
+# In a real application, you would use an actual image file like placeholder-blog.jpg

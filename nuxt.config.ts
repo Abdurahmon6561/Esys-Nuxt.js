@@ -14,7 +14,6 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n"],
 
   i18n: {
-    lazy: true,
     langDir: "locales",
     strategy: "prefix_except_default",
     locales: [
@@ -28,6 +27,17 @@ export default defineNuxtConfig({
       useCookie: true,
       cookieKey: 'i18n_redirected',
       redirectOn: 'root',
+    }
+  },
+
+  runtimeConfig: {
+    // Private keys (only available on server-side)
+    apiUsername: process.env.NUXT_API_USERNAME,
+    apiPassword: process.env.NUXT_API_PASSWORD,
+    // Public keys (exposed to client-side)
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL,
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     }
   },
 

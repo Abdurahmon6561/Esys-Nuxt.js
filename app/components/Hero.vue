@@ -297,7 +297,7 @@ onMounted(() => {
       </button>
 
       <!-- center -->
-      <div class="relative z-10 text-center flex-1">
+      <div class="relative z-10 text-center flex-1 select-none">
         <div class="flex justify-center items-center">
           <div v-if="$i18n.locale === 'ru'">
             <h1
