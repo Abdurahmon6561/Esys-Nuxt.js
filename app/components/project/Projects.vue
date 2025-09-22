@@ -123,9 +123,6 @@ onMounted(async () => {
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
       ></div>
-      <span class="ml-4 text-lg text-gray-600">{{
-        t("api.loading_blogs")
-      }}</span>
     </div>
 
     <!-- Cards -->
@@ -187,7 +184,7 @@ onMounted(async () => {
         <!-- Button -->
         <a :href="card.link" target="_blank">
           <button
-            class="absolute bottom-3 sm:bottom-6 left-3 sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/40 transition"
+            class="absolute bottom-3 sm:bottom-6 left-3 cursor-pointer sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/40 transition"
           >
             <div class="text-left">
               <h3
@@ -236,7 +233,7 @@ onMounted(async () => {
       <button
         @click="toggleShowAll()"
         :class="showAll ? 'hidden' : ''"
-        class="px-5 py-2 border-2 border-[#EEE] rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base transition-colors duration-200"
+        class="px-5 py-2 border-2 border-[#EEE] cursor-pointer rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base transition-colors duration-200"
       >
         {{ t("projects.more_projects") }}
       </button>

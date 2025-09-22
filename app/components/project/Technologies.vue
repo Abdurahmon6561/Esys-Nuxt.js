@@ -33,7 +33,7 @@ const { t } = useI18n();
 
       <div class="flex justify-center items-center mt-8 sm:mt-12">
         <button
-          class="px-5 py-2 border-2 border-[#EEE] rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base"
+          class="px-5 py-2 border-2 border-[#EEE] cursor-pointer rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base"
         >
           {{ t("technologies.book_call") }}
         </button>

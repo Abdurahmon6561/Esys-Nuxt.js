@@ -294,7 +294,7 @@ onMounted(async () => {
         <!-- Mobile Hamburger -->
         <button
           @click="mobileMenuOpen = true"
-          class="md:hidden flex flex-col justify-center items-center space-y-1"
+          class="md:hidden flex flex-col justify-center items-center space-y-1 cursor-pointer"
         >
           <span
             :class="[
@@ -345,7 +345,7 @@ onMounted(async () => {
 
           <button
             @click="mobileMenuOpen = false"
-            class="text-2xl font-light hover:rotate-90 transition-transform"
+            class="text-2xl font-light hover:rotate-90 transition-transform cursor-pointer"
             style="margin-right: 29px"
           >
             ✕
@@ -406,7 +406,7 @@ onMounted(async () => {
               mobileMenuOpen = false;
             "
             :class="[
-              'px-5 py-2 rounded-full text-sm font-medium transition-all',
+              'px-5 py-2 rounded-full text-sm font-medium transition-all cursor-pointer',
               currentLocaleName === lang.name
                 ? 'bg-[#1aab9a] text-white shadow-md'
                 : 'text-gray-600 hover:bg-gray-200',
@@ -440,7 +440,7 @@ onMounted(async () => {
                 ]"
                 :key="i"
                 :ref="(el) => (cardsRef[i] = el)"
-                class="relative transition duration-300"
+                class="relative transition duration-300 cursor-pointer"
               >
                 <img
                   :src="img"
@@ -493,11 +493,6 @@ onMounted(async () => {
                     :to="localePath('index')"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
                     >{{ t("footer.home") }}</NuxtLink
-                  >
-                  <NuxtLink
-                    to="#"
-                    class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >{{ t("footer.company") }}</NuxtLink
                   >
                   <NuxtLink
                     :to="localePath('/projects')"

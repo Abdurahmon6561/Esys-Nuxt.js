@@ -154,7 +154,7 @@ onMounted(() => {
             <button
               type="button"
               @click="selectedTab = 'email'"
-              class="flex-1 sm:h-[41px] h-12 z-10 relative text-sm md:text-base font-medium transition-all"
+              class="flex-1 sm:h-[41px] h-12 z-10 relative text-sm md:text-base font-medium transition-all cursor-pointer"
               :class="selectedTab === 'email' ? 'text-black' : 'text-gray-300'"
             >
               {{ t("contact.email") }}
@@ -164,7 +164,7 @@ onMounted(() => {
             <button
               type="button"
               @click="selectedTab = 'phone'"
-              class="flex-1 sm:h-[41px] h-12 z-10 relative text-sm md:text-base font-medium transition-all"
+              class="flex-1 sm:h-[41px] h-12 z-10 relative text-sm md:text-base font-medium transition-all cursor-pointer"
               :class="selectedTab === 'phone' ? 'text-black' : 'text-gray-300'"
             >
               {{ t("contact.phone") }}
@@ -211,7 +211,7 @@ onMounted(() => {
           <!-- Button -->
           <button
             type="submit"
-            class="w-full md:px-6 px-6 text-[13px] md:text-[15px] h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
+            class="w-full md:px-6 px-6 text-[13px] cursor-pointer md:text-[15px] h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
           >
             <span>{{ t("contact.send") }}</span>
           </button>

@@ -242,7 +242,7 @@ onMounted(() => {
       <button
         @click="changeBackground('prev')"
         ref="leftButton"
-        class="ml-[-2px] md:block hidden"
+        class="ml-[-2px] md:block hidden cursor-pointer"
       >
         <svg
           class="clip-path-group"
@@ -328,7 +328,7 @@ onMounted(() => {
           <div class="hero-btn-1">
             <button
               @click.prevent="scrollToSection('projects')"
-              class="md:px-6 px-6 text-[13px] md:text-[15px] h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
+              class="md:px-6 px-6 text-[13px] md:text-[15px] cursor-pointer h-[41px] bg-white text-black rounded-full font-medium hover:bg-gray-200 hover:shadow-2xl transition-transform duration-700"
             >
               {{ $t("hero.our_projects") }}
             </button>
@@ -342,7 +342,7 @@ onMounted(() => {
               @mouseenter="updatePosition($event, index)"
               @mousemove="updatePosition($event, index)"
               @mouseleave="resetPosition(index)"
-              class="relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-[30px] py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700 group"
+              class="relative flex items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-6 px-[30px] py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700 group"
             >
               <span
                 class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
@@ -399,7 +399,7 @@ onMounted(() => {
       <button
         @click="changeBackground('next')"
         ref="rightButton"
-        class="mr-[-2px] md:block hidden"
+        class="mr-[-2px] md:block hidden cursor-pointer"
       >
         <svg
           class="clip-path-group"

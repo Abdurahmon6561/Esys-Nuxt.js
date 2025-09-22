@@ -68,7 +68,6 @@ const openBlog = (card) => {
     <!-- Loading State -->  
     <div v-if="loading" class="flex justify-center items-center py-16">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"></div>
-      <span class="ml-4 text-lg text-gray-600">{{ t('api.loading_blogs') }}</span>
     </div>
 
     <!-- Error State -->
@@ -76,7 +75,7 @@ const openBlog = (card) => {
       <div class="text-red-500 text-lg mb-4">{{ error }}</div>
       <button 
         @click="fetchBlogs" 
-        class="px-6 py-2 bg-[#1aab9a] text-white rounded-lg hover:bg-[#16967d] transition duration-300"
+        class="px-6 py-2 bg-[#1aab9a] text-white rounded-lg hover:bg-[#16967d] transition duration-300 cursor-pointer"
       >
         {{ t('api.retry') }}
       </button>

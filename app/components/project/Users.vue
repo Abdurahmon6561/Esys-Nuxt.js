@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
             >
               <button
                 @click="prev"
-                class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 rotate-180 transition-all duration-300"
+                class="flex items-center justify-center cursor-pointer w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 rotate-180 transition-all duration-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
 
               <button
                 @click="next"
-                class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 transition-all duration-300"
+                class="flex items-center justify-center cursor-pointer w-10 h-10 sm:w-12 sm:h-12 rounded-xl border-2 border-gray-100 hover:bg-gray-200 transition-all duration-300"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

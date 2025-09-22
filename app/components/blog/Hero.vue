@@ -171,7 +171,7 @@ onMounted(() => {
     <button
       @click="scrollDown"
       ref="bottomButton"
-      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex"
+      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex cursor-pointer"
     >
       <img src="/images/arrow-down.png" alt="arrow" />
       <img

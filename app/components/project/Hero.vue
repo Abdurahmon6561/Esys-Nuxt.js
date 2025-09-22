@@ -237,7 +237,7 @@ onMounted(() => {
           v-for="(btn, index) in buttons"
           :key="index"
           :class="[
-            'relative flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
+            'relative flex items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
             `hero-btn-${index + 1}`,
           ]"
           @mouseenter="updatePosition($event, index)"
@@ -278,7 +278,7 @@ onMounted(() => {
     <button
       @click="scrollDown"
       ref="bottomButton"
-      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex"
+      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex cursor-pointer"
     >
       <img src="/images/arrow-down.png" alt="arrow" />
       <img
