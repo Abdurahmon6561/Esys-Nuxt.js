@@ -78,7 +78,6 @@ onMounted(() => {
     <!-- Loading State -->
     <div v-if="loading" class="flex justify-center items-center py-16">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"></div>
-      <span class="ml-4 text-lg text-gray-600">Loading project...</span>
     </div>
 
     <!-- Project Content -->
