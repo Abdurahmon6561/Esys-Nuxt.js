@@ -166,15 +166,18 @@ onMounted(async () => {
           <ul class="md:flex hidden gap-8 font-medium">
             <li>
               <NuxtLink
-                to="#"
+                :to="localePath('/contact')"
                 class="relative pb-1 after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[2px] after:w-0 after:transition-all after:duration-300 after:-translate-x-1/2 hover:after:w-full"
-                :class="
+                :class="[
                   passedHero || route.path.includes('/view') || route.path.includes('/blog-view')
                     ? 'text-black after:bg-black'
-                    : 'text-white after:bg-white'
-                "
+                    : 'text-white after:bg-white',
+                    route.path.includes('/contact')
+                    ? 'font-semibold after:w-full'
+                    : '',
+                ]"
               >
-                {{ t("header.company") }}
+                {{ t("hero.contact") }}
               </NuxtLink>
             </li>
             <li>
@@ -353,10 +356,15 @@ onMounted(async () => {
         <nav class="flex flex-col items-center gap-8 text-center">
           <NuxtLink
             @click="mobileMenuOpen = false"
-            to="#"
+            :to="localePath('/contact')"
+            :class="[
+              $route.path.includes('/contact')
+                ? 'after:w-full'
+                : 'after:w-0',
+            ]"
             class="text-2xl font-medium tracking-wide relative after:absolute after:left-1/2 after:bottom-[-6px] after:h-[2px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full after:-translate-x-1/2"
           >
-            {{ t("header.company") }}
+            {{ t("hero.contact") }}
           </NuxtLink>
 
           <NuxtLink
@@ -520,7 +528,7 @@ onMounted(async () => {
                         : 'after:w-0',
                     ]"
                     class="relative text-[18px] pb-1 hover:after:w-full after:content-[''] after:absolute after:left-1/2 after:bottom-0 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 after:-translate-x-1/2"
-                    >{{ t("footer.contact") }}</NuxtLink
+                    >{{ t("hero.contact") }}</NuxtLink
                   >
                 </div>
                 <div class="flex gap-2 mt-5 md:mt-0">

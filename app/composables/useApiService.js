@@ -28,6 +28,9 @@ export function useApiService() {
     // Get blog by ID
     getBlog: (id) => makeRequest(`blog/${id}`),
 
+    // Get blog by alias
+    getBlogByAlias: (alias) => makeRequest(`blog/view/${alias}`),
+
     // Get blogs with pagination
     getBlogsWithPagination: (page = 1, limit = 10) =>
       makeRequest(`blog?page=${page}&limit=${limit}`),
@@ -39,6 +42,9 @@ export function useApiService() {
 
     // Get portfolio by ID
     getPortfolio: (id) => makeRequest(`portfolio/${id}`),
+
+    // Get portfolio by alias
+    getPortfolioByAlias: (alias) => makeRequest(`portfolio/view/${alias}`),
   };
 
   // Generic CRUD operations

@@ -2,6 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Cursor Styles */
+@media (hover: hover) and (pointer: fine) {
+  .custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: #000; /* solid black by default */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+    will-change: transform; /* GPU acceleration for performance */
+  }
+
+  .custom-cursor.hover {
+    transform: translate(-50%, -50%) scale(8);
+    background-color: rgba(0, 0, 0, 0.05); /* very light opacity for subtle visibility */
+    border: 5px solid rgba(0, 0, 0, 0.3); /* visible border for definition */
+    backdrop-filter: none; /* remove blur to see content clearly */
+    -webkit-backdrop-filter: none;
+  }
+
+  .custom-cursor.hidden-cursor {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  .custom-cursor.click {  
+    transform: scale(0.8);
+  }
+
+  /* Hide default cursor on card elements with eye cursor */
+  .project-cards,
+  .card-cursor,
+  .relative.transition.duration-300 {
+    cursor: none !important;
+  }
+
+  /* Performance optimizations for card cursors */
+  .card-cursor {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+
 @layer base {
   h1,
   h2,

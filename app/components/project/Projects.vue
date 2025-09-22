@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, nextTick, watch } from "vue";
+import { ref, onMounted, nextTick, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useApiService } from "~/composables/useApiService.js";
@@ -15,6 +15,13 @@ const { portfolioApi } = useApiService();
 const portfolio = ref([]);
 const loading = ref(false);
 const error = ref(null);
+const showAll = ref(false); // Track whether to show all projects or just 4
+const allPortfolioData = ref([]); // Store all portfolio data
+
+// Computed property to show either 4 or all projects
+const displayedPortfolio = computed(() => {
+  return showAll.value ? allPortfolioData.value : allPortfolioData.value.slice(0, 4);
+});
 
 const setupCursorLogic = async () => {
   await nextTick();
@@ -56,7 +63,8 @@ const fetchPortfolio = async () => {
     loading.value = true;
     error.value = null;
     const response = await portfolioApi.getPortfolios();
-    portfolio.value = response.data || response;
+    allPortfolioData.value = response.data || response; // Store all data
+    portfolio.value = displayedPortfolio.value; // Set displayed data
     // Setup cursor logic after data is loaded
     await setupCursorLogic();
   } catch (err) {
@@ -75,52 +83,28 @@ watch(
   { immediate: false }
 );
 
-
-
-// don't delete this fake datas
-const cards = [
-  {
-    id: 1,
-    image: "/images/man.webp",
-    title: "Wonder Comfort",
-    tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
-    tags: [t("projects.tags.websites")],
-    img_color: "black",
+// Watch for showAll changes and update portfolio
+watch(
+  showAll,
+  () => {
+    portfolio.value = displayedPortfolio.value;
   },
-  {
-    id: 2,
-    image: "/images/soundBar.webp",
-    title: "Sound Bar",
-    tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
-    link: "https://soundbar010.com/",
-    tags: [t("projects.tags.websites"), t("projects.tags.mobile_apps")],
-    img_color: "white",
-  },
-  {
-    id: 3,
-    image: "/images/car.webp",
-    title: t("projects.car_card_title"),
-    tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
-    link: "https://asacar.uz/",
-    tags: [t("projects.tags.websites")],
-    img_color: "black",
-  },
-  {
-    id: 4,
-    image: "/images/bbd.jpg",
-    title: "BBD",
-    tech: "Laravel, PHP, MySQL, JavaScript",
-    link: "https://bbd.uz/",
-    tags: [t("projects.tags.websites")],
-    img_color: "white",
-  },
-];
+  { immediate: false }
+);
 
 // ✅ when clicking eye
 const openProject = (card) => {
-  localStorage.setItem("selectedProject", JSON.stringify(card));
-  localStorage.setItem("headerColor", card.img_color);
-  router.push(`${localePath("/view")}`);
+  const alias = card.alias || card.slug || card.id; 
+  router.push(`${localePath("/view")}?alias=${alias}`);
+};
+
+// Toggle show all projects
+const toggleShowAll = async () => {
+  showAll.value = !showAll.value;
+  portfolio.value = displayedPortfolio.value;
+  // Re-setup cursor logic after changing the displayed projects
+  await nextTick();
+  await setupCursorLogic();
 };
 
 onMounted(async () => {
@@ -142,23 +126,6 @@ onMounted(async () => {
       <span class="ml-4 text-lg text-gray-600">{{
         t("api.loading_blogs")
       }}</span>
-    </div>
-    <!-- Small Section Title -->
-    <div class="flex justify-center items-center">
-      <h3
-        class="text-xs sm:text-sm text-[#080808] border-2 rounded-full px-3 py-1 border-[#EEE]"
-      >
-        {{ t("hero.our_projects") }}
-      </h3>
-    </div>
-
-    <!-- Section Title -->
-    <div class="flex justify-center">
-      <h2
-        class="text-xl sm:text-2xl md:text-5xl text-[#080808] font-medium text-center mt-4 md:mt-5 md:w-[1070px] leading-snug"
-      >
-        {{ t("projects.title") }}
-      </h2>
     </div>
 
     <!-- Cards -->
@@ -263,6 +230,18 @@ onMounted(async () => {
         </a>
       </div>
     </div>
+
+        <!-- More Projects Button -->
+    <div class="flex justify-center mt-8 md:mt-12">
+      <button
+        @click="toggleShowAll()"
+        :class="showAll ? 'hidden' : ''"
+        class="px-5 py-2 border-2 border-[#EEE] rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base transition-colors duration-200"
+      >
+        {{ t("projects.more_projects") }}
+      </button>
+    </div>
+
   </div>
 </template>
 

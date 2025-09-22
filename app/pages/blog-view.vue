@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { useRoute } from "vue-router";
@@ -10,21 +10,45 @@ gsap.registerPlugin(ScrollToPlugin);
 
 const route = useRoute();
 const { blogApi } = useApiService();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const blog = ref(null);
 const loading = ref(false);
 const error = ref(null);
+const currentAlias = ref(null);
 
-// Default content fallback
-const defaultContent = "Bang & Olufsen partnered with HELLO MONDAY/DEPT® to create a web app that gives every user a uniquely sensory experience. 'See Yourself in Sound' is designed to generate a vibrant, one-of-a-kind avatar for every visitor. Each character is crafted in real-time by analyzing your Spotify sound profile and aligning your overall mood and energy levels to all the aspects of a 3D character: texture, shapes, body movement and more. Visitors without Spotify can also generate their avatar via a fun, emoji-driven process. After your 3D character is generated, it can be shared with the world via link or a video that's created just for you.";
+// Fetch blog from API using alias
+const fetchBlogByAlias = async (alias) => {
+  try {
+    loading.value = true;
+    error.value = null;
+    const response = await blogApi.getBlogByAlias(alias);
+    
+    // Handle the nested response structure where data is under 'blog' key
+    blog.value = response.blog || response.data || response;
+  } catch (err) {
+    error.value = err.message || 'Failed to fetch blog';
+    console.error('Error fetching blog:', err);
+    
+    // Fallback to localStorage if API fails
+    const stored = localStorage.getItem("selectedBlog");
+    if (stored) {
+      blog.value = JSON.parse(stored);
+      error.value = null;
+    }
+  } finally {
+    loading.value = false;
+  }
+};
 
-// Fetch blog from API if ID is provided in route
+// Fetch blog from API if ID is provided in route (legacy support)
 const fetchBlog = async (id) => {
   try {
     loading.value = true;
     error.value = null;
     const response = await blogApi.getBlog(id);
-    blog.value = response.data || response;
+    
+    // Handle the nested response structure where data is under 'blog' key
+    blog.value = response.blog || response.data || response;
   } catch (err) {
     error.value = err.message || 'Failed to fetch blog';
     console.error('Error fetching blog:', err);
@@ -34,17 +58,26 @@ const fetchBlog = async (id) => {
 };
 
 onMounted(() => {
-  // Try to get blog ID from route params
-  const blogId = route.params.id || route.query.id;
+  // Priority 1: Try to get alias from route query
+  const alias = route.query.alias;
   
-  if (blogId) {
-    // Fetch from API
-    fetchBlog(blogId);
+  if (alias) {
+    currentAlias.value = alias;
+    // Fetch from API using alias
+    fetchBlogByAlias(alias);
   } else {
-    // Fallback to localStorage
-    const stored = localStorage.getItem("selectedBlog");
-    if (stored) {
-      blog.value = JSON.parse(stored);
+    // Priority 2: Try to get blog ID from route params (legacy support)
+    const blogId = route.params.id || route.query.id;
+    
+    if (blogId) {
+      // Fetch from API using ID
+      fetchBlog(blogId);
+    } else {
+      // Priority 3: Fallback to localStorage
+      const stored = localStorage.getItem("selectedBlog");
+      if (stored) {
+        blog.value = JSON.parse(stored);
+      }
     }
   }
 
@@ -55,6 +88,13 @@ onMounted(() => {
     ease: "power2.inOut",
   });
 });
+
+// Watch for locale changes and refetch blog data
+watch(locale, () => {
+  if (currentAlias.value) {
+    fetchBlogByAlias(currentAlias.value);
+  }
+}, { immediate: false });
 </script>
 
 <template>
@@ -91,8 +131,8 @@ onMounted(() => {
         
         <!-- Date and additional info -->
         <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-gray-500">
-          <span v-if="blog.date || blog.created_at">
-            {{ blog.date || blog.created_at }}
+          <span v-if="blog.date || blog.created_at || blog.published_at">
+            {{ blog.date || blog.created_at || blog.published_at }}
           </span>
           <span v-if="blog.author">
             By {{ blog.author }}
@@ -106,7 +146,7 @@ onMounted(() => {
       <!-- Image -->
       <div class="mt-4">
         <img
-          :src="blog.image || blog.featured_image || '/placeholder-blog.jpg'"
+          :src="blog.image || blog.featured_image || blog.main_image || '/placeholder-blog.jpg'"
           :alt="blog.title"
           class="w-full h-[220px] sm:h-[300px] md:h-[420px] object-cover rounded-lg"
           @error="$event.target.src = '/placeholder-blog.jpg'"
@@ -126,19 +166,27 @@ onMounted(() => {
           </span>
         </div>
 
-        <!-- Description/Content -->
+        <!-- Short Description -->
+        <div
+          v-if="blog.short_text"
+          class="text-base sm:text-lg text-gray-600 leading-relaxed prose max-w-none"
+          v-html="blog.short_text"
+        >
+        </div>
+
+        <!-- Main Content -->
         <div
           class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left prose max-w-none"
-          v-html="blog.content || blog.description || defaultContent"
+          v-html="blog.text"
         >
         </div>
         
         <!-- Fallback description if no content -->
         <p 
-          v-if="!blog.content && !blog.description"
+          v-if="!blog.text"
           class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left"
         >
-          {{ defaultContent }}
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis architecto sapiente facere quibusdam consequuntur! Dolorum nobis, quia nemo rem, autem quas obcaecati voluptatum sed mollitia aliquid illum eaque corporis sit!
         </p>
       </div>
     </div>

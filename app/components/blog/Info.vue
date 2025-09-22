@@ -57,14 +57,15 @@ onMounted(() => {
 });
 
 const openBlog = (card) => {
-  localStorage.setItem("selectedBlog", JSON.stringify(card));
-  router.push(localePath("/blog-view"));
+  // Navigate using alias instead of localStorage
+  const alias = card.alias || card.slug || card.id;
+  router.push(localePath(`/blog-view?alias=${alias}`));
 };
 </script>
 
 <template>
   <div class="mt-[120px] max-w-7xl mx-auto space-y-16 mb-[120px]">
-    <!-- Loading State -->
+    <!-- Loading State -->  
     <div v-if="loading" class="flex justify-center items-center py-16">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"></div>
       <span class="ml-4 text-lg text-gray-600">{{ t('api.loading_blogs') }}</span>

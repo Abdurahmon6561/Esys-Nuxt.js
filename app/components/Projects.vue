@@ -1,85 +1,113 @@
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { useApiService } from "~/composables/useApiService.js";
 import gsap from "gsap";
 
 const cardsRef = ref([]);
-const { t } = useI18n();
+const { t, locale  } = useI18n();
 const router = useRouter();
 const localePath = useLocalePath();
-const cards = [
-  {
-    id: 1,
-    image: "/images/man.webp",
-    title: "Wonder Comfort",
-    tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
-    tags: [t("projects.tags.websites")],
-    img_color: "black"
-  },
-  {
-    id: 2,
-    image: "/images/soundBar.webp",
-    title: "Sound Bar",
-    tech: "Laravel, JavaScript, Figma, Flutter, Vue.js",
-    link: "https://soundbar010.com/",
-    tags: [t("projects.tags.websites"), t("projects.tags.mobile_apps")],
-    img_color: "white"
-  },
-  {
-    id: 3,
-    image: "/images/car.webp",
-    title: t("projects.car_card_title"),
-    tech: "Laravel, PHP, JavaScript, Figma, Vue.js",
-    link: "https://asacar.uz/",
-    tags: [t("projects.tags.websites")],
-    img_color: "black"
-  },
-  {
-    id: 4,
-    image: "/images/bbd.jpg",
-    title: "BBD",
-    tech: "Laravel, PHP, MySQL, JavaScript",
-    link: "https://bbd.uz/",
-    tags: [t("projects.tags.websites")],
-    img_color: "white"
-  },
-];
 
-// ✅ when clicking eye
-const openProject = (card) => {
-  localStorage.setItem("selectedProject", JSON.stringify(card)); 
-  localStorage.setItem("headerColor", card.img_color); 
-  router.push(`${localePath("/view")}`);
-};
+const { portfolioApi } = useApiService();
 
-onMounted(async () => {
+const portfolio = ref([]);
+const loading = ref(false);
+const error = ref(null);
+
+const setupCursorLogic = async () => {
   await nextTick();
-
+  
   cardsRef.value.forEach((card) => {
     const cursor = card.querySelector(".card-cursor");
+    if (!cursor) return;
 
-    card.addEventListener("mousemove", (e) => {
+    // Remove existing listeners to avoid duplicates
+    card.removeEventListener("mousemove", card._mousemoveHandler);
+    card.removeEventListener("mouseenter", card._mouseenterHandler);
+    card.removeEventListener("mouseleave", card._mouseleaveHandler);
+
+    // Create new handlers
+    card._mousemoveHandler = (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-
       gsap.to(cursor, { x, y, duration: 0.2, ease: "power3.out" });
-    });
+    };
 
-    card.addEventListener("mouseenter", () => {
+    card._mouseenterHandler = () => {
       gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
-    });
+    };
 
-    card.addEventListener("mouseleave", () => {
+    card._mouseleaveHandler = () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
-    });
+    };
+
+    // Add new listeners
+    card.addEventListener("mousemove", card._mousemoveHandler);
+    card.addEventListener("mouseenter", card._mouseenterHandler);
+    card.addEventListener("mouseleave", card._mouseleaveHandler);
   });
+};
+
+const fetchPortfolio = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+    const response = await portfolioApi.getPortfolios();
+    // Get only the first 4 projects
+    portfolio.value = (response.data || response).slice(0, 4);
+    // Setup cursor logic after data is loaded
+    await setupCursorLogic();
+  } catch (err) {
+    error.value = err.message || 'Failed to fetch blogs';
+    console.error('Error fetching blogs:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+watch(
+  locale,
+  () => {
+    fetchPortfolio();
+  },
+  { immediate: false }
+);
+
+// ✅ when clicking eye
+const openProject = (card) => {
+  // Navigate to dynamic project page using alias
+  const alias = card.alias || card.slug || card.id; // Fallback to slug or id if alias doesn't exist
+  router.push(`${localePath("/view")}?alias=${alias}`);
+};
+
+// Navigate to projects page
+const goToProjectsPage = () => {
+  router.push(localePath("/projects"));
+};
+
+onMounted(async () => {
+  // First fetch the portfolio data
+  await fetchPortfolio();
 });
-</script>
+</script> 
 
 <template>
-  <div class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4" id="projects">
+  <div
+    class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4"
+    id="projects"
+  >
+  <!-- Loading State -->
+    <div v-if="loading" class="flex justify-center items-center py-16">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
+      ></div>
+      <span class="ml-4 text-lg text-gray-600">{{
+        t("api.loading_blogs")
+      }}</span>
+    </div>
     <!-- Small Section Title -->
     <div class="flex justify-center items-center">
       <h3
@@ -99,9 +127,11 @@ onMounted(async () => {
     </div>
 
     <!-- Cards -->
-    <div class="flex flex-wrap justify-center gap-6 md:gap-[32px] mt-8 md:mt-12">
+    <div
+      class="flex flex-wrap justify-center gap-6 md:gap-[32px] mt-8 md:mt-12"
+    >
       <div
-        v-for="(card, i) in cards"
+        v-for="(card, i) in portfolio"
         :key="i"
         ref="cardsRef"
         class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
@@ -140,9 +170,11 @@ onMounted(async () => {
         </div>
 
         <!-- Category -->
-        <div class="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-wrap gap-1 z-10">
+        <div
+          class="absolute top-2 left-2 sm:top-3 sm:left-3 flex flex-wrap gap-1 z-10"
+        >
           <span
-            v-for="(tag, t) in card.tags"
+            v-for="(tag, t) in card.services"
             :key="t"
             class="bg-white text-gray-800 text-xs sm:text-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow"
           >
@@ -172,6 +204,7 @@ onMounted(async () => {
               >
                 {{ card.tech }}
               </p>
+              <p class="hidden">{{ card.text }}</p>
             </div>
             <div
               class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl border-2 border-gray-100"
@@ -195,9 +228,18 @@ onMounted(async () => {
         </a>
       </div>
     </div>
+
+    <!-- More Projects Button -->
+    <div class="flex justify-center mt-8 md:mt-12">
+      <button
+        @click="goToProjectsPage()"
+        class="px-5 py-2 border-2 border-[#EEE] rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base transition-colors duration-200"
+      >
+        {{ t("projects.more_projects") }}
+      </button>
+    </div>
   </div>
 </template>
-
 
 <style scoped>
 .card-cursor {
