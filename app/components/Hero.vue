@@ -301,7 +301,7 @@ onMounted(() => {
         <div class="flex justify-center items-center">
           <div v-if="$i18n.locale === 'ru'">
             <h1
-              class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text mx-auto" 
+              class="font-extrabold hero-text mx-auto text-center"
             >
               Цифровые решения, <br> которые помогают вашему<br> бизнесу расти быстрее
             </h1>
@@ -309,7 +309,7 @@ onMounted(() => {
 
           <div v-if="$i18n.locale === 'uz'">
             <h1
-              class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text"
+              class="font-extrabold hero-text mx-auto text-center"
             >
               Biznesingizni tezroq <br> o‘sishiga yordam beradigan <br> raqamli yechimlar
             </h1>
@@ -317,7 +317,7 @@ onMounted(() => {
 
           <div v-if="$i18n.locale === 'en'">
             <h1
-              class="text-2xl md:text-[92px] font-extrabold md:leading-[110px] hero-text"
+              class="font-extrabold hero-text mx-auto text-center"
             >
               Digital solutions that help <br /> your business grow faster
             </h1>
@@ -473,6 +473,11 @@ onMounted(() => {
   letter-spacing: var(--letter-spacing--1_92, -1.92px);
 }
 .hero-text {
+  /* fluid typography: min, preferred (viewport based), max */
+  font-size: clamp(20px, 4vw + 0.5rem, 92px);
+  line-height: clamp(28px, 5.5vw, 110px);
+  letter-spacing: clamp(-1.5px, -0.12vw, -1.92px);
+
   color: transparent;
   background: linear-gradient(90deg, white 50%, black 50%);
   background-size: 200% 200%;

@@ -33,9 +33,20 @@ export const useCustomCursor = () => {
 
       // Mouse enter/leave handlers for hover effect
       const handleMouseEnter = (e) => {
+        // Check if the target is inside footer image cards
+        const isFooterCard = e.target.closest('.relative.transition.duration-300');
+        
         if (cursor && (e.target.matches('a, button, [role="button"], .cursor-pointer') || 
             e.target.closest('a, button, [role="button"], .cursor-pointer'))) {
-          cursor.classList.add('hover');
+          // Don't apply hover effect on footer cards
+          if (!isFooterCard) {
+            cursor.classList.add('hover');
+          }
+        }
+        
+        // Hide custom cursor on footer cards (they have their own eye cursor)
+        if (isFooterCard) {
+          cursor.classList.add('hidden-cursor');
         }
       };
 
@@ -43,6 +54,12 @@ export const useCustomCursor = () => {
         if (cursor && (e.target.matches('a, button, [role="button"], .cursor-pointer') || 
             e.target.closest('a, button, [role="button"], .cursor-pointer'))) {
           cursor.classList.remove('hover');
+        }
+        
+        // Show custom cursor when leaving footer cards
+        const isFooterCard = e.target.closest('.relative.transition.duration-300');
+        if (isFooterCard) {
+          cursor.classList.remove('hidden-cursor');
         }
       };
 

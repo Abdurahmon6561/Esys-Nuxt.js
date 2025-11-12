@@ -27,6 +27,11 @@
       "crm": "CRM Systems"
     },
     "view": "View",
+    "project_review": "Project Review",
+    "view_project": "View Project",
+    "client": "Client",
+    "category": "Category",
+    "date": "Date",
     "more_projects": "More projects"
   },
   "services": {

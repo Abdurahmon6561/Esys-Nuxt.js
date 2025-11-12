@@ -27,6 +27,11 @@
       "crm": "CRM Системы"
     },
     "view": "Посмотреть",
+    "project_review": "Обзор",
+    "view_project": "Открыть проект",
+    "client": "Клиент",
+    "category": "Категория",
+    "date": "Дата",
     "more_projects": "Больше проектов"
   },
   "services": {

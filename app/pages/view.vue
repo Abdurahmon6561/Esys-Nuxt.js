@@ -11,27 +11,24 @@ gsap.registerPlugin(ScrollToPlugin);
 
 const route = useRoute();
 const { portfolioApi } = useApiService();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const localePath = useLocalePath();
 const project = ref(null);
 const loading = ref(false);
 const error = ref(null);
 
-// Fetch project from API by alias
 const fetchProject = async (alias) => {
   if (!alias) return;
-  
+
   try {
     loading.value = true;
     error.value = null;
     const response = await portfolioApi.getPortfolioByAlias(alias);
-    // Handle different response structures - extract from portfolio key if needed
     project.value = response.portfolio || response.data || response;
   } catch (err) {
-    error.value = err.message || 'Failed to fetch project';
-    console.error('Error fetching project:', err);
-    
-    // Fallback to localStorage if API fails
+    error.value = err.message || "Failed to fetch project";
+    console.error("Error fetching project:", err);
+
     const stored = localStorage.getItem("selectedProject");
     if (stored) {
       project.value = JSON.parse(stored);
@@ -41,30 +38,29 @@ const fetchProject = async (alias) => {
   }
 };
 
-// Watch for locale changes and refetch data
-watch(locale, () => {
-  const alias = route.query.alias;
-  if (alias) {
-    fetchProject(alias);
-  }
-}, { immediate: false });
+watch(
+  locale,
+  () => {
+    const alias = route.query.alias;
+    if (alias) {
+      fetchProject(alias);
+    }
+  },
+  { immediate: false }
+);
 
 onMounted(() => {
-  // Get alias from route query parameters
   const alias = route.query.alias;
-  
+
   if (alias) {
-    // Fetch from API using alias
     fetchProject(alias);
   } else {
-    // Fallback to localStorage for backward compatibility
     const stored = localStorage.getItem("selectedProject");
     if (stored) {
       project.value = JSON.parse(stored);
     }
   }
 
-  // Smooth scroll to top
   gsap.to(window, {
     scrollTo: 0,
     duration: 0.1,
@@ -74,65 +70,68 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mb-[40px] mt-[60px] md:mb-[80px] md:mt-[80px] px-4">
-    <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-16">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"></div>
-    </div>
+  <div>
+    <!-- Hero Section -->
+    <section v-if="project" ref="heroSection"
+      class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg overflow-hidden hero-section"
+      :style="`background-image: url('${project.image}')`">
+      <div class="absolute inset-0 bg-black/50"></div>
 
-    <!-- Project Content -->
-    <div
-      v-else-if="project"
-      class="w-full max-w-4xl mx-auto bg-white rounded-xl md:rounded-2xl overflow-hidden"
-    >
-      <!-- Title -->
-      <div class="px-4 md:px-6 pt-4 md:pt-6">
-        <h1
-          class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight text-center md:text-left"
-        >
+      <div class="relative z-10 flex flex-col items-center justify-center px-4">
+        <div
+          class="flex items-center justify-center overflow-hidden h-[41px] md:px-6 px-2 py-2 select-none text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700">
+          <span v-for="(service, i) in project.services" :key="i" class="text-[14px] font-medium text-white">
+            {{ service }}
+          </span>
+        </div>
+
+        <h1 class="text-5xl md:text-6xl font-extrabold mt-4 text-white drop-shadow-lg">
           {{ project.title }}
         </h1>
       </div>
+    </section>
 
-      <!-- Image -->
-      <div class="mt-4">
-        <img
-          :src="project.image"
-          alt="Project Image"
-          class="w-full h-[220px] sm:h-[300px] md:h-[420px] object-cover rounded-lg"
-        />
-      </div>
-
-      <!-- Content -->
-      <div class="px-4 md:px-6 py-6 md:py-8 space-y-4 md:space-y-6">
-        <!-- Tech -->
-        <div class="flex flex-wrap gap-2">
-          <p
-            v-for="(service, i) in project.services"
-            :key="i"
-            class="inline-block px-3 py-1 text-xs sm:text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full"
-          >
-            {{ service }}
-          </p>
+    <!-- Content Section -->
+    <div class="max-w-7xl mx-auto mb-[89px] space-x-10 text-gray-800 leading-relaxed flex justify-between mt-[48px]">
+      <section v-if="project?.text">
+        <h1 class="font-medium text-[18px] mb-5">
+          {{ t("projects.project_review") }}
+        </h1>
+        <div class="md:flex justify-between md:w-[326px]">
+          <div v-html="project.text" class="text-lg"></div>
         </div>
+        <a v-if="project?.link" :href="project.link" target="_blank" rel="noopener noreferrer"
+          class="flex text-center md:w-[180px] gap-2 mt-[16px] items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-5 px-2 py-3 text-[13px] md:text-[15px] border border-gray-300 rounded-full font-medium transition-transform duration-700">
+          {{ t("projects.view_project") }}
+          <img src="/images/open_project.svg" alt="" />
+        </a>
 
-        <!-- Description -->
-        <p
-          v-html="project.text"
-          v-if="project.text"
-          class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left"
-        ></p>
-        <p
-          v-else
-          class="text-base sm:text-lg text-gray-700 leading-relaxed text-justify md:text-left"
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat sed
-          id, quis velit dolor sunt officia culpa perferendis architecto dolorum
-          impedit ab consequuntur illo exercitationem minus vel recusandae,
-          magnam esse.
-        </p>
+        <div class="mt-[100px] flex flex-col gap-2">
+          <div class="border w-full border-gray-300 flex justify-between px-6 py-4 rounded-lg md:w-[326px]">
+            <p class="text-[16px] font-normal">{{ t("projects.client") }}</p>
+            <p class="text-[16px] font-semibold">Компания заказчика</p>
+          </div>
+
+          <div class="border w-full border-gray-300 flex justify-between px-6 py-4 rounded-lg md:w-[326px]">
+            <p class="text-[16px] font-normal">{{ t("projects.category") }}</p>
+            <p class="text-[16px] font-semibold">
+              <span v-for="(service, i) in project.services" :key="i" class="text-[14px] font-semibold text-gray-800">
+                {{ service }}<span v-if="i < project.services.length - 1">, </span>
+              </span>
+            </p>
+          </div>
+
+          <div class="border w-full border-gray-300 flex justify-between px-6 py-4 rounded-lg md:w-[326px]">
+            <p class="text-[16px] font-normal">{{ t("projects.date") }}</p>
+            <p class="text-[16px] font-semibold">Сентябрь 3, 2025</p>
+          </div>
+        </div>
+      </section>
+      <div v-if="project" class="md:flex flex-col gap-4 hidden">
+        <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
+        <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
+        <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
       </div>
     </div>
-
   </div>
 </template>

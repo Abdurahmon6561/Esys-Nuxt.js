@@ -39,8 +39,14 @@
   /* Hide default cursor on card elements with eye cursor */
   .project-cards,
   .card-cursor,
-  .relative.transition.duration-300 {
+  .relative.transition.duration-300,
+  footer .relative.transition.duration-300 {
     cursor: none !important;
+  }
+
+  /* Additional rule to ensure custom cursor is hidden on footer cards */
+  footer .custom-cursor {
+    display: none !important;
   }
 
   /* Performance optimizations for card cursors */

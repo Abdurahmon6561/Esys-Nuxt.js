@@ -27,6 +27,11 @@
       "crm": "CRM Tizimlar"
     },
     "view": "Ko‘rish",
+    "project_review": "Ko‘rib chiqish",
+    "view_project": "Loyihani ko‘rish",
+    "client": "Mijoz",
+    "category": "Kategoriya",
+    "date": "Sana",
     "more_projects": "Ko‘proq loyihalar"
   },
   "services": {
