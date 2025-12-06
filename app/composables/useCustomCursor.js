@@ -6,7 +6,6 @@ export const useCustomCursor = () => {
     if (process.client) {
       console.log('Initializing custom cursor...');
       
-      // Only initialize on desktop devices (devices with hover capability)
       const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       
       console.log('Is desktop device:', isDesktop);
@@ -23,7 +22,6 @@ export const useCustomCursor = () => {
       
       console.log('Custom cursor element created and added to DOM:', cursor);
 
-      // Mouse move handler
       const handleMouseMove = (e) => {
         if (cursor) {
           cursor.style.left = e.clientX + 'px';
@@ -31,32 +29,35 @@ export const useCustomCursor = () => {
         }
       };
 
-      // Mouse enter/leave handlers for hover effect
       const handleMouseEnter = (e) => {
-        // Check if the target is inside footer image cards
+        if (!e.target || typeof e.target.closest !== 'function' || typeof e.target.matches !== 'function') {
+          return;
+        }
+        
         const isFooterCard = e.target.closest('.relative.transition.duration-300');
         
         if (cursor && (e.target.matches('a, button, [role="button"], .cursor-pointer') || 
             e.target.closest('a, button, [role="button"], .cursor-pointer'))) {
-          // Don't apply hover effect on footer cards
           if (!isFooterCard) {
             cursor.classList.add('hover');
           }
         }
         
-        // Hide custom cursor on footer cards (they have their own eye cursor)
         if (isFooterCard) {
           cursor.classList.add('hidden-cursor');
         }
       };
 
       const handleMouseLeave = (e) => {
+        if (!e.target || typeof e.target.closest !== 'function' || typeof e.target.matches !== 'function') {
+          return;
+        }
+        
         if (cursor && (e.target.matches('a, button, [role="button"], .cursor-pointer') || 
             e.target.closest('a, button, [role="button"], .cursor-pointer'))) {
           cursor.classList.remove('hover');
         }
         
-        // Show custom cursor when leaving footer cards
         const isFooterCard = e.target.closest('.relative.transition.duration-300');
         if (isFooterCard) {
           cursor.classList.remove('hidden-cursor');
@@ -76,14 +77,12 @@ export const useCustomCursor = () => {
         }
       };
 
-      // Add event listeners
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseenter', handleMouseEnter, true);
       document.addEventListener('mouseleave', handleMouseLeave, true);
       document.addEventListener('mousedown', handleMouseDown);
       document.addEventListener('mouseup', handleMouseUp);
 
-      // Cleanup function
       cleanup = () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseenter', handleMouseEnter, true);
