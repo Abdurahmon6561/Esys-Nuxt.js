@@ -55,7 +55,7 @@ const openBlog = (card) => {
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="text-center py-16">
+    <div v-else-if="error" class="text-center py-16 border-2 rounded-md">
       <p class="text-red-500 text-lg font-medium">
         {{ error }}
       </p>

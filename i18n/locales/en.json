@@ -85,6 +85,7 @@
     "back_to_blogs": "Back to Blogs",
     "no_blogs": "No blogs available",
     "blog_not_found": "Blog not found",
-    "read_time": "min read"
+    "read_time": "min read",
+    "fetch_error": "Error fetching data"
   }
 }
