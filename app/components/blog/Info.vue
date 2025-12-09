@@ -26,7 +26,7 @@ const fetchBlogs = async () => {
   } catch (err) {
     console.error("Error fetching blogs:", err);
     error.value = t("api.fetch_error");
-    blogs.value = []; 
+    blogs.value = [];
   } finally {
     loading.value = false;
   }
@@ -56,23 +56,17 @@ const openBlog = (card) => {
 
     <!-- Error State -->
     <div v-else-if="error" class="text-center py-16 border-2 rounded-md">
-      <p class="text-red-500 text-lg font-medium">
-        {{ error }}
-      </p>
+      <h3 class="text-xl font-semibold text-[#2c3d4f] mb-2">
+        {{ t("api.fetch_error") }}
+      </h3>
     </div>
 
     <!-- Blog List -->
     <div v-else-if="blogs.length > 0">
-      <div
-        v-for="(card, index) in blogs"
-        :key="card.id || index"
-        @click="openBlog(card)"
-        class="group flex flex-col md:flex-row items-center justify-between gap-8 p-6 rounded-2xl bg-white transform transition duration-300 hover:scale-[1.02] cursor-pointer"
-      >
+      <div v-for="(card, index) in blogs" :key="card.id || index" @click="openBlog(card)"
+        class="group flex flex-col md:flex-row items-center justify-between gap-8 p-6 rounded-2xl bg-white transform transition duration-300 hover:scale-[1.02] cursor-pointer">
         <div class="flex-1">
-          <h2
-            class="text-3xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#1aab9a]"
-          >
+          <h2 class="text-3xl font-bold text-gray-900 transition-colors duration-300 group-hover:text-[#1aab9a]">
             {{ card.title }}
           </h2>
 
@@ -81,23 +75,17 @@ const openBlog = (card) => {
           </p>
 
           <div v-if="card.tech && card.tech.length" class="flex flex-wrap gap-2 mt-4">
-            <span
-              v-for="(tech, i) in card.tech"
-              :key="i"
-              class="inline-block px-3 py-1 text-xs font-medium text-[#1aab9a] bg-[#1aab9a]/10 rounded-full"
-            >
+            <span v-for="(tech, i) in card.tech" :key="i"
+              class="inline-block px-3 py-1 text-xs font-medium text-[#1aab9a] bg-[#1aab9a]/10 rounded-full">
               {{ tech }}
             </span>
           </div>
         </div>
 
         <div class="flex-shrink-0 w-full md:w-[420px]">
-          <img
-            :src="card.image || card.featured_image || '/placeholder-blog.jpg'"
-            :alt="card.title"
+          <img :src="card.image || card.featured_image || '/placeholder-blog.jpg'" :alt="card.title"
             class="rounded-xl w-full h-[260px] object-cover transition duration-300 filter opacity-50 group-hover:opacity-100"
-            @error="$event.target.src = '/placeholder-blog.jpg'"
-          />
+            @error="$event.target.src = '/placeholder-blog.jpg'" />
         </div>
       </div>
     </div>

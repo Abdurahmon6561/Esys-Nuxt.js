@@ -15,10 +15,9 @@ const { portfolioApi } = useApiService();
 const portfolio = ref([]);
 const loading = ref(false);
 const error = ref(null);
-const showAll = ref(false); // Track whether to show all projects or just 4
-const allPortfolioData = ref([]); // Store all portfolio data
+const showAll = ref(false); 
+const allPortfolioData = ref([]); 
 
-// Computed property to show either 4 or all projects
 const displayedPortfolio = computed(() => {
   return showAll.value ? allPortfolioData.value : allPortfolioData.value.slice(0, 4);
 });
@@ -30,12 +29,10 @@ const setupCursorLogic = async () => {
     const cursor = card.querySelector(".card-cursor");
     if (!cursor) return;
 
-    // Remove existing listeners to avoid duplicates
     card.removeEventListener("mousemove", card._mousemoveHandler);
     card.removeEventListener("mouseenter", card._mouseenterHandler);
     card.removeEventListener("mouseleave", card._mouseleaveHandler);
 
-    // Create new handlers
     card._mousemoveHandler = (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -51,7 +48,6 @@ const setupCursorLogic = async () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     };
 
-    // Add new listeners
     card.addEventListener("mousemove", card._mousemoveHandler);
     card.addEventListener("mouseenter", card._mouseenterHandler);
     card.addEventListener("mouseleave", card._mouseleaveHandler);
@@ -62,10 +58,11 @@ const fetchPortfolio = async () => {
   try {
     loading.value = true;
     error.value = null;
+
     const response = await portfolioApi.getPortfolios();
-    allPortfolioData.value = response.data || response; // Store all data
-    portfolio.value = displayedPortfolio.value; // Set displayed data
-    // Setup cursor logic after data is loaded
+    allPortfolioData.value = response.data || response; 
+
+    portfolio.value = displayedPortfolio.value; 
     await setupCursorLogic();
   } catch (err) {
     error.value = err.message || 'Failed to fetch blogs';
@@ -83,7 +80,6 @@ watch(
   { immediate: false }
 );
 
-// Watch for showAll changes and update portfolio
 watch(
   showAll,
   () => {
@@ -92,23 +88,19 @@ watch(
   { immediate: false }
 );
 
-// ✅ when clicking eye
 const openProject = (card) => {
   const alias = card.alias || card.slug || card.id; 
   router.push(`${localePath("/view")}?alias=${alias}`);
 };
 
-// Toggle show all projects
 const toggleShowAll = async () => {
   showAll.value = !showAll.value;
   portfolio.value = displayedPortfolio.value;
-  // Re-setup cursor logic after changing the displayed projects
   await nextTick();
   await setupCursorLogic();
 };
 
 onMounted(async () => {
-  // First fetch the portfolio data
   await fetchPortfolio();
 });
 </script> 
@@ -123,6 +115,12 @@ onMounted(async () => {
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
       ></div>
+    </div>
+
+    <div v-else-if="error" class="text-center py-16 border-2 rounded-md">
+      <h3 class="text-xl font-semibold text-[#2c3d4f] mb-2">
+        {{ t("api.fetch_error") }}
+      </h3>
     </div>
 
     <!-- Cards -->
@@ -228,8 +226,8 @@ onMounted(async () => {
       </div>
     </div>
 
-        <!-- More Projects Button -->
-    <div class="flex justify-center mt-8 md:mt-12">
+    <!-- More Projects Button -->
+    <div v-if="portfolio.length > 0" class="flex justify-center mt-8 md:mt-12">
       <button
         @click="toggleShowAll()"
         :class="showAll ? 'hidden' : ''"
@@ -276,7 +274,6 @@ onMounted(async () => {
   animation: blink 2s infinite;
 }
 
-/* Eyelid moves up and down */
 .eyelid {
   animation: closeEye 2s infinite;
   transform-origin: top;

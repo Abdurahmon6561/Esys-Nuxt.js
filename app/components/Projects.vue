@@ -23,12 +23,10 @@ const setupCursorLogic = async () => {
     const cursor = card.querySelector(".card-cursor");
     if (!cursor) return;
 
-    // Remove existing listeners to avoid duplicates
     card.removeEventListener("mousemove", card._mousemoveHandler);
     card.removeEventListener("mouseenter", card._mouseenterHandler);
     card.removeEventListener("mouseleave", card._mouseleaveHandler);
 
-    // Create new handlers
     card._mousemoveHandler = (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -44,7 +42,6 @@ const setupCursorLogic = async () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     };
 
-    // Add new listeners
     card.addEventListener("mousemove", card._mousemoveHandler);
     card.addEventListener("mouseenter", card._mouseenterHandler);
     card.addEventListener("mouseleave", card._mouseleaveHandler);
@@ -56,9 +53,7 @@ const fetchPortfolio = async () => {
     loading.value = true;
     error.value = null;
     const response = await portfolioApi.getPortfolios();
-    // Get only the first 4 projects
     portfolio.value = (response.data || response).slice(0, 4);
-    // Setup cursor logic after data is loaded
     await setupCursorLogic();
   } catch (err) {
     error.value = err.message || 'Failed to fetch blogs';
@@ -76,20 +71,16 @@ watch(
   { immediate: false }
 );
 
-// ✅ when clicking eye
 const openProject = (card) => {
-  // Navigate to dynamic project page using alias
-  const alias = card.alias || card.slug || card.id; // Fallback to slug or id if alias doesn't exist
+  const alias = card.alias || card.slug || card.id; 
   router.push(`${localePath("/view")}?alias=${alias}`);
 };
 
-// Navigate to projects page
 const goToProjectsPage = () => {
   router.push(localePath("/projects"));
 };
 
 onMounted(async () => {
-  // First fetch the portfolio data
   await fetchPortfolio();
 });
 </script> 
@@ -227,7 +218,7 @@ onMounted(async () => {
     </div>
 
     <!-- More Projects Button -->
-    <div class="flex justify-center mt-8 md:mt-12">
+    <div v-if="portfolio.length > 0" class="flex justify-center mt-8 md:mt-12">
       <button
         @click="goToProjectsPage()"
         class="px-5 py-2 border-2 cursor-pointer border-[#EEE] rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base transition-colors duration-200"
