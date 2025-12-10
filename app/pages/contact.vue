@@ -17,7 +17,7 @@ const name = ref("");
 const email = ref("");
 const message = ref("");
 
-// Format phone input
+// phone input
 const formatPhone = (e) => {
   let value = e.target.value;
 
@@ -29,7 +29,7 @@ const formatPhone = (e) => {
 
   phone.value = value;
 };
-// Submit form
+
 const handleSubmit = (e) => {
   e.preventDefault();
 
@@ -57,7 +57,6 @@ const handleSubmit = (e) => {
   message.value = "";
 };
 
-// Toastify function
 const showToast = (text, type) => {
   Toastify({
     text,
@@ -74,13 +73,11 @@ const showToast = (text, type) => {
 };
 
 onMounted(() => {
-  // Set initial state
   gsap.set(".form-contact", {
     opacity: 0,
     scale: 0.8,
   });
   
-  // Animate to final state
   gsap.to(".form-contact", {
     opacity: 1,
     scale: 1,
@@ -90,7 +87,6 @@ onMounted(() => {
 });
 </script>
 
-<!-- in this code made the Contact Form  responsive responsible -->
 <template>
   <div class="mb-[80px]">
     <section
@@ -222,9 +218,8 @@ onMounted(() => {
 </template>
 
 <style>
-/* 👇 Slower fade-in/out animation */
 .custom-toast {
-  animation: fadeInOut 1s ease forwards; /* 1s instead of 0.3s */
+  animation: fadeInOut 1s ease forwards; 
 }
 
 @keyframes fadeInOut {

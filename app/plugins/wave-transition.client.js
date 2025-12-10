@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 
 // Global transition state
 let transitionOverlay = null;
+let logoElement = null;
 let isTransitioning = false;
 let isInitialLoad = true;
 
@@ -43,13 +44,40 @@ const createOverlay = () => {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: #f2f1f0 !important;
+    background: #e8e8e8 !important;
     z-index: 999999 !important;
     pointer-events: none !important;
     display: block !important;
     visibility: visible !important;
     clip-path: circle(150% at 50% 100%) !important;
   `;
+
+  // Create logo element
+  logoElement = document.createElement("div");
+  logoElement.id = "wave-transition-logo";
+  logoElement.style.cssText = `
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 1000000 !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+  `;
+
+  // Add logo image
+  const logoImg = document.createElement("img");
+  logoImg.src = "/images/footer-logo.svg";
+  logoImg.alt = "Logo";
+  logoImg.style.cssText = `
+    max-width: 200px !important;
+    max-height: 200px !important;
+    width: auto !important;
+    height: auto !important;
+  `;
+  
+  logoElement.appendChild(logoImg);
+  transitionOverlay.appendChild(logoElement);
 
   // Append to body or html if body doesn't exist
   const target = document.body || document.documentElement;
@@ -85,12 +113,26 @@ const createWaveTransition = (callback, skipCallback = false) => {
   return new Promise((resolve) => {
     isTransitioning = true;
     const overlay = createOverlay();
+    const logo = overlay.querySelector('#wave-transition-logo');
 
-    // Show overlay and start wave animation
+    // Reset elements
     gsap.set(overlay, {
       display: "block",
       visibility: "visible",
       clipPath: "circle(0% at 50% 100%)",
+    });
+
+    gsap.set(logo, {
+      opacity: 0,
+      scale: 0.8,
+    });
+
+    // Animate logo in
+    gsap.to(logo, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.3,
+      ease: "back.out(1.7)",
     });
 
     // Wave expanding upward
@@ -106,6 +148,13 @@ const createWaveTransition = (callback, skipCallback = false) => {
         
         // Small delay to ensure navigation is processed, then close the wave
         setTimeout(() => {
+          // Animate logo out
+          gsap.to(logo, {
+            opacity: 0,
+            scale: 0.8,
+            duration: 0.2,
+          });
+          
           gsap.to(overlay, {
             clipPath: "circle(0% at 50% 0%)",
             duration: 0.4, // Faster close
@@ -206,12 +255,19 @@ export default defineNuxtPlugin((nuxtApp) => {
     isInitialLoad = false;
 
     const overlay = transitionOverlay || createOverlay();
+    const logo = overlay.querySelector('#wave-transition-logo');
 
     // Ensure overlay is covering the screen
     gsap.set(overlay, {
       display: "block",
       visibility: "visible",
       clipPath: "circle(150% at 50% 100%)",
+    });
+
+    // Show logo prominently on initial load
+    gsap.set(logo, {
+      opacity: 1,
+      scale: 1.2,
     });
 
     // Remove the initial hide styles and show content
@@ -223,17 +279,32 @@ export default defineNuxtPlugin((nuxtApp) => {
     // Make body visible but keep it hidden behind overlay
     document.body.style.visibility = "visible";
 
-    // Wait then animate wave out to reveal content
+    // Animate the initial load transition with a more prominent effect
+    // First, slightly scale up the logo for emphasis
+    gsap.to(logo, {
+      scale: 1,
+      duration: 0.3,
+      ease: "back.out(1.7)",
+    });
+
+    // Then animate wave out to reveal content with a longer duration for visibility
     setTimeout(() => {
+      // Animate logo out
+      gsap.to(logo, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.3,
+      });
+      
       gsap.to(overlay, {
         clipPath: "circle(0% at 50% 0%)",
-        duration: 0.6,
+        duration: 0.8, // Longer duration for initial load to make it more visible
         ease: "power2.inOut",
         onComplete: () => {
           gsap.set(overlay, { display: "none" });
         },
       });
-    }, 400);
+    }, 600); // Longer delay for initial load to make the logo visible
   };
 
   // Setup on client-side

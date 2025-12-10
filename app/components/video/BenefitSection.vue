@@ -1,25 +1,7 @@
 <template>
   <section class="benefit-section">
-    <div class="container mx-auto pt-20">
-      <div class="col-center">
-        <div class="mt-20 col-center">
-          <ClipPathTitle
-            title="Shelf stable"
-            color="#faeade"
-            bg="#c88e64"
-            class-name="first-title"
-            border-color="#222123"
-          />
-        </div>
-
-        <div class="md:mt-0 mt-10">
-          <p>And much more ...</p>
-        </div>
-      </div>
-    </div>
-
     <div class="relative overlay-box">
-      <VideoPinSection />
+      <VideoPinSection   />
     </div>
   </section>
 </template>
@@ -28,7 +10,6 @@
 import { onMounted, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import ClipPathTitle from './ClipPathTitle.vue'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
@@ -57,7 +38,7 @@ onMounted(() => {
       clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
       ease: "circ.out",
     })
-    .to(".benefit-section .third-title", {
+    .to(".benefit-section .third-title", {  
       duration: 1,
       opacity: 1,
       clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",

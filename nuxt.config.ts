@@ -22,7 +22,6 @@ export default defineNuxtConfig({
       { code: "ru", iso: "ru", name: "Ру", file: "ru.json" },
     ],
     defaultLocale: "ru",
-    // Add this to redirect root to default locale
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_redirected',
