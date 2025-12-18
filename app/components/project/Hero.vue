@@ -1,11 +1,15 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, defineEmits, nextTick } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useI18n } from "vue-i18n";
+import { useApiService } from "~/composables/useApiService.js";
 
 const { t } = useI18n();
+const emit = defineEmits(['filter-selected']); 
+
+const { portfolioApi } = useApiService();
 
 const heroSection = ref(null);
 const bottomButton = ref(null);
@@ -13,23 +17,49 @@ const bottomButton = ref(null);
 let bottomInitialX = 0;
 const proximityThreshold = 100;
 
-const buttonTexts = [
-  t("second_hero.btns.all"),
-  t("second_hero.btns.websites"),
-  t("second_hero.btns.apps"),
-  t("second_hero.btns.crm"),
-];
+const portfolioData = ref([]);
+const uniqueServices = ref([]);
 
-const buttons = reactive(
-  buttonTexts.map((text) => ({
-    text,
-    xPos: "0px",
-    yPos: "0px",
-    isHover: false,
-  }))
-);
+const fetchPortfolio = async () => {
+  try {
+    const response = await portfolioApi.getPortfolios();
+    portfolioData.value = response.data || response;
+    
+    // Extract unique services
+    const services = new Set();
+    portfolioData.value.forEach(project => {
+      if (project.services && Array.isArray(project.services)) {
+        project.services.forEach(service => {
+          services.add(service);
+        });
+      }
+    });
+    
+    uniqueServices.value = [
+      { text: t("second_hero.btns.all"), value: "all" },
+      ...Array.from(services).map(service => ({ text: service, value: service }))
+    ];
+  } catch (err) {
+    console.error('Error fetching portfolio:', err);
+    // Fallback to static buttons if API fails
+    uniqueServices.value = [
+      { text: t("second_hero.btns.all"), value: "all" },
+      { text: t("second_hero.btns.websites"), value: t("second_hero.btns.websites") },
+      { text: t("second_hero.btns.apps"), value: t("second_hero.btns.apps") },
+      { text: t("second_hero.btns.crm"), value: t("second_hero.btns.crm") }
+    ];
+  }
+};
 
-const selectedIndex = ref(null);
+// default 
+const buttons = reactive([
+  { text: t("second_hero.btns.all"), value: "all", xPos: "0px", yPos: "0px", isHover: false },
+  { text: t("second_hero.btns.websites"), value: t("second_hero.btns.websites"), xPos: "0px", yPos: "0px", isHover: false },
+  { text: t("second_hero.btns.apps"), value: t("second_hero.btns.apps"), xPos: "0px", yPos: "0px", isHover: false },
+  { text: t("second_hero.btns.crm"), value: t("second_hero.btns.crm"), xPos: "0px", yPos: "0px", isHover: false }
+]);
+
+const selectedIndex = ref(0); 
 
 const updatePosition = (event, index) => {
   if (selectedIndex.value === index) return;
@@ -49,6 +79,9 @@ const selectButton = (index) => {
   buttons.forEach((btn, i) => {
     btn.isHover = i === index;
   });
+  
+  const filterValue = buttons[index].value;
+  emit('filter-selected', filterValue);
 };
 
 const isActive = (index) => selectedIndex.value === index;
@@ -66,7 +99,6 @@ const moveBottomButton = (e) => {
   const distanceX = Math.abs(mouseX - buttonCenterX);
   const distanceY = Math.abs(mouseY - buttonCenterY);
 
-  // Only move if mouse is within 100px both horizontally & vertically
   if (distanceX <= proximityThreshold && distanceY <= proximityThreshold) {
     const offsetX = mouseX - buttonCenterX;
 
@@ -87,7 +119,6 @@ const moveBottomButton = (e) => {
       });
     }
   } else {
-    // Return to original X when out of proximity
     gsap.to(bottomButton.value, {
       x: bottomInitialX,
       duration: 0.8,
@@ -108,31 +139,69 @@ const moveBottomButton = (e) => {
 
 const scrollDown = () => {
   window.scrollBy({
-    top: window.innerHeight,
+    top: window.innerHeight * 0.8,
     behavior: "smooth",
   });
 };
 
-onMounted(() => {
-  // Floating animation for bottom button
-  gsap.to(bottomButton.value, {
-    x: "+=15",
-    duration: 2.5,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
+let smoother = null;
 
-  // Wave effect for SVG inside button
-  gsap.to(bottomButton.value.querySelector(".clip-path-group"), {
-    scaleX: 1.05,
-    skewX: 3,
-    transformOrigin: "center",
-    duration: 1.8,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
+onMounted(async () => {
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+  
+  try {
+    if (typeof window !== 'undefined' && document.getElementById('smooth-wrapper')) {
+      smoother = ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.2, 
+        effects: true,
+        smoothTouch: 0.1,
+      });
+    }
+  } catch (error) {
+    console.warn('ScrollSmoother initialization failed:', error);
+  }
+
+  await fetchPortfolio();
+  
+  if (uniqueServices.value.length > 0) {
+    buttons.splice(0, buttons.length);
+    uniqueServices.value.forEach(service => {
+      buttons.push({
+        text: service.text,
+        value: service.value,
+        xPos: "0px",
+        yPos: "0px",
+        isHover: false
+      });
+    });
+  }
+
+  await nextTick();
+
+  if (bottomButton.value) {
+    gsap.to(bottomButton.value, {
+      x: "+=15",
+      duration: 2.5,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+
+    const svg = bottomButton.value.querySelector(".clip-path-group");
+    if (svg) {
+      gsap.to(svg, {
+        scaleX: 1.05,
+        skewX: 3,
+        transformOrigin: "center",
+        duration: 1.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }
+  }
 
   gsap.from(".hero-text", {
     opacity: 0,
@@ -140,26 +209,20 @@ onMounted(() => {
 
   gsap.from(".hero-btn-1", {
     y: +100,
-    opacity: -5,
+    opacity: 0,
     duration: 0.8,
   });
 
   gsap.from(".hero-btn-2", {
     y: +100,
-    opacity: -5,
+    opacity: 0,
     duration: 1,
   });
 
   gsap.from(".hero-btn-3", {
     y: +100,
-    opacity: -5,
+    opacity: 0,
     duration: 1.1,
-  });
-
-  gsap.from(".hero-btn-4", {
-    y: +100,
-    opacity: -5,
-    duration: 1.3,
   });
 
   gsap.fromTo(
@@ -167,31 +230,18 @@ onMounted(() => {
     {
       scale: 0.3,
       opacity: 0, 
-      backgroundPosition: "100% 0", // start with black
+      backgroundPosition: "100% 0", 
     },
     {
       scale: 1,
       opacity: 1,
       duration: 2.6,
       ease: "power3.out",
-      backgroundPosition: "0% 0", // move gradient like a snake across text
+      backgroundPosition: "0% 0", 
     }
   );
 
   window.addEventListener("mousemove", moveBottomButton);
-});
-
-let smoother = null;
-
-onMounted(() => {
-  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-
-  smoother = ScrollSmoother.create({
-    wrapper: "#smooth-wrapper",
-    content: "#smooth-content",
-    smooth: 1.5,
-    effects: true,
-  });
 });
 </script>
 
@@ -202,91 +252,89 @@ onMounted(() => {
     class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg"
     style="background-image: url('/images/blog-hero.webp')"
   >
-    <!-- Center Content -->
-    <div class="relative z-10 text-center text-white flex-1 select-none">
-      <div class="flex justify-center items-center">
-        <div v-if="$i18n.locale === 'ru'">
-          <h1
-            class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
-          >
-            Откройте для себя <br />
-            наши проекты
-          </h1>
+    <div id="smooth-content">
+      <!-- Center Content -->
+      <div class="relative z-10 text-center text-white flex-1 select-none">
+        <div class="flex justify-center items-center">
+          <div v-if="$i18n.locale === 'ru'">
+            <h1
+              class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+            >
+              Откройте для себя <br />
+              наши проекты
+            </h1>
+          </div>
+
+          <div v-if="$i18n.locale === 'uz'">
+            <h1
+              class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+            >
+              Bizning loyihalarimizni <br />
+              kashf eting
+            </h1>
+          </div>
+
+          <div v-if="$i18n.locale === 'en'">
+            <h1
+              class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+            >
+              Discover our projects
+            </h1>
+          </div>
         </div>
 
-        <div v-if="$i18n.locale === 'uz'">
-          <h1
-            class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
+        <div class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4">
+          <button
+            v-for="(btn, index) in buttons"
+            :key="index"
+            :class="[
+              'relative flex items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
+              `hero-btn-${index + 1}`,
+            ]"
+            @mouseenter="updatePosition($event, index)"
+            @mousemove="updatePosition($event, index)"
+            @mouseleave="resetPosition(index)"
+            @click="selectButton(index)"
           >
-            Bizning loyihalarimizni <br />
-            kashf eting
-          </h1>
-        </div>
+            <span
+              class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
+              :style="{
+                top: btn.yPos,
+                left: btn.xPos,
+                transform: 'translate(-50%, -50%)',
+                width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+                height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
+              }"
+            ></span>
 
-        <div v-if="$i18n.locale === 'en'">
-          <h1
-            class="text-2xl md:text-[50px] font-extrabold leading-tight hero-text md:max-w-[820px]"
-          >
-            Discover our projects
-          </h1>
+            <!-- text -->
+            <span
+              class="relative z-10 transition-colors duration-300"
+              :class="{
+                'text-black': isActive(index) || btn.isHover,
+                'text-white': !(isActive(index) || btn.isHover)
+              }"
+            >
+              {{ btn.text }}
+            </span>
+          </button>
         </div>
       </div>
 
-      <div class="mt-8 md:flex justify-center grid md:grid-cols-4 gap-4">
-        <button
-          v-for="(btn, index) in buttons"
-          :key="index"
-          :class="[
-            'relative flex items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-6 px-2 py-3 text-[13px] md:text-[15px] border border-white/40 rounded-full font-medium transition-transform duration-700',
-            `hero-btn-${index + 1}`,
-          ]"
-          @mouseenter="updatePosition($event, index)"
-          @mousemove="updatePosition($event, index)"
-          @mouseleave="resetPosition(index)"
-          @click="selectButton(index)"
-        >
-          <!-- expanding circle -->
-          <span
-            class="absolute block rounded-full bg-white transition-all duration-500 ease-in-out -z-10"
-            :style="{
-              top: btn.yPos,
-              left: btn.xPos,
-              transform: 'translate(-50%, -50%)',
-              width: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
-              height: isActive(index) ? '400px' : btn.isHover ? '400px' : '0px',
-            }"
-          ></span>
-
-          <!-- text -->
-          <span
-            class="relative z-10 transition-colors duration-300"
-            :class="
-              isActive(index)
-                ? 'text-black'
-                : btn.isHover
-                ? 'text-black'
-                : 'text-white'
-            "
-          >
-            {{ btn.text }}
-          </span>
-        </button>
-      </div>
+      <!-- Scroll Down Button -->
+      <button
+        @click="scrollDown"
+        ref="bottomButton"
+        class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex cursor-pointer"
+      >
+        <img src="/images/arrow-down.png" alt="arrow" />
+        <img
+          src="/images/arrow-down-hero.png"
+          alt="arrow"
+          class="w-4 h-4 mt-[-36px]"
+        />
+      </button>
     </div>
-
-    <!-- Scroll Down Button (absolute at bottom) -->
-    <button
-      @click="scrollDown"
-      ref="bottomButton"
-      class="absolute bottom-3 left-1/2 -translate-x-1/2 z-50 flex-col items-center hidden md:flex cursor-pointer"
-    >
-      <img src="/images/arrow-down.png" alt="arrow" />
-      <img
-        src="/images/arrow-down-hero.png"
-        alt="arrow"
-        class="w-4 h-4 mt-[-36px]"
-      />
-    </button>
   </section>
 </template>
 

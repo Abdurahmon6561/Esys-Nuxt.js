@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted, nextTick, watch, computed } from "vue";
+import { ref, onMounted, nextTick, watch, computed, defineExpose } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useApiService } from "~/composables/useApiService.js";
 import gsap from "gsap";
 
 const cardsRef = ref([]);
-const { t, locale  } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter();
 const localePath = useLocalePath();
 
@@ -15,11 +15,34 @@ const { portfolioApi } = useApiService();
 const portfolio = ref([]);
 const loading = ref(false);
 const error = ref(null);
-const showAll = ref(false); 
-const allPortfolioData = ref([]); 
+const showAll = ref(false);
+const allPortfolioData = ref([]);
+const selectedFilter = ref("all"); 
+
+const filteredPortfolio = computed(() => {
+  if (selectedFilter.value === "all") {
+    return allPortfolioData.value;
+  }
+  
+  const normalizedFilter = selectedFilter.value.toLowerCase().trim();
+  
+  return allPortfolioData.value.filter(project => {
+    if (!project.services || !Array.isArray(project.services)) {
+      return false;
+    }
+    
+    return project.services.some(service => {
+      const normalizedService = service.toLowerCase().trim();
+      return normalizedService === normalizedFilter || 
+             normalizedService.includes(normalizedFilter) ||
+             normalizedFilter.includes(normalizedService);
+    });
+  });
+});
 
 const displayedPortfolio = computed(() => {
-  return showAll.value ? allPortfolioData.value : allPortfolioData.value.slice(0, 4);
+  const filtered = filteredPortfolio.value;
+  return showAll.value ? filtered : filtered.slice(0, 4);
 });
 
 const setupCursorLogic = async () => {
@@ -60,17 +83,24 @@ const fetchPortfolio = async () => {
     error.value = null;
 
     const response = await portfolioApi.getPortfolios();
-    allPortfolioData.value = response.data || response; 
+    allPortfolioData.value = response.data || response;
 
-    portfolio.value = displayedPortfolio.value; 
+    portfolio.value = displayedPortfolio.value;
     await setupCursorLogic();
   } catch (err) {
-    error.value = err.message || 'Failed to fetch blogs';
-    console.error('Error fetching blogs:', err);
+    error.value = err.message || 'Failed to fetch projects';
+    console.error('Error fetching projects:', err);
   } finally {
     loading.value = false;
   }
 };
+
+watch(selectedFilter, () => {
+  portfolio.value = displayedPortfolio.value;
+  nextTick(() => {
+    setupCursorLogic();
+  });
+});
 
 watch(
   locale,
@@ -89,7 +119,7 @@ watch(
 );
 
 const openProject = (card) => {
-  const alias = card.alias || card.slug || card.id; 
+  const alias = card.alias || card.slug || card.id;
   router.push(`${localePath("/view")}?alias=${alias}`);
 };
 
@@ -100,10 +130,36 @@ const toggleShowAll = async () => {
   await setupCursorLogic();
 };
 
+const setFilter = (filter) => {
+  const normalizedFilter = filter.toLowerCase().trim();
+  selectedFilter.value = normalizedFilter === "all" || normalizedFilter === "все" ? "all" : normalizedFilter;
+};
+
+const handleFilterSelected = (filter) => {
+  setFilter(filter);
+  setTimeout(() => {
+    const projectsSection = document.getElementById('projects');
+    if (projectsSection) {
+      const offset = 100; // Adjust this value as needed
+      const elementPosition = projectsSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, 100);
+};
+
+defineExpose({
+  handleFilterSelected
+});
+
 onMounted(async () => {
   await fetchPortfolio();
 });
-</script> 
+</script>
 
 <template>
   <div
@@ -115,12 +171,6 @@ onMounted(async () => {
       <div
         class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
       ></div>
-    </div>
-
-    <div v-else-if="error" class="text-center py-16 border-2 rounded-md">
-      <h3 class="text-xl font-semibold text-[#2c3d4f] mb-2">
-        {{ t("api.fetch_error") }}
-      </h3>
     </div>
 
     <!-- Cards -->
@@ -236,7 +286,6 @@ onMounted(async () => {
         {{ t("projects.more_projects") }}
       </button>
     </div>
-
   </div>
 </template>
 

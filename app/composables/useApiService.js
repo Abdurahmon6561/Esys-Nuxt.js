@@ -3,7 +3,6 @@ import { useAuth } from "./useAuth.js";
 export function useApiService() {
   const { apiUrl, headers } = useAuth();
 
-  // Generic request handler with error handling
   const makeRequest = async (endpoint, options = {}) => {
     try {
       const url = `${apiUrl}${endpoint}`;
@@ -21,33 +20,33 @@ export function useApiService() {
     }
   };
 
-  // Blog API methods
   const blogApi = {
     getBlogs: () => makeRequest("blog/all"),
 
-    // Get blog by ID
     getBlog: (id) => makeRequest(`blog/${id}`),
 
-    // Get blog by alias
     getBlogByAlias: (alias) => makeRequest(`blog/view/${alias}`),
 
-    // Get blogs with pagination
     getBlogsWithPagination: (page = 1, limit = 10) =>
       makeRequest(`blog?page=${page}&limit=${limit}`),
   };
 
   const portfolioApi = {
-    // Get all portfolios
     getPortfolios: () => makeRequest("portfolio/all"),
 
-    // Get portfolio by ID
     getPortfolio: (id) => makeRequest(`portfolio/${id}`),
 
-    // Get portfolio by alias
     getPortfolioByAlias: (alias) => makeRequest(`portfolio/view/${alias}`),
   };
 
-  // Generic CRUD operations
+  const reviewsApi = {
+    getReviews: () => makeRequest("reviews"),
+  }
+
+  const servicesApi = {
+    getServices: () => makeRequest("services"),
+  }
+
   const api = {
     // GET request
     get: (endpoint) => makeRequest(endpoint),
@@ -76,6 +75,8 @@ export function useApiService() {
   return {
     blogApi,
     portfolioApi,
+    reviewsApi,
+    servicesApi,
     api,
     apiUrl,
   };

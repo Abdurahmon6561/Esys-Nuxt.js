@@ -90,19 +90,20 @@ onMounted(async () => {
     class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4"
     id="projects"
   >
-  <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-16">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
-      ></div>
-    </div>
-    <!-- Small Section Title -->
-    <div class="flex justify-center items-center">
+
+  <div class="flex justify-center items-center">
       <h3
         class="text-xs sm:text-sm text-[#080808] border-2 rounded-full px-3 py-1 border-[#EEE]"
       >
         {{ t("hero.our_projects") }}
       </h3>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="flex justify-center items-center py-16">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
+      ></div>
     </div>
 
     <!-- Section Title -->

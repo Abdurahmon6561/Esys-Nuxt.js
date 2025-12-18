@@ -4,23 +4,18 @@ export const useCustomCursor = () => {
 
   const initCursor = () => {
     if (process.client) {
-      console.log('Initializing custom cursor...');
       
       const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       
-      console.log('Is desktop device:', isDesktop);
       
       if (!isDesktop) {
-        console.log('Skipping cursor initialization on mobile device');
         return;
       }
 
-      // Create cursor element
       cursor = document.createElement('div');
       cursor.className = 'custom-cursor';
       document.body.appendChild(cursor);
       
-      console.log('Custom cursor element created and added to DOM:', cursor);
 
       const handleMouseMove = (e) => {
         if (cursor) {
