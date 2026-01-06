@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import gsap from "gsap";
 import * as THREE from "three";
-import NET from "vanta/dist/vanta.net.min";
+import GLOBE from "vanta/dist/vanta.globe.min";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 
@@ -37,21 +37,23 @@ const showToast = (text, type) => {
 onMounted(() => {
   const vantaContainer = document.getElementById('vanta-bg');
   if (vantaContainer && typeof window !== 'undefined') {
-    vantaEffect = NET({
+    vantaEffect = GLOBE({
       el: vantaContainer,
       THREE: THREE,
       mouseControls: true,
       touchControls: true,
       gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00,
-      color: 0x048ba8,
-      backgroundColor: 0x011424,
-      points: 10.00,
-      maxDistance: 20.00,
-      spacing: 15.00,
+
+      minHeight: 200.0,
+      minWidth: 200.0,
+
+      scale: 1.0,
+      scaleMobile: 1.4,
+      size: 1.4,
+
+      backgroundColor: 0x23153c,
+      color: 0x1aab9a,
+      color2: 0xffffff
     });
   }
 
@@ -113,7 +115,7 @@ const handleSubmit = async (e) => {
     <section
       class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden bg-[#011424]">
       <div id="vanta-bg" class="absolute inset-0"></div>
-      <div class="absolute inset-0 bg-black/40"></div>
+      <div class="absolute inset-0 bg-black/10"></div>
 
       <div class="relative z-10 form-contact w-[90%] sm:w-[85%] md:w-full max-w-lg
            p-6 md:p-8 bg-white/10 backdrop-blur-lg
