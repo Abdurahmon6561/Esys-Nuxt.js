@@ -64,7 +64,11 @@
   },
   "toastify": {
     "success_send": "Muvaffaqiyatli yuborildi",
-    "error": "Xatolik"
+    "error": "Xatolik",
+    "please_fill_fields": "Iltimos, barcha majburiy maydonchalarni to'ldiring",
+    "enter_email_or_phone": "Iltimos, elektron pochta yoki telefon raqamingizni kiriting",
+    "sending_message": "Xabar yuborilmoqda...",
+    "failed_to_send": "Xabarni yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring."
   },
   "footer": {
     "home": "Bosh sahifa",
