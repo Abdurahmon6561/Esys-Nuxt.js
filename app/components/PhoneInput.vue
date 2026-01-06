@@ -21,15 +21,13 @@ watch(() => props.modelValue, val => {
 const formatPhone = (e) => {
     let input = e.target.value;
 
-    // Remove all characters except digits and '+'
     let digits = input.replace(/[^\d+]/g, '');
 
-    // Ensure it starts with '+'
     if (!digits.startsWith('+')) {
         digits = '+' + digits;
     }
 
-    phone.value = digits;                // Keep full number
-    emit('update:modelValue', digits);   // Send full number to parent
+    phone.value = digits;                
+    emit('update:modelValue', digits);  
 };
 </script>
