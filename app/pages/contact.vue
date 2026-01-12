@@ -1,9 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import gsap from "gsap";
-import * as THREE from "three";
-import GLOBE from "vanta/dist/vanta.globe.min";
 import Toastify from "toastify-js";
 import "toastify-js/src/toastify.css";
 
@@ -12,7 +10,6 @@ import { sendToTelegram } from "../composables/TelegramService";
 
 const { t } = useI18n();
 
-let vantaEffect = null;
 const selectedTab = ref("email");
 const name = ref("");
 const email = ref("");
@@ -35,28 +32,6 @@ const showToast = (text, type) => {
 };
 
 onMounted(() => {
-  const vantaContainer = document.getElementById('vanta-bg');
-  if (vantaContainer && typeof window !== 'undefined') {
-    vantaEffect = GLOBE({
-      el: vantaContainer,
-      THREE: THREE,
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-
-      minHeight: 200.0,
-      minWidth: 200.0,
-
-      scale: 1.0,
-      scaleMobile: 1.4,
-      size: 1.4,
-
-      backgroundColor: 0x23153c,
-      color: 0x1aab9a,
-      color2: 0xffffff
-    });
-  }
-
   gsap.set(".form-contact", {
     opacity: 0,
     scale: 0.8,
@@ -70,11 +45,7 @@ onMounted(() => {
   });
 });
 
-onUnmounted(() => {
-  if (vantaEffect) {
-    vantaEffect.destroy();
-  }
-});
+
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -113,9 +84,14 @@ const handleSubmit = async (e) => {
 <template>
   <div class="mb-[80px]">
     <section
-      class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden bg-[#011424]">
-      <div id="vanta-bg" class="absolute inset-0"></div>
-      <div class="absolute inset-0 bg-black/10"></div>
+      class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden">
+      <!-- Video Background -->
+      <div class="absolute inset-0 z-0">
+        <video autoplay muted loop playsinline poster="/images/bg-hero.webp" class="w-full h-full object-cover">
+          <source src="/videos/contactVideo.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-black/40"></div>
+      </div>
 
       <div class="relative z-10 form-contact w-[90%] sm:w-[85%] md:w-full max-w-lg
            p-6 md:p-8 bg-white/10 backdrop-blur-lg
