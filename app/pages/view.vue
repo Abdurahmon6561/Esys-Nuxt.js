@@ -92,13 +92,13 @@ onMounted(() => {
     </section>
 
     <!-- Content Section -->
-    <div class="flex justify-center mx-auto ">
+    <div class="flex justify-center mx-auto">
       <div class="mb-[89px] gap-16 text-gray-800 leading-relaxed flex justify-between mt-[48px]">
         <section v-if="project?.text">
           <h1 class="font-medium text-[18px] mb-5">
             {{ t("projects.project_review") }}
           </h1>
-          <div class="md:flex justify-between md:w-[326px]">
+          <div class="md:flex justify-between md:w-[426px]">
             <div v-html="project.text" class="text-lg"></div>
           </div>
           <a v-if="project?.link" :href="project.link" target="_blank" rel="noopener noreferrer"
@@ -107,7 +107,7 @@ onMounted(() => {
             <img src="/images/open_project.svg" alt="" />
           </a>
 
-          <div class="mt-[100px] flex flex-col gap-3 md:w-[326px]">
+          <div class="mt-[100px] flex flex-col gap-3 md:w-[426px]">
 
             <!-- Client -->
             <div class="border border-gray-300 rounded-lg p-4 grid grid-cols-[110px_1fr] gap-4 items-start">
@@ -144,9 +144,9 @@ onMounted(() => {
           </div>
         </section>
         <div v-if="project" class="md:flex flex-col gap-4 hidden">
-          <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
-          <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
-          <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
+          <img :src="project.image" alt="project_image" class="md:w-[777px] md:h-[533px] object-cover" />
+          <img :src="project.image" alt="project_image" class="md:w-[777px] md:h-[533px] object-cover" />
+          <img :src="project.image" alt="project_image" class="md:w-[777px] md:h-[533px] object-cover" />
         </div>
       </div>
     </div>

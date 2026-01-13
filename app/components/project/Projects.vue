@@ -50,11 +50,14 @@ const setupCursorLogic = async () => {
   
   cardsRef.value.forEach((card) => {
     const cursor = card.querySelector(".card-cursor");
-    if (!cursor) return;
+    const button = card.querySelector(".project-button");
+    if (!cursor || !button) return;
 
     card.removeEventListener("mousemove", card._mousemoveHandler);
     card.removeEventListener("mouseenter", card._mouseenterHandler);
     card.removeEventListener("mouseleave", card._mouseleaveHandler);
+    button.removeEventListener("mouseenter", card._buttonMouseenterHandler);
+    button.removeEventListener("mouseleave", card._buttonMouseleaveHandler);
 
     card._mousemoveHandler = (e) => {
       const rect = card.getBoundingClientRect();
@@ -71,9 +74,21 @@ const setupCursorLogic = async () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     };
 
+    // Hide cursor when hovering over button
+    card._buttonMouseenterHandler = () => {
+      gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
+    };
+
+    // Show cursor when leaving button
+    card._buttonMouseleaveHandler = () => {
+      gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
+    };
+
     card.addEventListener("mousemove", card._mousemoveHandler);
     card.addEventListener("mouseenter", card._mouseenterHandler);
     card.addEventListener("mouseleave", card._mouseleaveHandler);
+    button.addEventListener("mouseenter", card._buttonMouseenterHandler);
+    button.addEventListener("mouseleave", card._buttonMouseleaveHandler);
   });
 };
 
@@ -140,7 +155,7 @@ const handleFilterSelected = (filter) => {
   setTimeout(() => {
     const projectsSection = document.getElementById('projects');
     if (projectsSection) {
-      const offset = 100; // Adjust this value as needed
+      const offset = 100;
       const elementPosition = projectsSection.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -177,10 +192,11 @@ onMounted(async () => {
     <div
       class="flex flex-wrap justify-center gap-6 md:gap-[32px] mt-8 md:mt-12"
     >
-      <div
+     <div
         v-for="(card, i) in portfolio"
         :key="i"
         ref="cardsRef"
+        @click="openProject(card)"
         class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
       >
         <!-- Image -->
@@ -230,15 +246,16 @@ onMounted(async () => {
         </div>
 
         <!-- Button -->
-        <a :href="card.link" target="_blank">
+        <a :href="card.link" target="_blank" class="project-button">
           <button
-            class="absolute bottom-3 sm:bottom-6 left-3 cursor-pointer sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/40 transition"
+            @click="openProject(card)"
+            class="absolute bottom-3 sm:bottom-6 left-3 cursor-pointer sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/60 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out"
           >
             <div class="text-left">
               <h3
                 :class="[
                   'text-sm sm:text-lg md:text-[24px] font-medium leading-tight',
-                  i === 1 ? 'text-black' : 'text-white',
+                  i === 1 ? 'text-white' : 'text-black',
                 ]"
               >
                 {{ card.title }}
@@ -246,7 +263,7 @@ onMounted(async () => {
               <p
                 :class="[
                   'text-xs sm:text-sm md:text-[14px]',
-                  i === 1 ? 'text-black' : 'text-white',
+                  i === 1 ? 'text-black' : 'text-black',
                 ]"
               >
                 {{ card.tech }}
@@ -305,10 +322,14 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
+  pointer-events: none; 
   cursor: pointer;
   opacity: 0;
   z-index: 20;
+}
+
+.project-button {
+  z-index: 30;
 }
 
 @media (max-width: 768px) {
