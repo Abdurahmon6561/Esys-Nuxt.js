@@ -72,7 +72,7 @@ onMounted(() => {
 <template>
   <div>
     <!-- Hero Section -->
-    <section v-if="project" ref="heroSection"
+    <section v-if="project" ref="heroSection" id="hero-section"
       class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg overflow-hidden hero-section"
       :style="`background-image: url('${project.image}')`">
       <div class="absolute inset-0 bg-black/50"></div>
@@ -115,7 +115,7 @@ onMounted(() => {
                 {{ t("projects.client") }}
               </p>
               <p class="text-[16px] font-semibold break-words leading-snug">
-                Компания заказчика
+                {{ project.client }}
               </p>
             </div>
 
@@ -143,10 +143,8 @@ onMounted(() => {
 
           </div>
         </section>
-        <div v-if="project" class="md:flex flex-col gap-4 hidden">
-          <img :src="project.image" alt="project_image" class="md:w-[777px] md:h-[533px] object-cover" />
-          <img :src="project.image" alt="project_image" class="md:w-[777px] md:h-[533px] object-cover" />
-          <img :src="project.image" alt="project_image" class="md:w-[777px] md:h-[533px] object-cover" />
+        <div v-if="project && project.images && project.images.length > 0" class="md:flex flex-col gap-4 hidden">
+          <img v-for="(img, index) in project.images" :key="index" :src="img.image" :alt="`project_image_${index}`" class="md:w-[777px] md:h-[500px] object-cover" />
         </div>
       </div>
     </div>

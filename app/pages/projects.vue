@@ -17,12 +17,12 @@ const handleFilterSelected = (filter) => {
 <template>
   <div>
     <div class="page-section hero-section">
-      <Hero @filter-selected="handleFilterSelected" />
+      <Hero id="hero-section" @filter-selected="handleFilterSelected" />
     </div>
     <div class="page-section">
       <Projects ref="projectsRef" />
     </div>
-    <div class="page-section"><Users /></div>
-    <div class="page-section"><Technologies /></div>
+    <div  id="users-section"  class="page-section"><Users /></div>
+    <div id="technologies-section" class="page-section"><Technologies /></div>
   </div>
 </template>

@@ -7,9 +7,9 @@ import Users from "~/components/Users.vue";
 
 <template>
   <div>
-    <div class="page-section hero-section"><Hero /></div>
-    <div class="page-section"><Projects /></div>
-    <div class="page-section"><Users /></div>
-    <div class="page-section"><Services /></div>
+    <div id="hero-section" class="page-section hero-section"><Hero /></div>
+    <div id="projects-section" class="page-section"><Projects /></div>
+    <div id="users-section" class="page-section"><Users /></div>
+    <div id="services-section" class="page-section"><Services /></div>
   </div>
 </template>

@@ -92,10 +92,21 @@ const moveUsersArrow = (e) => {
 };
 
 const scrollDown = () => {
-  window.scrollBy({
-    top: window.innerHeight,
-    behavior: "smooth",
-  });
+  const servicesSection = document.getElementById('services-section');
+  
+  if (servicesSection) {
+    const rect = servicesSection.getBoundingClientRect();
+    const offsetTop = rect.top + window.pageYOffset;
+    const windowHeight = window.innerHeight;
+    const elementHeight = rect.height;
+    
+    const scrollToPosition = offsetTop - (windowHeight / 2) + (elementHeight / 2);
+    
+    window.scrollTo({
+      top: scrollToPosition,
+      behavior: "smooth",
+    });
+  }
 };
 
 onMounted(() => {
