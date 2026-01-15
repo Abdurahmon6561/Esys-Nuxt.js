@@ -87,6 +87,7 @@
     "retry": "Retry",
     "go_back": "Go Back",
     "back_to_blogs": "Back to Blogs",
+    "no_data": "No data available",
     "no_blogs": "No blogs available",
     "blog_not_found": "Blog not found",
     "read_time": "min read",

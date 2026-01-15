@@ -85,6 +85,7 @@
     "error": "Xatolik",
     "failed_to_fetch": "Ma'lumotlarni yuklashda xatolik",
     "retry": "Qayta urinish",
+    "no_data": "Ma'lumot mavjud emas",
     "go_back": "Orqaga",
     "back_to_blogs": "Bloglarga qaytish",
     "no_blogs": "Bloglar mavjud emas",
