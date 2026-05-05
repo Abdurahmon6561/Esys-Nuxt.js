@@ -138,7 +138,7 @@ onMounted(async () => {
         :key="i"
         ref="cardsRef"
         @click="openProject(card)"
-        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
+        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] xl:w-[calc(50%-16px)] lg:w-[calc(50%-16px)] max-w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
       >
         <!-- Image -->
         <img
