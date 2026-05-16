@@ -24,9 +24,9 @@ export default defineNuxtConfig({
     defaultLocale: "ru",
     detectBrowserLanguage: {
       useCookie: true,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root',
-    }
+      cookieKey: "i18n_redirected",
+      redirectOn: "root",
+    },
   },
 
   runtimeConfig: {
@@ -37,7 +37,8 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.NUXT_PUBLIC_API_URL,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
-    }
+      consultantKey: process.env.NUXT_PUBLIC_CONSULTANT_KEY,
+    },
   },
 
   app: {

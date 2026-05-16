@@ -1,10 +1,12 @@
 <script setup>
 import { ref, nextTick } from 'vue'
-import { useAuth } from '~/composables/useAuth.js'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const { apiUrl, headers } = useAuth()
+const config = useRuntimeConfig()
+
+const apiUrl = `${config.public.apiUrl}consultant/chat`
+const widgetKey = config.public.consultantKey
 
 const isOpen = ref(false)
 const input = ref('')
@@ -12,7 +14,7 @@ const loading = ref(false)
 const messages = ref([])
 const messagesEl = ref(null)
 const sessionId = ref(
-  process.client ? sessionStorage.getItem('consultant_session_id') ?? null : null
+  import.meta.client ? sessionStorage.getItem('consultant_session_id') ?? null : null
 )
 
 const scrollBottom = () =>
@@ -34,15 +36,15 @@ const send = async () => {
   if (sessionId.value) body.session_id = sessionId.value
 
   try {
-    const data = await $fetch(`${apiUrl}consultant/chat`, {
+    const data = await $fetch(apiUrl, {
       method: 'POST',
-      headers,
+      headers: { 'X-Widget-Key': widgetKey },
       body,
     })
 
     messages.value = messages.value.slice(0, -1)
     sessionId.value = data.session_id
-    if (process.client) sessionStorage.setItem('consultant_session_id', data.session_id)
+    if (import.meta.client) sessionStorage.setItem('consultant_session_id', data.session_id)
     messages.value = [...messages.value, { role: 'assistant', content: data.reply }]
   } catch (err) {
     messages.value = messages.value.slice(0, -1)
@@ -56,7 +58,7 @@ const send = async () => {
 
 const newSession = () => {
   sessionId.value = null
-  if (process.client) sessionStorage.removeItem('consultant_session_id')
+  if (import.meta.client) sessionStorage.removeItem('consultant_session_id')
   messages.value = []
 }
 </script>
