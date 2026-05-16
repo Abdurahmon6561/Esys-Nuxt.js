@@ -7,7 +7,7 @@ import Info from "~/components/blog/Info.vue";
 
 <template>
   <div>
-    <div class="page-section hero-section"><Hero /></div>
+    <div id="hero-section" class="page-section hero-section"><Hero /></div>
     <div class="page-section"><Info /></div>
     <!-- <div class="page-section"><BenefitSection /></div> -->
   </div>

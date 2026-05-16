@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, nextTick, watch } from "vue";
 import { gsap } from "gsap";
 import { useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -30,6 +30,7 @@ const switchLocale = (code) => {
 };
 
 let smoother = null;
+let heroTrigger = null;
 
 // Two states instead of one
 const hasScrolled = ref(false);
@@ -63,20 +64,33 @@ onMounted(async () => {
 
     smoother.effects("header", { speed: 1, lag: 0 });
 
-    // Detect if user has started scrolling
     ScrollTrigger.create({
       start: 1,
       onEnter: () => (hasScrolled.value = true),
       onLeaveBack: () => (hasScrolled.value = false),
     });
 
-    // Detect if hero section is fully passed
-    ScrollTrigger.create({
-      trigger: ".hero-section",
-      start: "bottom top",
-      onEnter: () => (passedHero.value = true),
-      onLeaveBack: () => (passedHero.value = false),
+
+    const updateHeroTrigger = () => {
+      if (heroTrigger) {
+        heroTrigger.kill();
+      }
+
+      nextTick(() => {
+        heroTrigger = ScrollTrigger.create({
+          trigger: ".hero-section",
+          start: "bottom top",
+          onEnter: () => (passedHero.value = true),
+          onLeaveBack: () => (passedHero.value = false),
+        });
+      });
+    };
+
+    watch(route, () => {
+      updateHeroTrigger();
     });
+
+    updateHeroTrigger();
 
     gsap.fromTo(
       "header",
@@ -90,6 +104,7 @@ onBeforeUnmount(() => {
   if (process.client) {
     window.removeEventListener("click", handleClickOutside);
     if (smoother) smoother.kill();
+    if (heroTrigger) heroTrigger.kill();
     if (window.ScrollTrigger) {
       window.ScrollTrigger.getAll().forEach((t) => t.kill());
     }

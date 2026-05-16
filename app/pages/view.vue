@@ -72,7 +72,7 @@ onMounted(() => {
 <template>
   <div>
     <!-- Hero Section -->
-    <section v-if="project" ref="heroSection"
+    <section v-if="project" ref="heroSection" id="hero-section"
       class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] bg-cover bg-center hero rounded-lg overflow-hidden hero-section"
       :style="`background-image: url('${project.image}')`">
       <div class="absolute inset-0 bg-black/50"></div>
@@ -92,45 +92,60 @@ onMounted(() => {
     </section>
 
     <!-- Content Section -->
-    <div class="max-w-7xl mx-auto mb-[89px] space-x-10 text-gray-800 leading-relaxed flex justify-between mt-[48px]">
-      <section v-if="project?.text">
-        <h1 class="font-medium text-[18px] mb-5">
-          {{ t("projects.project_review") }}
-        </h1>
-        <div class="md:flex justify-between md:w-[326px]">
-          <div v-html="project.text" class="text-lg"></div>
+    <div class="flex justify-center mx-auto">
+      <div class="mb-[89px] gap-16 text-gray-800 leading-relaxed flex justify-between mt-[48px]">
+        <section v-if="project?.text">
+          <h1 class="font-medium text-[18px] mb-5">
+            {{ t("projects.project_review") }}
+          </h1>
+          <div class="md:flex justify-between md:w-[426px]">
+            <div v-html="project.text" class="text-lg"></div>
+          </div>
+          <a v-if="project?.link" :href="project.link" target="_blank" rel="noopener noreferrer"
+            class="flex text-center md:w-full gap-2 mt-[16px] items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-5 px-2 py-3 text-[13px] md:text-[15px] border border-gray-300 rounded-full font-medium transition-transform duration-700">
+            {{ t("projects.view_project") }}
+            <img src="/images/open_project.svg" alt="" />
+          </a>
+
+          <div class="mt-[100px] flex flex-col gap-3 md:w-[426px]">
+
+            <!-- Client -->
+            <div class="border border-gray-300 rounded-lg p-4 grid grid-cols-[110px_1fr] gap-4 items-start">
+              <p class="text-[16px] font-normal text-gray-600">
+                {{ t("projects.client") }}
+              </p>
+              <p class="text-[16px] font-semibold break-words leading-snug">
+                {{ project.client }}
+              </p>
+            </div>
+
+            <!-- Category -->
+            <div class="border border-gray-300 rounded-lg p-4 grid grid-cols-[110px_1fr] gap-4 items-start">
+              <p class="text-[16px] font-normal text-gray-600">
+                {{ t("projects.category") }}
+              </p>
+              <p class="text-[16px] font-semibold break-words leading-snug">
+                <span v-for="(service, i) in project.services" :key="i">
+                  {{ service }}<span v-if="i < project.services.length - 1">, </span>
+                </span>
+              </p>
+            </div>
+
+            <!-- Date -->
+            <div class="border border-gray-300 rounded-lg p-4 grid grid-cols-[110px_1fr] gap-4 items-start">
+              <p class="text-[16px] font-normal text-gray-600">
+                {{ t("projects.date") }}
+              </p>
+              <p class="text-[16px] font-semibold break-words leading-snug">
+                Сентябрь 3, 2025
+              </p>
+            </div>
+
+          </div>
+        </section>
+        <div v-if="project && project.images && project.images.length > 0" class="md:flex flex-col gap-4 hidden">
+          <img v-for="(img, index) in project.images" :key="index" :src="img.image" :alt="`project_image_${index}`" class="md:w-[777px] md:h-[500px] object-cover" />
         </div>
-        <a v-if="project?.link" :href="project.link" target="_blank" rel="noopener noreferrer"
-          class="flex text-center md:w-[180px] gap-2 mt-[16px] items-center justify-center cursor-pointer overflow-hidden h-[41px] md:px-5 px-2 py-3 text-[13px] md:text-[15px] border border-gray-300 rounded-full font-medium transition-transform duration-700">
-          {{ t("projects.view_project") }}
-          <img src="/images/open_project.svg" alt="" />
-        </a>
-
-        <div class="mt-[100px] flex flex-col gap-2">
-          <div class="border w-full border-gray-300 flex justify-between px-6 py-4 rounded-lg md:w-[326px]">
-            <p class="text-[16px] font-normal">{{ t("projects.client") }}</p>
-            <p class="text-[16px] font-semibold">Компания заказчика</p>
-          </div>
-
-          <div class="border w-full border-gray-300 flex justify-between px-6 py-4 rounded-lg md:w-[326px]">
-            <p class="text-[16px] font-normal">{{ t("projects.category") }}</p>
-            <p class="text-[16px] font-semibold">
-              <span v-for="(service, i) in project.services" :key="i" class="text-[14px] font-semibold text-gray-800">
-                {{ service }}<span v-if="i < project.services.length - 1">, </span>
-              </span>
-            </p>
-          </div>
-
-          <div class="border w-full border-gray-300 flex justify-between px-6 py-4 rounded-lg md:w-[326px]">
-            <p class="text-[16px] font-normal">{{ t("projects.date") }}</p>
-            <p class="text-[16px] font-semibold">Сентябрь 3, 2025</p>
-          </div>
-        </div>
-      </section>
-      <div v-if="project" class="md:flex flex-col gap-4 hidden">
-        <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
-        <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
-        <img :src="project.image" alt="project_image" class="md:w-[977px] md:h-[733px] object-cover" />
       </div>
     </div>
   </div>

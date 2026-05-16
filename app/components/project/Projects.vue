@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted, nextTick, watch, computed } from "vue";
+import { ref, onMounted, nextTick, watch, computed, defineExpose } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useApiService } from "~/composables/useApiService.js";
 import gsap from "gsap";
 
 const cardsRef = ref([]);
-const { t, locale  } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter();
 const localePath = useLocalePath();
 
@@ -15,12 +15,34 @@ const { portfolioApi } = useApiService();
 const portfolio = ref([]);
 const loading = ref(false);
 const error = ref(null);
-const showAll = ref(false); // Track whether to show all projects or just 4
-const allPortfolioData = ref([]); // Store all portfolio data
+const showAll = ref(false);
+const allPortfolioData = ref([]);
+const selectedFilter = ref("all"); 
 
-// Computed property to show either 4 or all projects
+const filteredPortfolio = computed(() => {
+  if (selectedFilter.value === "all") {
+    return allPortfolioData.value;
+  }
+  
+  const normalizedFilter = selectedFilter.value.toLowerCase().trim();
+  
+  return allPortfolioData.value.filter(project => {
+    if (!project.services || !Array.isArray(project.services)) {
+      return false;
+    }
+    
+    return project.services.some(service => {
+      const normalizedService = service.toLowerCase().trim();
+      return normalizedService === normalizedFilter || 
+             normalizedService.includes(normalizedFilter) ||
+             normalizedFilter.includes(normalizedService);
+    });
+  });
+});
+
 const displayedPortfolio = computed(() => {
-  return showAll.value ? allPortfolioData.value : allPortfolioData.value.slice(0, 4);
+  const filtered = filteredPortfolio.value;
+  return showAll.value ? filtered : filtered.slice(0, 4);
 });
 
 const setupCursorLogic = async () => {
@@ -28,14 +50,15 @@ const setupCursorLogic = async () => {
   
   cardsRef.value.forEach((card) => {
     const cursor = card.querySelector(".card-cursor");
-    if (!cursor) return;
+    const button = card.querySelector(".project-button");
+    if (!cursor || !button) return;
 
-    // Remove existing listeners to avoid duplicates
     card.removeEventListener("mousemove", card._mousemoveHandler);
     card.removeEventListener("mouseenter", card._mouseenterHandler);
     card.removeEventListener("mouseleave", card._mouseleaveHandler);
+    button.removeEventListener("mouseenter", card._buttonMouseenterHandler);
+    button.removeEventListener("mouseleave", card._buttonMouseleaveHandler);
 
-    // Create new handlers
     card._mousemoveHandler = (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -51,10 +74,21 @@ const setupCursorLogic = async () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     };
 
-    // Add new listeners
+    // Hide cursor when hovering over button
+    card._buttonMouseenterHandler = () => {
+      gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
+    };
+
+    // Show cursor when leaving button
+    card._buttonMouseleaveHandler = () => {
+      gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
+    };
+
     card.addEventListener("mousemove", card._mousemoveHandler);
     card.addEventListener("mouseenter", card._mouseenterHandler);
     card.addEventListener("mouseleave", card._mouseleaveHandler);
+    button.addEventListener("mouseenter", card._buttonMouseenterHandler);
+    button.addEventListener("mouseleave", card._buttonMouseleaveHandler);
   });
 };
 
@@ -62,18 +96,26 @@ const fetchPortfolio = async () => {
   try {
     loading.value = true;
     error.value = null;
+
     const response = await portfolioApi.getPortfolios();
-    allPortfolioData.value = response.data || response; // Store all data
-    portfolio.value = displayedPortfolio.value; // Set displayed data
-    // Setup cursor logic after data is loaded
+    allPortfolioData.value = response.data || response;
+
+    portfolio.value = displayedPortfolio.value;
     await setupCursorLogic();
   } catch (err) {
-    error.value = err.message || 'Failed to fetch blogs';
-    console.error('Error fetching blogs:', err);
+    error.value = err.message || 'Failed to fetch projects';
+    console.error('Error fetching projects:', err);
   } finally {
     loading.value = false;
   }
 };
+
+watch(selectedFilter, () => {
+  portfolio.value = displayedPortfolio.value;
+  nextTick(() => {
+    setupCursorLogic();
+  });
+});
 
 watch(
   locale,
@@ -83,7 +125,6 @@ watch(
   { immediate: false }
 );
 
-// Watch for showAll changes and update portfolio
 watch(
   showAll,
   () => {
@@ -92,26 +133,48 @@ watch(
   { immediate: false }
 );
 
-// ✅ when clicking eye
 const openProject = (card) => {
-  const alias = card.alias || card.slug || card.id; 
+  const alias = card.alias || card.slug || card.id;
   router.push(`${localePath("/view")}?alias=${alias}`);
 };
 
-// Toggle show all projects
 const toggleShowAll = async () => {
   showAll.value = !showAll.value;
   portfolio.value = displayedPortfolio.value;
-  // Re-setup cursor logic after changing the displayed projects
   await nextTick();
   await setupCursorLogic();
 };
 
+const setFilter = (filter) => {
+  const normalizedFilter = filter.toLowerCase().trim();
+  selectedFilter.value = normalizedFilter === "all" || normalizedFilter === "все" ? "all" : normalizedFilter;
+};
+
+const handleFilterSelected = (filter) => {
+  setFilter(filter);
+  setTimeout(() => {
+    const projectsSection = document.getElementById('projects');
+    if (projectsSection) {
+      const offset = 100;
+      const elementPosition = projectsSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, 100);
+};
+
+defineExpose({
+  handleFilterSelected
+});
+
 onMounted(async () => {
-  // First fetch the portfolio data
   await fetchPortfolio();
 });
-</script> 
+</script>
 
 <template>
   <div
@@ -129,11 +192,12 @@ onMounted(async () => {
     <div
       class="flex flex-wrap justify-center gap-6 md:gap-[32px] mt-8 md:mt-12"
     >
-      <div
+     <div
         v-for="(card, i) in portfolio"
         :key="i"
         ref="cardsRef"
-        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
+        @click="openProject(card)"
+        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] xl:w-[calc(50%-16px)] lg:w-[calc(50%-16px)] max-w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
       >
         <!-- Image -->
         <img
@@ -182,15 +246,16 @@ onMounted(async () => {
         </div>
 
         <!-- Button -->
-        <a :href="card.link" target="_blank">
+        <a :href="card.link" target="_blank" class="project-button">
           <button
-            class="absolute bottom-3 sm:bottom-6 left-3 cursor-pointer sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/40 transition"
+            @click="openProject(card)"
+            class="absolute bottom-3 sm:bottom-6 left-3 cursor-pointer sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/60 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out"
           >
             <div class="text-left">
               <h3
                 :class="[
                   'text-sm sm:text-lg md:text-[24px] font-medium leading-tight',
-                  i === 1 ? 'text-black' : 'text-white',
+                  i === 1 ? 'text-white' : 'text-black',
                 ]"
               >
                 {{ card.title }}
@@ -198,7 +263,7 @@ onMounted(async () => {
               <p
                 :class="[
                   'text-xs sm:text-sm md:text-[14px]',
-                  i === 1 ? 'text-black' : 'text-white',
+                  i === 1 ? 'text-black' : 'text-black',
                 ]"
               >
                 {{ card.tech }}
@@ -228,8 +293,8 @@ onMounted(async () => {
       </div>
     </div>
 
-        <!-- More Projects Button -->
-    <div class="flex justify-center mt-8 md:mt-12">
+    <!-- More Projects Button -->
+    <div v-if="portfolio.length > 0" class="flex justify-center mt-8 md:mt-12">
       <button
         @click="toggleShowAll()"
         :class="showAll ? 'hidden' : ''"
@@ -238,7 +303,6 @@ onMounted(async () => {
         {{ t("projects.more_projects") }}
       </button>
     </div>
-
   </div>
 </template>
 
@@ -258,10 +322,14 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
+  pointer-events: none; 
   cursor: pointer;
   opacity: 0;
   z-index: 20;
+}
+
+.project-button {
+  z-index: 30;
 }
 
 @media (max-width: 768px) {
@@ -276,7 +344,6 @@ onMounted(async () => {
   animation: blink 2s infinite;
 }
 
-/* Eyelid moves up and down */
 .eyelid {
   animation: closeEye 2s infinite;
   transform-origin: top;

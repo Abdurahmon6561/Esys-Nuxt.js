@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, watch, nextTick } from "vue";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -90,6 +90,48 @@ onMounted(() => {
     smooth: 1.5,
     effects: true,
   });
+});
+
+watch(locale, (newLocale, oldLocale) => {
+  if (newLocale !== oldLocale) {
+    const textContainer = document.querySelector('.relative.z-10.text-center.flex-1.select-none .flex.justify-center.items-center');
+    
+    if (textContainer) {
+      const currentTextElement = Array.from(textContainer.children).find(child => {
+        return child.offsetParent !== null;
+      })?.querySelector('.hero-text');
+      
+      if (currentTextElement) {
+        gsap.to(currentTextElement, {
+          opacity: 0,
+          scale: 0.8,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => {
+            nextTick(() => {
+              const newTextElement = Array.from(textContainer.children).find(child => {
+                return child.offsetParent !== null; 
+              })?.querySelector('.hero-text');
+              
+              if (newTextElement) {
+                gsap.set(newTextElement, { 
+                  opacity: 0, 
+                  scale: 0.8 
+                });
+                
+                gsap.to(newTextElement, {
+                  opacity: 1,
+                  scale: 1,
+                  duration: 0.5,
+                  ease: "back.out(1.7)",
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+  }
 });
 </script>
 

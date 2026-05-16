@@ -56,8 +56,8 @@ onMounted(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".vd-pin-section",
-        start: "center bottom", // 👈 section's center reaches bottom of screen
-        end: "center center", // 👈 fully open when center aligns with viewport center
+        start: "center bottom",
+        end: "center center", 
         scrub: true,
         pin: true,
       },

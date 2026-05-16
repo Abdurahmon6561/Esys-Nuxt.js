@@ -6,7 +6,7 @@ import { useApiService } from "~/composables/useApiService.js";
 import gsap from "gsap";
 
 const cardsRef = ref([]);
-const { t, locale  } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter();
 const localePath = useLocalePath();
 
@@ -18,17 +18,18 @@ const error = ref(null);
 
 const setupCursorLogic = async () => {
   await nextTick();
-  
+
   cardsRef.value.forEach((card) => {
     const cursor = card.querySelector(".card-cursor");
-    if (!cursor) return;
+    const button = card.querySelector(".project-button");
+    if (!cursor || !button) return;
 
-    // Remove existing listeners to avoid duplicates
     card.removeEventListener("mousemove", card._mousemoveHandler);
     card.removeEventListener("mouseenter", card._mouseenterHandler);
     card.removeEventListener("mouseleave", card._mouseleaveHandler);
+    button.removeEventListener("mouseenter", card._buttonMouseenterHandler);
+    button.removeEventListener("mouseleave", card._buttonMouseleaveHandler);
 
-    // Create new handlers
     card._mousemoveHandler = (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -44,10 +45,21 @@ const setupCursorLogic = async () => {
       gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
     };
 
-    // Add new listeners
+    // Hide cursor when hovering over button
+    card._buttonMouseenterHandler = () => {
+      gsap.to(cursor, { scale: 0.5, opacity: 0, duration: 0.2 });
+    };
+
+    // Show cursor when leaving button
+    card._buttonMouseleaveHandler = () => {
+      gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.2 });
+    };
+
     card.addEventListener("mousemove", card._mousemoveHandler);
     card.addEventListener("mouseenter", card._mouseenterHandler);
     card.addEventListener("mouseleave", card._mouseleaveHandler);
+    button.addEventListener("mouseenter", card._buttonMouseenterHandler);
+    button.addEventListener("mouseleave", card._buttonMouseleaveHandler);
   });
 };
 
@@ -56,13 +68,11 @@ const fetchPortfolio = async () => {
     loading.value = true;
     error.value = null;
     const response = await portfolioApi.getPortfolios();
-    // Get only the first 4 projects
     portfolio.value = (response.data || response).slice(0, 4);
-    // Setup cursor logic after data is loaded
     await setupCursorLogic();
   } catch (err) {
-    error.value = err.message || 'Failed to fetch blogs';
-    console.error('Error fetching blogs:', err);
+    error.value = err.message || "Failed to fetch blogs";
+    console.error("Error fetching blogs:", err);
   } finally {
     loading.value = false;
   }
@@ -76,42 +86,38 @@ watch(
   { immediate: false }
 );
 
-// ✅ when clicking eye
 const openProject = (card) => {
-  // Navigate to dynamic project page using alias
-  const alias = card.alias || card.slug || card.id; // Fallback to slug or id if alias doesn't exist
+  const alias = card.alias || card.slug || card.id;
   router.push(`${localePath("/view")}?alias=${alias}`);
 };
 
-// Navigate to projects page
 const goToProjectsPage = () => {
   router.push(localePath("/projects"));
 };
 
 onMounted(async () => {
-  // First fetch the portfolio data
   await fetchPortfolio();
 });
-</script> 
+</script>
 
 <template>
   <div
     class="container mx-auto mb-[60px] mt-[40px] md:mb-[80px] md:mt-[64px] px-4"
     id="projects"
   >
-  <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center items-center py-16">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
-      ></div>
-    </div>
-    <!-- Small Section Title -->
     <div class="flex justify-center items-center">
       <h3
         class="text-xs sm:text-sm text-[#080808] border-2 rounded-full px-3 py-1 border-[#EEE]"
       >
         {{ t("hero.our_projects") }}
       </h3>
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="flex justify-center items-center py-16">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1aab9a]"
+      ></div>
     </div>
 
     <!-- Section Title -->
@@ -131,7 +137,8 @@ onMounted(async () => {
         v-for="(card, i) in portfolio"
         :key="i"
         ref="cardsRef"
-        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
+        @click="openProject(card)"
+        class="relative rounded-xl overflow-hidden shadow-xl w-full sm:w-[90%] md:w-[656px] xl:w-[calc(50%-16px)] lg:w-[calc(50%-16px)] max-w-[656px] h-[280px] sm:h-[360px] md:h-[501px] project-cards"
       >
         <!-- Image -->
         <img
@@ -180,15 +187,16 @@ onMounted(async () => {
         </div>
 
         <!-- Button -->
-        <a :href="card.link" target="_blank">
+        <a :href="card.link" target="_blank" class="project-button">
           <button
-            class="absolute bottom-3 cursor-pointer sm:bottom-6 left-3 sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/40 transition"
+            @click="openProject(card)"
+            class="absolute bottom-3 sm:bottom-6 left-3 cursor-pointer sm:left-[20px] right-3 sm:right-[20px] backdrop-blur-md bg-white/30 rounded-lg sm:rounded-xl shadow p-2 sm:p-4 w-[calc(100%-1.5rem)] sm:w-auto flex items-center justify-between hover:bg-white/60 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ease-out"
           >
             <div class="text-left">
               <h3
                 :class="[
                   'text-sm sm:text-lg md:text-[24px] font-medium leading-tight',
-                  i === 1 ? 'text-black' : 'text-white',
+                  i === 1 ? 'text-white' : 'text-black',
                 ]"
               >
                 {{ card.title }}
@@ -196,7 +204,7 @@ onMounted(async () => {
               <p
                 :class="[
                   'text-xs sm:text-sm md:text-[14px]',
-                  i === 1 ? 'text-black' : 'text-white',
+                  i === 1 ? 'text-black' : 'text-black',
                 ]"
               >
                 {{ card.tech }}
@@ -227,7 +235,7 @@ onMounted(async () => {
     </div>
 
     <!-- More Projects Button -->
-    <div class="flex justify-center mt-8 md:mt-12">
+    <div v-if="portfolio.length > 0" class="flex justify-center mt-8 md:mt-12">
       <button
         @click="goToProjectsPage()"
         class="px-5 py-2 border-2 cursor-pointer border-[#EEE] rounded-full font-medium text-[#080808] hover:bg-[#EEE] text-sm sm:text-base transition-colors duration-200"
@@ -254,10 +262,14 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
+  pointer-events: none;
   cursor: pointer;
   opacity: 0;
   z-index: 20;
+}
+
+.project-button {
+  z-index: 30;
 }
 
 @media (max-width: 768px) {

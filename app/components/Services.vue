@@ -1,11 +1,51 @@
 <script setup>
 import { useI18n } from "vue-i18n";
+import { useApiService } from "../composables/useApiService";
+import { watch, onMounted, ref, computed } from "vue";
+import { useWaveTransition } from "../composables/useWaveTransition";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
+const { servicesApi } = useApiService();
+const { navigateWithWave } = useWaveTransition();
+
+const services = ref([]);
+const loading = ref(false);
+const error = ref(null);
+
+const fetchServices = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+
+    const response = await servicesApi.getServices();
+    services.value = (response.data || response).slice(0, 4);
+  } catch (err) {
+    error.value = err.message || "Failed to fetch services";
+    console.error("Error fetching services:", err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+watch(locale, fetchServices);
+
+onMounted(fetchServices);
+
+const gridClass = computed(() => {
+  if (services.value.length === 4) {
+    return "md:grid-cols-2";
+  }
+  return "md:grid-cols-3";
+});
+
+const goToContact = () => {
+  navigateWithWave('/contact');
+};
 </script>
 
 <template>
   <div class="container mx-auto mt-[80px] mb-[80px]">
+    <!-- Header -->
     <div>
       <div class="flex justify-center items-center">
         <h3
@@ -14,111 +54,46 @@ const { t } = useI18n();
           {{ t("hero.our_projects") }}
         </h3>
       </div>
+
       <h1
         class="md:text-[60px] text-[40px] text-[#080808] font-medium mt-[19px] text-center"
       >
-        {{ t("services.title") }}
+        {{ t("services.title") }} 
       </h1>
     </div>
+
     <div
-      class="grid md:grid-cols-3 bg-[#ededed] md:p-8 p-4 rounded-xl mt-[48px]"
+      class="grid gap-6 bg-[#ededed] md:p-8 p-4 rounded-xl mt-[48px]"
+      :class="gridClass"
     >
       <!-- Card -->
       <div
-        class="md:p-10 bg-white md:rounded-l-xl rounded-t-md p-4 md:rounded-t-none"
+        v-for="service in services"
+        :key="service.id"
+        class="flex flex-col justify-between bg-white rounded-xl md:p-10 p-4"
       >
         <div>
           <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
-            {{ t("projects.tags.websites") }}
+            {{ service.title }}
           </h2>
-          <p class="text-[16px] text-[#080808] w-[288px] mt-2">
-            {{ t("services.cards.first_title") }}
-          </p>
+
+          <p
+            class="text-[16px] text-[#080808] mt-3"
+            v-html="service.text"
+          />
         </div>
 
-        <!-- заменили div + button на один button -->
+        <!-- Button -->
         <button
-          class="w-full bg-white rounded-xl cursor-pointer md:p-4 p-2 flex items-center justify-between mt-[50px] border-2 border-[#e0e0e0] hover:bg-gray-100 transition"
+          @click="goToContact"
+          class="w-full bg-white rounded-xl cursor-pointer md:p-4 p-2 flex items-center justify-between mt-5 border-2 border-[#e0e0e0] hover:bg-gray-100 transition"
         >
-          <span class="text-[16px] font-medium">{{ t("services.order") }}</span>
-          <span
-            class="flex items-center justify-center max-h-[50px] w-10 h-10 rounded-xl border-2 border-[#e0e0e0] hover:bg-gray-200 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
+          <span class="text-[16px] font-medium">
+            {{ t("services.order") }}
           </span>
-        </button>
-      </div>
 
-      <!-- Card -->
-      <div
-        class="md:p-10 p-4 bg-white flex flex-col md:border-l-2 md:border-r-2 border-b-2 border-t-2 md:border-t-0 md:border-b-0"
-      >
-        <div class="mb-8 md:mb-0">
-          <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
-            {{ t("projects.tags.mobile_apps") }}
-          </h2>
-          <p class="text-[16px] text-[#080808] w-[288px] mt-2">
-            {{ t("services.cards.second_title") }}
-          </p>
-        </div>
-
-        <button
-          class="w-full bg-white rounded-xl md:p-4 p-2 cursor-pointer flex items-center justify-between border-2 border-[#e0e0e0] hover:bg-gray-100 transition mt-auto"
-        >
-          <span class="text-[16px] font-medium">{{ t("services.order") }}</span>
           <span
-            class="flex items-center justify-center max-h-[50px] w-10 h-10 rounded-xl border-2 border-[#e0e0e0] hover:bg-gray-200 transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </span>
-        </button>
-      </div>
-
-      <!-- Card -->
-      <div
-        class="md:p-10 p-4 rounded-b-md bg-white md:rounded-r-xl md:rounded-b-none flex flex-col h-full"
-      >
-        <div>
-          <h2 class="md:text-[24px] text-[18px] text-[#080808] font-medium">
-            {{ t("projects.tags.crm") }}
-          </h2>
-          <p class="text-[16px] text-[#080808] w-[288px] mt-2">
-            {{ t("services.cards.third_title") }}
-          </p>
-        </div>
-
-        <button
-          class="w-full bg-white rounded-xl mt-7 md:p-4 p-2 flex items-center cursor-pointer justify-between border-2 border-[#e0e0e0] hover:bg-gray-100 transition md:mt-auto"
-        >
-          <span class="text-[16px] font-medium">{{ t("services.order") }}</span>
-          <span
-            class="flex items-center justify-center max-h-[50px] w-10 h-10 rounded-xl border-2 border-[#e0e0e0] hover:bg-gray-200 transition"
+            class="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-[#e0e0e0] hover:bg-gray-200 transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

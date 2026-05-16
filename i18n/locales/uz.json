@@ -64,7 +64,11 @@
   },
   "toastify": {
     "success_send": "Muvaffaqiyatli yuborildi",
-    "error": "Xatolik"
+    "error": "Xatolik",
+    "please_fill_fields": "Iltimos, barcha majburiy maydonchalarni to'ldiring",
+    "enter_email_or_phone": "Iltimos, elektron pochta yoki telefon raqamingizni kiriting",
+    "sending_message": "Xabar yuborilmoqda...",
+    "failed_to_send": "Xabarni yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring."
   },
   "footer": {
     "home": "Bosh sahifa",
@@ -88,10 +92,12 @@
     "error": "Xatolik",
     "failed_to_fetch": "Ma'lumotlarni yuklashda xatolik",
     "retry": "Qayta urinish",
+    "no_data": "Ma'lumot mavjud emas",
     "go_back": "Orqaga",
     "back_to_blogs": "Bloglarga qaytish",
     "no_blogs": "Bloglar mavjud emas",
     "blog_not_found": "Blog topilmadi",
-    "read_time": "daqiqa o'qish"
+    "read_time": "daqiqa o'qish",
+    "fetch_error": "Ma'lumotlarni yuklashda xatolik"
   }
 }

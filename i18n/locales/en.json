@@ -64,7 +64,11 @@
   },
   "toastify": {
     "success_send": "Sent successfully",
-    "error": "Error"
+    "error": "Error",
+    "please_fill_fields": "Please fill in all required fields",
+    "enter_email_or_phone": "Please enter email or phone number",
+    "sending_message": "Sending message...",
+    "failed_to_send": "Failed to send message. Please try again."
   },
   "footer": {
     "home": "Home",
@@ -90,8 +94,10 @@
     "retry": "Retry",
     "go_back": "Go Back",
     "back_to_blogs": "Back to Blogs",
+    "no_data": "No data available",
     "no_blogs": "No blogs available",
     "blog_not_found": "Blog not found",
-    "read_time": "min read"
+    "read_time": "min read",
+    "fetch_error": "Error fetching data"
   }
 }
