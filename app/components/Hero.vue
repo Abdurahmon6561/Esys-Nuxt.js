@@ -1,16 +1,12 @@
 <script setup>
 import { ref, onMounted, reactive, watch, nextTick } from "vue";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useI18n } from "vue-i18n";
 
 const { locale, locales, setLocale, t } = useI18n();
 const localePath = useLocalePath();
-
-const images = [
-  '/images/bg-hero.webp',
-  '/images/bg-hero-2.webp',
-  '/images/bg-hero-3.webp',
-];
 
 const currentIndex = ref(0);
 const heroSection = ref(null);
@@ -19,14 +15,17 @@ const changeBackground = (direction) => {
   if (direction === "next") {
     currentIndex.value = (currentIndex.value + 1) % images.length;
   } else {
-    currentIndex.value = (currentIndex.value - 1 + images.length) % images.length;
+    currentIndex.value =
+      (currentIndex.value - 1 + images.length) % images.length;
   }
 
   gsap.to(heroSection.value, {
     opacity: 0,
     duration: 0.3,
     onComplete: () => {
-      heroSection.value.style.backgroundImage = `url('${images[currentIndex.value]}')`;
+      heroSection.value.style.backgroundImage = `url('${
+        images[currentIndex.value]
+      }')`;
       gsap.to(heroSection.value, { opacity: 1, duration: 0.6 });
     },
   });
@@ -71,11 +70,19 @@ const moveSideButtons = (e) => {
   const mouseY = e.clientY;
   const windowWidth = window.innerWidth;
 
+  // left button
   if (mouseX < proximityThreshold) {
     const rect = leftButton.value.getBoundingClientRect();
     const offsetY = mouseY - rect.top - rect.height / 2;
-    gsap.to(leftButton.value, { y: offsetY, duration: 0.8, ease: "elastic.out(1, 0.4)" });
-    gsap.to(leftButton.value.querySelector("svg"), {
+
+    gsap.to(leftButton.value, {
+      y: offsetY,
+      duration: 0.8,
+      ease: "elastic.out(1, 0.4)",
+    });
+
+    const svg = leftButton.value.querySelector("svg");
+    gsap.to(svg, {
       scaleY: 1 + Math.abs(offsetY) / 300,
       skewY: offsetY / 40,
       transformOrigin: "center",
@@ -83,15 +90,32 @@ const moveSideButtons = (e) => {
       ease: "sine.out",
     });
   } else {
-    gsap.to(leftButton.value, { y: leftInitialY, duration: 1, ease: "sine.out" });
-    gsap.to(leftButton.value.querySelector("svg"), { scaleY: 1, skewY: 0, duration: 0.6, ease: "sine.out" });
+    gsap.to(leftButton.value, {
+      y: leftInitialY,
+      duration: 1,
+      ease: "sine.out",
+    });
+    gsap.to(leftButton.value.querySelector("svg"), {
+      scaleY: 1,
+      skewY: 0,
+      duration: 0.6,
+      ease: "sine.out",
+    });
   }
 
+  // right button
   if (mouseX > windowWidth - proximityThreshold) {
     const rect = rightButton.value.getBoundingClientRect();
     const offsetY = mouseY - rect.top - rect.height / 2;
-    gsap.to(rightButton.value, { y: offsetY, duration: 0.8, ease: "elastic.out(1, 0.4)" });
-    gsap.to(rightButton.value.querySelector("svg"), {
+
+    gsap.to(rightButton.value, {
+      y: offsetY,
+      duration: 0.8,
+      ease: "elastic.out(1, 0.4)",
+    });
+
+    const svg = rightButton.value.querySelector("svg");
+    gsap.to(svg, {
       scaleY: 1 + Math.abs(offsetY) / 300,
       skewY: offsetY / 40,
       transformOrigin: "center",
@@ -99,22 +123,56 @@ const moveSideButtons = (e) => {
       ease: "sine.out",
     });
   } else {
-    gsap.to(rightButton.value, { y: rightInitialY, duration: 1, ease: "sine.out" });
-    gsap.to(rightButton.value.querySelector("svg"), { scaleY: 1, skewY: 0, duration: 0.6, ease: "sine.out" });
+    gsap.to(rightButton.value, {
+      y: rightInitialY,
+      duration: 1,
+      ease: "sine.out",
+    });
+    gsap.to(rightButton.value.querySelector("svg"), {
+      scaleY: 1,
+      skewY: 0,
+      duration: 0.6,
+      ease: "sine.out",
+    });
   }
 };
 
 onMounted(() => {
-  gsap.to(leftButton.value, { y: "+=10", duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut" });
-  gsap.to(rightButton.value, { y: "-=10", duration: 2.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
-
-  gsap.to(leftButton.value.querySelector("svg"), {
-    scaleY: 1.05, skewY: 4, transformOrigin: "center",
-    duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut",
+  gsap.to(leftButton.value, {
+    y: "+=10",
+    duration: 2,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
   });
+
+  gsap.to(rightButton.value, {
+    y: "-=10",
+    duration: 2.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+
+  // Wave effect for SVG inside buttons
+  gsap.to(leftButton.value.querySelector("svg"), {
+    scaleY: 1.05,
+    skewY: 4,
+    transformOrigin: "center",
+    duration: 1.5,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+  });
+
   gsap.to(rightButton.value.querySelector("svg"), {
-    scaleY: 1.05, skewY: -4, transformOrigin: "center",
-    duration: 1.7, repeat: -1, yoyo: true, ease: "sine.inOut",
+    scaleY: 1.05,
+    skewY: -4,
+    transformOrigin: "center",
+    duration: 1.7,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
   });
 
   gsap.from(".hero-text", {
@@ -151,20 +209,35 @@ onMounted(() => {
   window.addEventListener("mousemove", moveSideButtons);
 });
 
+let smoother = null;
+
 const scrollToSection = (id) => {
   const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth" });
+  if (el && smoother) {
+    smoother.scrollTo(el, true, "top top");
+  }
 };
+
+onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+  smoother = ScrollSmoother.create({
+    wrapper: "#smooth-wrapper",
+    content: "#smooth-content",
+    smooth: 1.5,
+    effects: true,
+  });
+});
 
 watch(locale, (newLocale, oldLocale) => {
   if (newLocale !== oldLocale) {
     const textContainer = document.querySelector('.relative.z-10.text-center.flex-1.select-none .flex.justify-center.items-center');
-    
+
     if (textContainer) {
       const currentTextElement = Array.from(textContainer.children).find(child => {
         return child.offsetParent !== null;
       })?.querySelector('.hero-text');
-      
+
       if (currentTextElement) {
         gsap.to(currentTextElement, {
           opacity: 0,
@@ -174,15 +247,15 @@ watch(locale, (newLocale, oldLocale) => {
           onComplete: () => {
             nextTick(() => {
               const newTextElement = Array.from(textContainer.children).find(child => {
-                return child.offsetParent !== null; 
+                return child.offsetParent !== null;
               })?.querySelector('.hero-text');
-              
+
               if (newTextElement) {
-                gsap.set(newTextElement, { 
-                  opacity: 0, 
-                  scale: 0.8 
+                gsap.set(newTextElement, {
+                  opacity: 0,
+                  scale: 0.8
                 });
-                
+
                 gsap.to(newTextElement, {
                   opacity: 1,
                   scale: 1,
@@ -202,15 +275,16 @@ watch(locale, (newLocale, oldLocale) => {
 <template>
   <section
     ref="heroSection"
+    id="smooth-wrapper"
     class="md:min-h-[calc(100vh-3rem)] min-h-[calc(100vh-1.5rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
     style="background-image: url('/images/bg-hero.webp')"
   >
-    <div class="flex justify-between w-full items-center">
+    <div class="flex justify-between w-full items-center" id="smooth-content">
       <!-- Left Arrow -->
       <button
         @click="changeBackground('prev')"
         ref="leftButton"
-        class="relative ml-[-2px] md:block hidden cursor-pointer"
+        class="ml-[-2px] md:block hidden cursor-pointer"
       >
         <svg
           class="clip-path-group"
@@ -279,7 +353,7 @@ watch(locale, (newLocale, oldLocale) => {
             <h1
               class="font-extrabold hero-text mx-auto text-center"
             >
-              Biznesingizni tezroq <br> o‘sishiga yordam beradigan <br> raqamli yechimlar
+              Biznesingizni tezroq <br> o'sishiga yordam beradigan <br> raqamli yechimlar
             </h1>
           </div>
 
@@ -367,7 +441,7 @@ watch(locale, (newLocale, oldLocale) => {
       <button
         @click="changeBackground('next')"
         ref="rightButton"
-        class="relative mr-[-2px] md:block hidden cursor-pointer"
+        class="mr-[-2px] md:block hidden cursor-pointer"
       >
         <svg
           class="clip-path-group"
