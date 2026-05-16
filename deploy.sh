@@ -1,20 +1,28 @@
 #!/bin/bash
 set -e
 
-SERVER="root@188.120.244.180"
+SERVER="root@109.199.108.93"
 REMOTE_DIR="/var/www/esys.pro"
 APP_NAME="esys"
 
-echo "==> Building on server..."
-ssh "$SERVER" "
+echo "==> Deploying on server..."
+ssh "$SERVER" bash << 'ENDSSH'
   set -e
-  cd $REMOTE_DIR
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+  export PATH="$PATH:/usr/local/bin"
+
+  cd /var/www/esys.pro
+  git pull
+
   npm install
   npm run build
-  pm2 describe $APP_NAME > /dev/null 2>&1 \
-    && pm2 restart $APP_NAME \
-    || pm2 start .output/server/index.mjs --name $APP_NAME
+
+  APP=esys
+  pm2 describe $APP > /dev/null 2>&1 \
+    && pm2 restart $APP \
+    || pm2 start .output/server/index.mjs --name $APP
   pm2 save
-"
+ENDSSH
 
 echo "==> Done."

@@ -1,12 +1,16 @@
 <script setup>
 import { ref, onMounted, reactive, watch, nextTick } from "vue";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { useI18n } from "vue-i18n";
 
 const { locale, locales, setLocale, t } = useI18n();
 const localePath = useLocalePath();
+
+const images = [
+  '/images/bg-hero.webp',
+  '/images/bg-hero-2.webp',
+  '/images/bg-hero-3.webp',
+];
 
 const currentIndex = ref(0);
 const heroSection = ref(null);
@@ -15,17 +19,14 @@ const changeBackground = (direction) => {
   if (direction === "next") {
     currentIndex.value = (currentIndex.value + 1) % images.length;
   } else {
-    currentIndex.value =
-      (currentIndex.value - 1 + images.length) % images.length;
+    currentIndex.value = (currentIndex.value - 1 + images.length) % images.length;
   }
 
   gsap.to(heroSection.value, {
     opacity: 0,
     duration: 0.3,
     onComplete: () => {
-      heroSection.value.style.backgroundImage = `url('${
-        images[currentIndex.value]
-      }')`;
+      heroSection.value.style.backgroundImage = `url('${images[currentIndex.value]}')`;
       gsap.to(heroSection.value, { opacity: 1, duration: 0.6 });
     },
   });
@@ -150,25 +151,10 @@ onMounted(() => {
   window.addEventListener("mousemove", moveSideButtons);
 });
 
-let smoother = null;
-
 const scrollToSection = (id) => {
   const el = document.getElementById(id);
-  if (el && smoother) {
-    smoother.scrollTo(el, true, "top top");
-  }
+  if (el) el.scrollIntoView({ behavior: "smooth" });
 };
-
-onMounted(() => {
-  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
-
-  smoother = ScrollSmoother.create({
-    wrapper: "#smooth-wrapper",
-    content: "#smooth-content",
-    smooth: 1.5,
-    effects: true,
-  });
-});
 
 watch(locale, (newLocale, oldLocale) => {
   if (newLocale !== oldLocale) {
@@ -216,16 +202,15 @@ watch(locale, (newLocale, oldLocale) => {
 <template>
   <section
     ref="heroSection"
-    id="smooth-wrapper"
     class="md:min-h-[calc(100vh-3rem)] min-h-[calc(100vh-1.5rem)] bg-gray-100 flex items-center justify-center rounded-lg bg-cover bg-center bg-no-repeat"
     style="background-image: url('/images/bg-hero.webp')"
   >
-    <div class="flex justify-between w-full items-center" id="smooth-content">
+    <div class="flex justify-between w-full items-center">
       <!-- Left Arrow -->
       <button
         @click="changeBackground('prev')"
         ref="leftButton"
-        class="ml-[-2px] md:block hidden cursor-pointer"
+        class="relative ml-[-2px] md:block hidden cursor-pointer"
       >
         <svg
           class="clip-path-group"
@@ -382,7 +367,7 @@ watch(locale, (newLocale, oldLocale) => {
       <button
         @click="changeBackground('next')"
         ref="rightButton"
-        class="mr-[-2px] md:block hidden cursor-pointer"
+        class="relative mr-[-2px] md:block hidden cursor-pointer"
       >
         <svg
           class="clip-path-group"
