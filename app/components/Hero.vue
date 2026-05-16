@@ -69,7 +69,6 @@ onMounted(() => {
     }
   );
 
-  window.addEventListener("mousemove", moveSideButtons);
 });
 
 let smoother = null;
@@ -145,7 +144,6 @@ watch(locale, (newLocale, oldLocale) => {
     <div class="flex justify-between w-full items-center" id="smooth-content">
       <!-- Left Arrow -->
       <button
-        @click="changeBackground('prev')"
         ref="leftButton"
         class="ml-[-2px] md:block hidden cursor-pointer"
       >
@@ -302,7 +300,6 @@ watch(locale, (newLocale, oldLocale) => {
 
       <!-- Right Arrow -->
       <button
-        @click="changeBackground('next')"
         ref="rightButton"
         class="mr-[-2px] md:block hidden cursor-pointer"
       >
