@@ -74,6 +74,13 @@
     "contact": "Contact",
     "security": "All rights reserved"
   },
+  "consultant": {
+    "title": "AI Consultant",
+    "empty": "Ask a question — I'm here to help.",
+    "placeholder": "Type a message...",
+    "error": "Failed to connect to the server.",
+    "new_session": "New conversation"
+  },
   "api": {
     "loading": "Loading...",
     "loading_blogs": "Loading blogs...",

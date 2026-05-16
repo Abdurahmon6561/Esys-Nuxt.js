@@ -8,28 +8,7 @@ import { useI18n } from "vue-i18n";
 const { locale, locales, setLocale, t } = useI18n();
 const localePath = useLocalePath();
 
-const currentIndex = ref(0);
 const heroSection = ref(null);
-
-const changeBackground = (direction) => {
-  if (direction === "next") {
-    currentIndex.value = (currentIndex.value + 1) % images.length;
-  } else {
-    currentIndex.value =
-      (currentIndex.value - 1 + images.length) % images.length;
-  }
-
-  gsap.to(heroSection.value, {
-    opacity: 0,
-    duration: 0.3,
-    onComplete: () => {
-      heroSection.value.style.backgroundImage = `url('${
-        images[currentIndex.value]
-      }')`;
-      gsap.to(heroSection.value, { opacity: 1, duration: 0.6 });
-    },
-  });
-};
 
 const buttonTexts = ["Связаться"];
 
@@ -57,123 +36,7 @@ const resetPosition = (index) => {
   buttons[index].isHover = false;
 };
 
-const leftButton = ref(null);
-const rightButton = ref(null);
-
-let leftInitialY = 0;
-let rightInitialY = 0;
-
-const proximityThreshold = 100;
-
-const moveSideButtons = (e) => {
-  const mouseX = e.clientX;
-  const mouseY = e.clientY;
-  const windowWidth = window.innerWidth;
-
-  // left button
-  if (mouseX < proximityThreshold) {
-    const rect = leftButton.value.getBoundingClientRect();
-    const offsetY = mouseY - rect.top - rect.height / 2;
-
-    gsap.to(leftButton.value, {
-      y: offsetY,
-      duration: 0.8,
-      ease: "elastic.out(1, 0.4)",
-    });
-
-    const svg = leftButton.value.querySelector("svg");
-    gsap.to(svg, {
-      scaleY: 1 + Math.abs(offsetY) / 300,
-      skewY: offsetY / 40,
-      transformOrigin: "center",
-      duration: 0.5,
-      ease: "sine.out",
-    });
-  } else {
-    gsap.to(leftButton.value, {
-      y: leftInitialY,
-      duration: 1,
-      ease: "sine.out",
-    });
-    gsap.to(leftButton.value.querySelector("svg"), {
-      scaleY: 1,
-      skewY: 0,
-      duration: 0.6,
-      ease: "sine.out",
-    });
-  }
-
-  // right button
-  if (mouseX > windowWidth - proximityThreshold) {
-    const rect = rightButton.value.getBoundingClientRect();
-    const offsetY = mouseY - rect.top - rect.height / 2;
-
-    gsap.to(rightButton.value, {
-      y: offsetY,
-      duration: 0.8,
-      ease: "elastic.out(1, 0.4)",
-    });
-
-    const svg = rightButton.value.querySelector("svg");
-    gsap.to(svg, {
-      scaleY: 1 + Math.abs(offsetY) / 300,
-      skewY: offsetY / 40,
-      transformOrigin: "center",
-      duration: 0.5,
-      ease: "sine.out",
-    });
-  } else {
-    gsap.to(rightButton.value, {
-      y: rightInitialY,
-      duration: 1,
-      ease: "sine.out",
-    });
-    gsap.to(rightButton.value.querySelector("svg"), {
-      scaleY: 1,
-      skewY: 0,
-      duration: 0.6,
-      ease: "sine.out",
-    });
-  }
-};
-
 onMounted(() => {
-  gsap.to(leftButton.value, {
-    y: "+=10",
-    duration: 2,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
-
-  gsap.to(rightButton.value, {
-    y: "-=10",
-    duration: 2.5,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
-
-  // Wave effect for SVG inside buttons
-  gsap.to(leftButton.value.querySelector("svg"), {
-    scaleY: 1.05,
-    skewY: 4,
-    transformOrigin: "center",
-    duration: 1.5,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
-
-  gsap.to(rightButton.value.querySelector("svg"), {
-    scaleY: 1.05,
-    skewY: -4,
-    transformOrigin: "center",
-    duration: 1.7,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-  });
 
   gsap.from(".hero-text", {
     opacity: 0,

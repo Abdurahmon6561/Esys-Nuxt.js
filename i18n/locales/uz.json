@@ -74,6 +74,13 @@
     "contact": "Aloqa",
     "security": "Barcha huquqlar himoyalangan"
   },
+  "consultant": {
+    "title": "AI Konsultant",
+    "empty": "Savol bering — yordam berishga tayyorman.",
+    "placeholder": "Xabar yozing...",
+    "error": "Serverga ulanib bo'lmadi.",
+    "new_session": "Yangi suhbat"
+  },
   "api": {
     "loading": "Yuklanmoqda...",
     "loading_blogs": "Bloglar yuklanmoqda...",

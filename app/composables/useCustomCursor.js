@@ -51,15 +51,17 @@ export const useCustomCursor = () => {
       };
 
       const handleMouseLeave = (e) => {
-        if (cursor && (e.target.matches('a, button, [role="button"], .cursor-pointer') || 
-            e.target.closest('a, button, [role="button"], .cursor-pointer'))) {
-          cursor.classList.remove('hover');
-        }
-        
-        // Show custom cursor when leaving footer cards
-        const isFooterCard = e.target.closest('.relative.transition.duration-300');
-        if (isFooterCard) {
-          cursor.classList.remove('hidden-cursor');
+        if (cursor && e.target && typeof e.target.matches === 'function') {
+          if (e.target.matches('a, button, [role="button"], .cursor-pointer') ||
+              e.target.closest('a, button, [role="button"], .cursor-pointer')) {
+            cursor.classList.remove('hover');
+          }
+
+          // Show custom cursor when leaving footer cards
+          const isFooterCard = e.target.closest('.relative.transition.duration-300');
+          if (isFooterCard) {
+            cursor.classList.remove('hidden-cursor');
+          }
         }
       };
 

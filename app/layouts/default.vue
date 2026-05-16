@@ -418,6 +418,8 @@ onMounted(async () => {
       </div>
     </Transition>
 
+    <ConsultantWidget />
+
     <div id="smooth-content" class="flex flex-col md:p-6 p-3 bg-white">
       <div class="w-full top-0 left-0 right-0"></div>
       <main class="min-h-screen">

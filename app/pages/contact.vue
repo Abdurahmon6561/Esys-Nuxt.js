@@ -98,16 +98,11 @@ onMounted(() => {
       id="smooth-wrapper"
       class="relative flex items-center justify-center min-h-[calc(100vh-3rem)] rounded-lg overflow-hidden bg-[#011424]"
     >
-      <!-- Lottie Background -->
-      <div class="absolute inset-0 w-full h-full md:ml-[333px]">
-        <iframe
-          src="https://lottie.host/embed/26a23b78-f8b5-47be-bb92-563ca44820d6/v0gXWgZoaH.lottie"
-          class="w-full h-full"
-        ></iframe>
-      </div>
+      <!-- Vanta DOTS Background with Brand Colors -->
+      <VantaDots />
 
-      <!-- Overlay -->
-      <div class="absolute inset-0 bg-black/40 rounded-lg"></div>
+      <!-- Overlay - Minimal for better visibility -->
+      <div class="absolute inset-0 bg-black/10 rounded-lg"></div>
 
       <!-- Contact Form -->
       <div
