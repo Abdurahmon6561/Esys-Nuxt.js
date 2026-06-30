@@ -1,103 +1,25 @@
 {
-  "header": {
-    "company": "Company",
-    "projects": "Projects",
-    "blog": "Blog"
-  },
   "hero": {
-    "title": "Digital solutions that help your business grow faster",
-    "our_projects": "Our projects",
-    "contact": "Contact"
+    "title": "Websites, mobile apps, CRM and branding — all in one place",
+    "subtitle": "We craft solutions that set you apart from competitors through modern design, usability and effective management.",
+    "cta_projects": "Our projects",
+    "cta_contact": "Contact us"
   },
-  "second_hero": {
-    "title": "Discover our projects",
-    "btns": {
-      "all": "All",
-      "websites": "Websites",
-      "apps": "Applications",
-      "crm": "CRM Systems"
-    }
-  },
-  "projects": {
-    "title": "We create digital products that make you stand out in the market and attract clients",
-    "car_card_title": "Asacar Car Dealership",
-    "tags": {
-      "websites": "Websites",
-      "mobile_apps": "Mobile Apps",
-      "crm": "CRM Systems"
-    },
-    "view": "View",
-    "project_review": "Project Review",
-    "view_project": "View Project",
-    "client": "Client",
-    "category": "Category",
-    "date": "Date",
-    "more_projects": "More projects"
-  },
-  "services": {
-    "title": "Services that solve problems",
-    "cards": {
-      "first_title": "We create websites that work for you: from landing pages to online stores. Modern design, usability, and functionality — all turnkey",
-      "second_title": "We develop mobile applications for iOS and Android: convenient, fast, and functional. Everything your business needs — turnkey",
-      "third_title": "We create CRM systems for business management: automation, analytics, and control. Everything for your team’s convenience and company growth"
-    },
-    "order": "Order"
-  },
-  "technologies": {
-    "title": "Technologies that deliver results",
-    "text": "We design and launch IT systems that simplify processes and accelerate company growth.",
-    "book_call": "Book a call"
-  },
-  "contact": {
-    "title": "Get in Touch",
-    "name": "Your name",
-    "email": "Your email",
-    "phone": "Your phone",
-    "message": "Your message",
-    "tab_phone": "Phone",
-    "tab_email": "Email",
-    "send": "Send"
-  },
-  "blog_cards": {
-    "first_title": "How Automation and AI Are Transforming Website Development Forever",
-    "second_title": "How Much Does Website Development Cost and What Does the Price Depend On ?"
-  },
-  "toastify": {
-    "success_send": "Sent successfully",
-    "error": "Error",
-    "please_fill_fields": "Please fill in all required fields",
-    "enter_email_or_phone": "Please enter email or phone number",
-    "sending_message": "Sending message...",
-    "failed_to_send": "Failed to send message. Please try again."
+  "portfolio": {
+    "title": "Our work",
+    "subtitle": "Projects we're proud of — from investment platforms to corporate websites.",
+    "error": "Failed to load portfolio. Please try again later."
   },
   "footer": {
-    "home": "Home",
-    "company": "Company",
-    "projects": "Projects",
-    "blog": "Blog",
-    "contact": "Contact",
-    "security": "All rights reserved"
+    "prompt": "Let's build something great",
+    "email": "Email us",
+    "phone": "Call us"
   },
-  "consultant": {
-    "title": "AI Consultant",
-    "empty": "Ask a question — I'm here to help.",
-    "placeholder": "Type a message...",
-    "error": "Failed to connect to the server.",
-    "new_session": "New conversation"
-  },
-  "api": {
-    "loading": "Loading...",
-    "loading_blogs": "Loading blogs...",
-    "loading_blog": "Loading blog...",
-    "error": "Error",
-    "failed_to_fetch": "Failed to fetch data",
-    "retry": "Retry",
-    "go_back": "Go Back",
-    "back_to_blogs": "Back to Blogs",
-    "no_data": "No data available",
-    "no_blogs": "No blogs available",
-    "blog_not_found": "Blog not found",
-    "read_time": "min read",
-    "fetch_error": "Error fetching data"
+  "cookie": {
+    "title": "We use cookies",
+    "text": "to improve the website. By clicking «Accept», you agree to their use.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "more": "Learn more"
   }
 }

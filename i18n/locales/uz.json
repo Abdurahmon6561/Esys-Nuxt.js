@@ -1,103 +1,25 @@
 {
-  "header": {
-    "company": "Kompaniya",
-    "projects": "Loyihalar",
-    "blog": "Blog"
-  },
   "hero": {
-    "title": "Biznesingizni tezroq o‘sishiga yordam beradigan raqamli yechimlar",
-    "our_projects": "Bizning loyihalar",
-    "contact": "Bog‘lanish"
+    "title": "Veb-saytlar, mobil ilovalar, CRM va brending — barchasi bir joyda",
+    "subtitle": "Zamonaviy dizayn, qulaylik va samarali boshqaruv orqali sizni raqobatchilardan ajratib turadigan yechimlarni yaratamiz.",
+    "cta_projects": "Bizning loyihalar",
+    "cta_contact": "Biz bilan bog'lanish"
   },
-  "second_hero": {
-    "title": "Bizning loyihalarimizni kashf eting",
-    "btns": {
-      "all": "Barchasi",
-      "websites": "Veb-saytlar",
-      "apps": "Ilovalar",
-      "crm": "CRM Tizimlar"
-    }
-  },
-  "projects": {
-    "title": "Biz sizni bozorda ajratib ko‘rsatadigan va mijozlarni olib keladigan raqamli mahsulotlar yaratamiz",
-    "car_card_title": "Asacar Avtosalon",
-    "tags": {
-      "websites": "Veb-saytlar",
-      "mobile_apps": "Mobil ilovalar",
-      "crm": "CRM Tizimlar"
-    },
-    "view": "Ko‘rish",
-    "project_review": "Ko‘rib chiqish",
-    "view_project": "Loyihani ko‘rish",
-    "client": "Mijoz",
-    "category": "Kategoriya",
-    "date": "Sana",
-    "more_projects": "Ko‘proq loyihalar"
-  },
-  "services": {
-    "title": "Muammolarni hal qiladigan xizmatlar",
-    "cards": {
-      "first_title": "Biz siz uchun ishlaydigan saytlar yaratamiz: landing sahifalardan tortib internet-do‘konlargacha. Zamonaviy dizayn, qulaylik va funksionallik — hammasi tayyor holatda",
-      "second_title": "Biz iOS va Android uchun mobil ilovalar ishlab chiqamiz: qulay, tezkor va funksional. Biznesingiz uchun kerakli hamma narsa tayyor holatda",
-      "third_title": "Biznesingizni boshqarish uchun CRM tizimlari yaratamiz: avtomatlashtirish, tahlil va nazorat. Jamoangiz qulayligi va kompaniya o‘sishi uchun hammasi"
-    },
-    "order": "Buyurtma berish"
-  },
-  "technologies": {
-    "title": "Natija beradigan texnologiyalar",
-    "text": "Biz jarayonlarni soddalashtiradigan va kompaniyalar o‘sishini tezlashtiradigan IT tizimlarini loyihalashtiramiz va ishga tushiramiz.",
-    "book_call": "Qo‘ng‘iroqni bron qiling"
-  },
-  "contact": {
-    "title": "Aloqa qiling",
-    "name": "Ismingiz",
-    "email": "Elektron pochta",
-    "phone": "Telefon raqamingiz",
-    "message": "Xabaringiz",
-    "tab_phone": "Telefon",
-    "tab_email": "Email",
-    "send": "Yuborish"
-  },
-  "blog_cards": {
-    "first_title": "Avtomatlashtirish va sun'iy intellekt veb-sayt ishlab chiqishni qanday o'zgartiradi ?",
-    "second_title": "Sayt ishlab chiqish qancha turadi va narxi nimalarga bog'liq ?"
-  },
-  "toastify": {
-    "success_send": "Muvaffaqiyatli yuborildi",
-    "error": "Xatolik",
-    "please_fill_fields": "Iltimos, barcha majburiy maydonchalarni to'ldiring",
-    "enter_email_or_phone": "Iltimos, elektron pochta yoki telefon raqamingizni kiriting",
-    "sending_message": "Xabar yuborilmoqda...",
-    "failed_to_send": "Xabarni yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring."
+  "portfolio": {
+    "title": "Bizning ishlarimiz",
+    "subtitle": "Biz faxrlanadigan loyihalar — investitsiya platformalaridan korporativ saytlargacha.",
+    "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring."
   },
   "footer": {
-    "home": "Bosh sahifa",
-    "company": "Kompaniya",
-    "projects": "Loyihalar",
-    "blog": "Blog",
-    "contact": "Aloqa",
-    "security": "Barcha huquqlar himoyalangan"
+    "prompt": "Keling, ajoyib narsa yaratamiz",
+    "email": "Bizga yozing",
+    "phone": "Qo'ng'iroq qiling"
   },
-  "consultant": {
-    "title": "AI Konsultant",
-    "empty": "Savol bering — yordam berishga tayyorman.",
-    "placeholder": "Xabar yozing...",
-    "error": "Serverga ulanib bo'lmadi.",
-    "new_session": "Yangi suhbat"
-  },
-  "api": {
-    "loading": "Yuklanmoqda...",
-    "loading_blogs": "Bloglar yuklanmoqda...",
-    "loading_blog": "Blog yuklanmoqda...",
-    "error": "Xatolik",
-    "failed_to_fetch": "Ma'lumotlarni yuklashda xatolik",
-    "retry": "Qayta urinish",
-    "no_data": "Ma'lumot mavjud emas",
-    "go_back": "Orqaga",
-    "back_to_blogs": "Bloglarga qaytish",
-    "no_blogs": "Bloglar mavjud emas",
-    "blog_not_found": "Blog topilmadi",
-    "read_time": "daqiqa o'qish",
-    "fetch_error": "Ma'lumotlarni yuklashda xatolik"
+  "cookie": {
+    "title": "Biz cookie ishlatamiz",
+    "text": "saytni yaxshilash uchun. «Qabul qilish» tugmasini bosib, ulardan foydalanishga rozilik bildirasiz.",
+    "accept": "Qabul qilish",
+    "decline": "Rad etish",
+    "more": "Batafsil"
   }
 }
