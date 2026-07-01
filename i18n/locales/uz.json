@@ -6,6 +6,7 @@
     "cta_contact": "Biz bilan bog'lanish"
   },
   "portfolio": {
+    "eyebrow": "Portfolio",
     "title": "Bizning ishlarimiz",
     "subtitle": "Biz faxrlanadigan loyihalar — investitsiya platformalaridan korporativ saytlargacha.",
     "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring."
@@ -13,7 +14,15 @@
   "footer": {
     "prompt": "Keling, ajoyib narsa yaratamiz",
     "email": "Bizga yozing",
-    "phone": "Qo'ng'iroq qiling"
+    "phone": "Qo'ng'iroq qiling",
+    "tagline": "Toshkentdagi veb-studiya. Biznesni oldinga suradigan tez va zamonaviy saytlar hamda raqamli mahsulotlarni loyihalaymiz va yaratamiz.",
+    "links": {
+      "portfolio": "Portfolio",
+      "blog": "Blog",
+      "contact": "Aloqa"
+    },
+    "rights": "Evolution Systems. Barcha huquqlar himoyalangan.",
+    "crafted": "Muhabbat bilan yaratilgan"
   },
   "cookie": {
     "title": "Biz cookie ishlatamiz",

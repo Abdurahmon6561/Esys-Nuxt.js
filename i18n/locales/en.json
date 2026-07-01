@@ -6,6 +6,7 @@
     "cta_contact": "Contact us"
   },
   "portfolio": {
+    "eyebrow": "Portfolio",
     "title": "Our work",
     "subtitle": "Projects we're proud of — from investment platforms to corporate websites.",
     "error": "Failed to load portfolio. Please try again later."
@@ -13,7 +14,15 @@
   "footer": {
     "prompt": "Let's build something great",
     "email": "Email us",
-    "phone": "Call us"
+    "phone": "Call us",
+    "tagline": "Web studio in Tashkent. We design and build fast, modern websites and digital products that move business forward.",
+    "links": {
+      "portfolio": "Portfolio",
+      "blog": "Blog",
+      "contact": "Contact"
+    },
+    "rights": "Evolution Systems. All rights reserved.",
+    "crafted": "Crafted with love"
   },
   "cookie": {
     "title": "We use cookies",
