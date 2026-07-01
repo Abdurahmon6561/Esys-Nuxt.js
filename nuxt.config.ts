@@ -1,17 +1,29 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+
+  app: {
+    head: {
+      link: [
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossorigin: "",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap",
+        },
+      ],
+    },
+  },
   devServer: {
     port: 6561,
     host: "localhost",
   },
 
-  css: [
-    "~/assets/css/main.css",
-    "@fortawesome/fontawesome-svg-core/styles.css",
-  ],
-
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n"],
+  modules: ["@nuxtjs/i18n", "motion-v/nuxt"],
 
   i18n: {
     langDir: "locales",
@@ -39,28 +51,5 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
       consultantKey: process.env.NUXT_PUBLIC_CONSULTANT_KEY,
     },
-  },
-
-  app: {
-    head: {
-      title: "Создание и разработка сайтов в г. Ташкенте - Evolution Systems",
-      htmlAttrs: {
-        lang: "en",
-      },
-      meta: [{ name: "robots", content: "noindex" }],
-    },
-    pageTransition: {
-      name: "page",
-      mode: "out-in",
-    },
-    layoutTransition: {
-      name: "layout",
-      mode: "out-in",
-    },
-  },
-
-  // Add build transpile for GSAP
-  build: {
-    transpile: ["gsap"],
   },
 });
