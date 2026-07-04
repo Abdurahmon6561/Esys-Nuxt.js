@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const localePath = useLocalePath();
+const { open: openContact } = useContactModal();
 
 // Brand + contact.
 const brand = "Evolution Systems";
@@ -89,11 +90,50 @@ onBeforeUnmount(() => {
     <div class="footer__spotlight" aria-hidden="true" />
 
     <div class="footer__inner">
-      <!-- Brand + tagline + socials -->
-      <div class="footer__head">
-        <p class="footer__brand">{{ brand }}</p>
-        <p class="footer__tagline">{{ $t("footer.tagline") }}</p>
+      <!-- CTA scene -->
+      <div class="footer__cta">
+        <p class="footer__eyebrow">{{ $t("footer.ctaEyebrow") }}</p>
+        <h2 class="footer__prompt">{{ $t("footer.prompt") }}</h2>
+        <div class="footer__actions">
+          <button type="button" class="footer__btn footer__btn--primary" @click="openContact">
+            <span>{{ $t("footer.cta") }}</span>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path
+                d="M5 12h14M13 6l6 6-6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <a :href="`mailto:${email}`" class="footer__btn footer__btn--ghost">
+            {{ $t("footer.email") }}
+          </a>
+        </div>
+      </div>
 
+      <!-- Compact link bar -->
+      <div class="footer__bar">
+        <img
+          src="/images/logo.webp"
+          :alt="brand"
+          class="footer__brand-logo"
+          width="294"
+          height="94"
+          loading="lazy"
+        />
+        <nav class="footer__nav" :aria-label="brand">
+          <NuxtLink
+            v-for="link in links"
+            :key="link.to"
+            :to="localePath(link.to)"
+            class="footer__link"
+          >
+            {{ $t(link.label) }}
+          </NuxtLink>
+        </nav>
         <ul class="footer__socials">
           <li v-for="s in socials" :key="s.name">
             <a
@@ -109,20 +149,9 @@ onBeforeUnmount(() => {
             </a>
           </li>
         </ul>
-
-        <nav class="footer__nav" :aria-label="brand">
-          <NuxtLink
-            v-for="link in links"
-            :key="link.to"
-            :to="localePath(link.to)"
-            class="footer__link"
-          >
-            {{ $t(link.label) }}
-          </NuxtLink>
-        </nav>
       </div>
 
-      <!-- Watermark + center logo -->
+      <!-- Watermark -->
       <div class="footer__mark" aria-hidden="true">
         <span class="footer__watermark">{{ watermark }}</span>
       </div>
@@ -130,7 +159,6 @@ onBeforeUnmount(() => {
       <!-- Bottom bar -->
       <div class="footer__bottom">
         <p class="footer__copy">© {{ year }} {{ $t("footer.rights") }}</p>
-        <p class="footer__crafted">{{ $t("footer.crafted") }}</p>
       </div>
     </div>
   </footer>
@@ -192,32 +220,105 @@ onBeforeUnmount(() => {
   padding: 4.5rem 1.5rem 1.75rem;
 }
 
-/* ── Head ── */
-.footer__head {
+/* ── CTA scene ── */
+.footer__cta {
   text-align: center;
+  padding: 1.5rem 0 3.5rem;
 }
 
-.footer__brand {
-  margin: 0;
-  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+.footer__eyebrow {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(169, 214, 229, 0.75);
+}
+
+.footer__prompt {
+  margin: 0 auto;
+  max-width: 18ch;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: transparent;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(238, 241, 247, 0.55) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.footer__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.875rem;
+  margin-top: 2.25rem;
+}
+
+.footer__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.9rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease,
+    background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.footer__btn--primary {
+  border: none;
+  background: #eef1f7;
+  color: #05051a;
+}
+
+.footer__btn--primary:hover,
+.footer__btn--primary:focus-visible {
+  transform: scale(1.04);
+  box-shadow: 0 0 32px rgba(70, 230, 225, 0.45);
+}
+
+.footer__btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(238, 241, 247, 0.25);
+  color: rgba(238, 241, 247, 0.85);
+}
+
+.footer__btn--ghost:hover,
+.footer__btn--ghost:focus-visible {
+  border-color: rgba(169, 214, 229, 0.6);
   color: #ffffff;
 }
 
-.footer__tagline {
-  max-width: 30rem;
-  margin: 1rem auto 0;
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  color: rgba(238, 241, 247, 0.62);
+.footer__btn:focus-visible {
+  outline: 2px solid #46e6e1;
+  outline-offset: 3px;
+}
+
+/* ── Link bar ── */
+.footer__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer__brand-logo {
+  display: block;
+  height: 28px;
+  width: auto;
 }
 
 .footer__socials {
   display: flex;
-  justify-content: center;
   gap: 0.5rem;
-  margin: 1.5rem 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -245,7 +346,6 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1.75rem;
-  margin-top: 1.75rem;
 }
 
 .footer__link {
@@ -261,14 +361,22 @@ onBeforeUnmount(() => {
   color: #ffffff;
 }
 
-/* ── Watermark + logo ── */
+@media (max-width: 640px) {
+  .footer__bar {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ── Watermark ── */
 .footer__mark {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 2.5rem 0 1rem;
-  min-height: clamp(120px, 18vw, 240px);
+  margin: 2rem 0 0.5rem;
+  min-height: clamp(90px, 13vw, 180px);
 }
 
 .footer__watermark {
@@ -289,41 +397,20 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 
-.footer__logo {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: clamp(72px, 9vw, 104px);
-  height: clamp(72px, 9vw, 104px);
-  border-radius: 1.5rem;
-  background: rgba(20, 28, 50, 0.55);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.footer__logo img {
-  width: 60%;
-  height: auto;
-}
-
 /* ── Bottom bar ── */
 .footer__bottom {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 0.75rem;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
 }
 
-.footer__copy,
-.footer__crafted {
+.footer__copy {
   margin: 0;
   font-size: 0.8125rem;
   color: rgba(238, 241, 247, 0.5);
@@ -340,8 +427,14 @@ onBeforeUnmount(() => {
   .footer__spotlight {
     display: none;
   }
-  .footer__social {
+  .footer__social,
+  .footer__btn {
     transition: none;
+  }
+  .footer__btn--primary:hover,
+  .footer__btn--primary:focus-visible {
+    transform: none;
+    box-shadow: none;
   }
 }
 </style>
