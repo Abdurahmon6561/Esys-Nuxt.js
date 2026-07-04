@@ -9,20 +9,23 @@
     "eyebrow": "Portfolio",
     "title": "Bizning ishlarimiz",
     "subtitle": "Biz faxrlanadigan loyihalar — investitsiya platformalaridan korporativ saytlargacha.",
-    "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring."
+    "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
+    "empty": "Yangi loyihalar tayyorlanmoqda — tez orada qaytib ko'ring.",
+    "all": "Barcha loyihalar"
   },
   "footer": {
     "prompt": "Keling, ajoyib narsa yaratamiz",
     "email": "Bizga yozing",
     "phone": "Qo'ng'iroq qiling",
+    "ctaEyebrow": "Boshlashga tayyormisiz?",
+    "cta": "Loyihani muhokama qilish",
     "tagline": "Toshkentdagi veb-studiya. Biznesni oldinga suradigan tez va zamonaviy saytlar hamda raqamli mahsulotlarni loyihalaymiz va yaratamiz.",
     "links": {
       "portfolio": "Portfolio",
       "blog": "Blog",
       "contact": "Aloqa"
     },
-    "rights": "Evolution Systems. Barcha huquqlar himoyalangan.",
-    "crafted": "Muhabbat bilan yaratilgan"
+    "rights": "Evolution Systems. Barcha huquqlar himoyalangan."
   },
   "cookie": {
     "title": "Biz cookie ishlatamiz",
@@ -30,5 +33,59 @@
     "accept": "Qabul qilish",
     "decline": "Rad etish",
     "more": "Batafsil"
+  },
+  "blog": {
+    "eyebrow": "Blog",
+    "title": "G'oyalar va hikoyalar",
+    "subtitle": "Dizayn, muhandislik va raqamli mahsulotni rivojlantirish haqida yozuvlar.",
+    "error": "Blogni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
+    "back": "Blogga qaytish",
+    "published": "Chop etilgan",
+    "tags": "Teglar",
+    "similar": "Yana maqolalar"
+  },
+  "portfolioDetail": {
+    "back": "Portfolioga qaytish",
+    "services": "Xizmatlar",
+    "client": "Mijoz",
+    "technologies": "Texnologiyalar",
+    "gallery": "Galereya",
+    "similar": "Yana loyihalar",
+    "visitSite": "Saytga o'tish"
+  },
+  "contact": {
+    "eyebrow": "Aloqa",
+    "title": "Keling, ajoyib narsa yaratamiz",
+    "subtitle": "Loyihangiz haqida so'zlab bering — bir ish kuni ichida javob beramiz.",
+    "name": "Ism",
+    "namePlaceholder": "Ismingiz",
+    "email": "Email",
+    "emailPlaceholder": "you{'@'}example.com",
+    "subject": "Mavzu",
+    "subjectPlaceholder": "Qanday yordam bera olamiz?",
+    "message": "Xabar",
+    "messagePlaceholder": "Loyiha haqida so'zlab bering",
+    "submit": "Yuborish",
+    "sending": "Yuborilmoqda...",
+    "success": "Rahmat! Tez orada bog'lanamiz.",
+    "error": "Nimadir noto'g'ri ketdi. Qayta urinib ko'ring.",
+    "close": "Yopish",
+    "infoEmail": "Bizga yozing",
+    "infoPhone": "Qo'ng'iroq qiling"
+  },
+  "reviews": {
+    "eyebrow": "Fikrlar",
+    "title": "Mijozlar nima deydi",
+    "subtitle": "Biz bilan ishlagan jamoalarning haqiqiy fikrlari."
+  },
+  "consultant": {
+    "title": "AI Konsultant",
+    "empty": "Savol bering — yordam berishga tayyorman.",
+    "placeholder": "Xabar yozing...",
+    "error": "Serverga ulanib bo'lmadi.",
+    "new_session": "Yangi suhbat",
+    "close": "Chatni yopish",
+    "send": "Xabar yuborish",
+    "typing": "Konsultant yozmoqda"
   }
 }

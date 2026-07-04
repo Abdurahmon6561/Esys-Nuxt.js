@@ -9,20 +9,23 @@
     "eyebrow": "Portfolio",
     "title": "Our work",
     "subtitle": "Projects we're proud of — from investment platforms to corporate websites.",
-    "error": "Failed to load portfolio. Please try again later."
+    "error": "Failed to load portfolio. Please try again later.",
+    "empty": "New projects are on the way — check back soon.",
+    "all": "All projects"
   },
   "footer": {
     "prompt": "Let's build something great",
     "email": "Email us",
     "phone": "Call us",
+    "ctaEyebrow": "Ready to start?",
+    "cta": "Discuss a project",
     "tagline": "Web studio in Tashkent. We design and build fast, modern websites and digital products that move business forward.",
     "links": {
       "portfolio": "Portfolio",
       "blog": "Blog",
       "contact": "Contact"
     },
-    "rights": "Evolution Systems. All rights reserved.",
-    "crafted": "Crafted with love"
+    "rights": "Evolution Systems. All rights reserved."
   },
   "cookie": {
     "title": "We use cookies",
@@ -30,5 +33,59 @@
     "accept": "Accept",
     "decline": "Decline",
     "more": "Learn more"
+  },
+  "blog": {
+    "eyebrow": "Blog",
+    "title": "Insights & stories",
+    "subtitle": "Notes on design, engineering and growing a digital product.",
+    "error": "Failed to load blog. Please try again later.",
+    "back": "Back to blog",
+    "published": "Published",
+    "tags": "Tags",
+    "similar": "More articles"
+  },
+  "portfolioDetail": {
+    "back": "Back to portfolio",
+    "services": "Services",
+    "client": "Client",
+    "technologies": "Technologies",
+    "gallery": "Gallery",
+    "similar": "More projects",
+    "visitSite": "Visit website"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's build something great",
+    "subtitle": "Tell us about your project — we'll get back to you within one business day.",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you{'@'}example.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help?",
+    "message": "Message",
+    "messagePlaceholder": "Tell us about your project",
+    "submit": "Send message",
+    "sending": "Sending...",
+    "success": "Thank you! We'll be in touch shortly.",
+    "error": "Something went wrong. Please try again.",
+    "close": "Close",
+    "infoEmail": "Email us",
+    "infoPhone": "Call us"
+  },
+  "reviews": {
+    "eyebrow": "Reviews",
+    "title": "What clients say",
+    "subtitle": "Honest feedback from teams we've built with."
+  },
+  "consultant": {
+    "title": "AI Consultant",
+    "empty": "Ask a question — I'm here to help.",
+    "placeholder": "Type a message...",
+    "error": "Failed to connect to the server.",
+    "new_session": "New conversation",
+    "close": "Close chat",
+    "send": "Send message",
+    "typing": "Consultant is typing"
   }
 }
