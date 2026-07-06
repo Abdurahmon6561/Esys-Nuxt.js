@@ -57,6 +57,8 @@ Three locales in `i18n/locales/`: Russian (`ru`, default), English (`en`), Uzbek
 
 The backend is a REST API authenticated with HTTP Basic Auth. Base URL comes from `NUXT_PUBLIC_API_URL` (public, client-accessible). Credentials come from `NUXT_API_USERNAME` / `NUXT_API_PASSWORD` (server-only). Copy `.env.example` to `.env` to configure.
 
+Admin panel + API source lives in sibling repo `../admin.esys` (Laravel 12 + Inertia/Vue backend). Public REST endpoints: `routes/api.php` (BasicAuth-guarded). Admin panel: `routes/web.php` (session auth, Inertia pages). See that repo's `CLAUDE.md` for models, controllers, conventions.
+
 ### Environment Variables
 
 | Variable | Side | Purpose |

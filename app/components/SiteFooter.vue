@@ -9,7 +9,7 @@ const brand = "Evolution Systems";
 const watermark = "ESYS";
 const email = "hi@esys.pro";
 
-// Social links — update handles to the real accounts.
+// Social links - update handles to the real accounts.
 const socials = [
   {
     name: "Telegram",
@@ -34,9 +34,12 @@ const socials = [
 ];
 
 const links = [
+  { label: "footer.links.services", to: "/services" },
   { label: "footer.links.portfolio", to: "/portfolio" },
   { label: "footer.links.blog", to: "/blog" },
+  { label: "footer.links.about", to: "/about" },
   { label: "footer.links.contact", to: "/contact" },
+  { label: "footer.links.privacy", to: "/privacy" },
 ];
 
 const year = new Date().getFullYear();
@@ -84,7 +87,7 @@ onBeforeUnmount(() => {
       />
     </ClientOnly>
 
-    <!-- Top fade — eases the portfolio solid bg into the footer mesh -->
+    <!-- Top fade - eases the portfolio solid bg into the footer mesh -->
     <div class="footer__fade" aria-hidden="true" />
     <div class="footer__noise" aria-hidden="true" />
     <div class="footer__spotlight" aria-hidden="true" />
@@ -175,7 +178,7 @@ onBeforeUnmount(() => {
   --my: 50%;
 }
 
-/* Top fade — blends the Portfolio solid bg (#05051a) into the footer mesh
+/* Top fade - blends the Portfolio solid bg (#05051a) into the footer mesh
    so the seam between sections disappears. Mirrors the hero's bottom fade. */
 .footer__fade {
   position: absolute;

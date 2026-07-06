@@ -4,25 +4,30 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 const { locale, locales } = useI18n();
 const switchLocalePath = useSwitchLocalePath();
 const localePath = useLocalePath();
+const { open: openContact } = useContactModal();
 
 const SCROLL_THRESHOLD = 24;
 const scrolled = ref(false);
 const langOpen = ref(false);
 const langRef = ref(null);
+const nav = ref(null);
+const cta = ref(null);
+let scope = null;
 
+useMagnetic(cta, 0.4);
+
+// Labels are i18n keys - rendered via $t() in the template.
 const links = [
-  { label: "Portfolio", to: "/portfolio" },
-  { label: "Blog", to: "/blog" },
+  { label: "nav.services", to: "/services" },
+  { label: "nav.portfolio", to: "/portfolio" },
+  { label: "nav.blog", to: "/blog" },
+  { label: "nav.about", to: "/about" },
 ];
 
 const LANG = {
   en: { name: "English", flag: "/images/en.webp" },
   ru: { name: "Русский", flag: "/images/ru.webp" },
   uz: { name: "O'zbekcha", flag: "/images/uz.webp" },
-};
-
-const onScroll = () => {
-  scrolled.value = window.scrollY > SCROLL_THRESHOLD;
 };
 
 const toggleLang = () => {
@@ -36,20 +41,30 @@ const onClickOutside = (e) => {
 };
 
 onMounted(() => {
-  onScroll();
-  window.addEventListener("scroll", onScroll, { passive: true });
   document.addEventListener("click", onClickOutside);
+
+  // ScrollTrigger drives the compact-pill toggle instead of a manual scroll
+  // listener. `is-scrolled`/`is-compact` classes + their CSS stay unchanged.
+  // Functional (not motion), so it runs regardless of reduced-motion.
+  scope = useGsapScope(({ ScrollTrigger }) => {
+    ScrollTrigger.create({
+      start: SCROLL_THRESHOLD,
+      onEnter: () => (scrolled.value = true),
+      onLeaveBack: () => (scrolled.value = false),
+    });
+  });
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", onScroll);
   document.removeEventListener("click", onClickOutside);
+  scope?.revert();
+  scope = null;
 });
 </script>
 
 <template>
-  <header class="navbar" :class="{ 'is-scrolled': scrolled }">
-    <div class="navbar__inner">
+  <header ref="nav" class="navbar" :class="{ 'is-scrolled': scrolled }">
+    <div class="navbar__inner" :class="{ 'is-compact': scrolled }">
       <NuxtLink :to="localePath('/')" class="navbar__logo">
         <img src="/images/logo.webp" alt="Evolution Systems" />
       </NuxtLink>
@@ -62,13 +77,13 @@ onBeforeUnmount(() => {
             :to="localePath(link.to)"
             class="navbar__link"
           >
-            {{ link.label }}
+            {{ $t(link.label) }}
           </NuxtLink>
         </nav>
 
-        <NuxtLink :to="localePath('/contact')" class="navbar__cta">
-          Contact us
-        </NuxtLink>
+        <button ref="cta" type="button" class="navbar__cta" @click="openContact">
+          {{ $t("hero.cta_contact") }}
+        </button>
 
         <div ref="langRef" class="lang">
           <button
@@ -142,23 +157,58 @@ onBeforeUnmount(() => {
   border-bottom: 1px solid transparent;
 }
 
-/* Liquid glass — only after scroll */
+/* Liquid glass - only on the compact pill (after scroll) */
 .navbar.is-scrolled {
-  background: rgba(20, 28, 48, 0.45);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
 }
 
 .navbar__inner {
-  max-width: 1280px;
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 16px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  will-change: max-width, padding, border-radius;
+  transition:
+    max-width 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    gap 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.45s ease,
+    border-color 0.45s ease,
+    box-shadow 0.45s ease;
+}
+
+/* Scrolled: compact centered pill - Portfolio/Blog hidden, rest stay put */
+.navbar__inner.is-compact {
+  max-width: 540px;
+  margin: 10px auto 0;
+  padding: 8px 16px;
+  gap: 16px;
+  border-radius: 999px;
+  background: rgba(20, 28, 48, 0.5);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.navbar__inner.is-compact .navbar__nav {
+  opacity: 0;
+  max-width: 0;
+  margin-left: -28px; /* collapse the parent gap too */
+  pointer-events: none;
+  transition: none; /* hide instantly - no competing animation */
+}
+
+.navbar__inner.is-compact .navbar__right {
+  gap: 16px;
 }
 
 .navbar__logo {
@@ -182,6 +232,21 @@ onBeforeUnmount(() => {
 .navbar__nav {
   display: flex;
   gap: 28px;
+  max-width: 560px;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 1;
+  transition:
+    opacity 0.5s ease,
+    max-width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  transition: gap 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .navbar__link {
@@ -231,11 +296,12 @@ onBeforeUnmount(() => {
 
 .lang__menu {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 10px);
   right: 0;
-  min-width: 180px;
+  min-width: 150px;
+  width: max-content;
   margin: 0;
-  padding: 8px;
+  padding: 6px;
   list-style: none;
   border-radius: 16px;
   background: rgba(16, 22, 40, 0.7);
@@ -251,9 +317,9 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 11px 14px;
-  border-radius: 11px;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
   color: rgba(255, 255, 255, 0.72);
   text-decoration: none;
   font-size: 14px;
@@ -305,12 +371,15 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   padding: 10px 22px;
+  border: none;
   border-radius: 999px;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 600;
   color: #0a0a2e;
   text-decoration: none;
   background: #fff;
+  cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   transition:
     transform 0.2s ease,
@@ -341,6 +410,14 @@ onBeforeUnmount(() => {
   .navbar__cta {
     padding: 9px 16px;
     font-size: 14px;
+  }
+}
+
+/* Four localized links don't fit next to CTA + language switcher on phones -
+   hide them; the footer carries the same navigation. */
+@media (max-width: 768px) {
+  .navbar__nav {
+    display: none;
   }
 }
 </style>

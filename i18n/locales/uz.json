@@ -1,6 +1,18 @@
 {
+  "home": {
+    "seo": {
+      "title": "Toshkentdagi dijital agentlik: saytlar, ilovalar, CRM",
+      "description": "Evolution Systems - veb-saytlar, mobil ilovalar, CRM va brending yaratamiz. Zamonaviy dizayn, tezkor ishlab chiqish va qo'llab-quvvatlash. Toshkent, O'zbekiston."
+    }
+  },
+  "errorPage": {
+    "notFound": "Sahifa topilmadi",
+    "serverError": "Nimadir xato ketdi",
+    "text": "Sahifa ko'chirilgan yoki o'chirilgan bo'lishi mumkin.",
+    "home": "Bosh sahifaga"
+  },
   "hero": {
-    "title": "Veb-saytlar, mobil ilovalar, CRM va brending — barchasi bir joyda",
+    "title": "Veb-saytlar, mobil ilovalar, CRM va brending - barchasi bir joyda",
     "subtitle": "Zamonaviy dizayn, qulaylik va samarali boshqaruv orqali sizni raqobatchilardan ajratib turadigan yechimlarni yaratamiz.",
     "cta_projects": "Bizning loyihalar",
     "cta_contact": "Biz bilan bog'lanish"
@@ -8,9 +20,9 @@
   "portfolio": {
     "eyebrow": "Portfolio",
     "title": "Bizning ishlarimiz",
-    "subtitle": "Biz faxrlanadigan loyihalar — investitsiya platformalaridan korporativ saytlargacha.",
+    "subtitle": "Biz faxrlanadigan loyihalar - investitsiya platformalaridan korporativ saytlargacha.",
     "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
-    "empty": "Yangi loyihalar tayyorlanmoqda — tez orada qaytib ko'ring.",
+    "empty": "Yangi loyihalar tayyorlanmoqda - tez orada qaytib ko'ring.",
     "all": "Barcha loyihalar"
   },
   "footer": {
@@ -19,20 +31,22 @@
     "phone": "Qo'ng'iroq qiling",
     "ctaEyebrow": "Boshlashga tayyormisiz?",
     "cta": "Loyihani muhokama qilish",
-    "tagline": "Toshkentdagi veb-studiya. Biznesni oldinga suradigan tez va zamonaviy saytlar hamda raqamli mahsulotlarni loyihalaymiz va yaratamiz.",
+    "tagline": "Toshkentdagi dijital agentlik. Biznesni oldinga suradigan tez va zamonaviy saytlar hamda raqamli mahsulotlarni loyihalaymiz va yaratamiz.",
     "links": {
       "portfolio": "Portfolio",
       "blog": "Blog",
-      "contact": "Aloqa"
+      "contact": "Aloqa",
+      "privacy": "Maxfiylik",
+      "services": "Xizmatlar",
+      "about": "Biz haqimizda"
     },
     "rights": "Evolution Systems. Barcha huquqlar himoyalangan."
   },
   "cookie": {
-    "title": "Biz cookie ishlatamiz",
-    "text": "saytni yaxshilash uchun. «Qabul qilish» tugmasini bosib, ulardan foydalanishga rozilik bildirasiz.",
-    "accept": "Qabul qilish",
-    "decline": "Rad etish",
-    "more": "Batafsil"
+    "text": "Ushbu sayt tajribangizni yaxshilash uchun cookie'lardan foydalanadi. Davom etib, {privacy} va {terms} shartlariga muvofiq ulardan foydalanishga rozilik bildirasiz.",
+    "privacy": "Maxfiylik siyosati",
+    "terms": "Foydalanish shartlari",
+    "acceptAll": "Hammasini qabul qilish"
   },
   "blog": {
     "eyebrow": "Blog",
@@ -56,7 +70,7 @@
   "contact": {
     "eyebrow": "Aloqa",
     "title": "Keling, ajoyib narsa yaratamiz",
-    "subtitle": "Loyihangiz haqida so'zlab bering — bir ish kuni ichida javob beramiz.",
+    "subtitle": "Loyihangiz haqida so'zlab bering - bir ish kuni ichida javob beramiz.",
     "name": "Ism",
     "namePlaceholder": "Ismingiz",
     "email": "Email",
@@ -80,12 +94,152 @@
   },
   "consultant": {
     "title": "AI Konsultant",
-    "empty": "Savol bering — yordam berishga tayyorman.",
+    "empty": "Savol bering - yordam berishga tayyorman.",
     "placeholder": "Xabar yozing...",
     "error": "Serverga ulanib bo'lmadi.",
     "new_session": "Yangi suhbat",
     "close": "Chatni yopish",
     "send": "Xabar yuborish",
     "typing": "Konsultant yozmoqda"
+  },
+  "privacy": {
+    "eyebrow": "Hujjatlar",
+    "title": "Maxfiylik siyosati",
+    "updatedLabel": "Yangilangan",
+    "updatedDate": "2026-yil 5-iyul",
+    "intro": "Ushbu siyosat esys.pro sayti (Evolution Systems) qanday ma'lumotlarni to'plashi, ular nima uchun kerakligi va biz ular bilan qanday ishlashimizni tushuntiradi. Saytdan foydalanish orqali siz ushbu siyosat shartlariga rozilik bildirasiz.",
+    "s1": {
+      "title": "1. Umumiy qoidalar",
+      "text": "esys.pro sayti Evolution Systems dijital agentligiga tegishli (Toshkent, O'zbekiston). Ma'lumotlarni qayta ishlash bo'yicha savollar uchun hi{'@'}esys.pro manziliga yozing."
+    },
+    "s2": {
+      "title": "2. Qanday ma'lumotlarni to'playmiz",
+      "text": "Aloqa formasi ma'lumotlari: ism, email, mavzu va xabar matni - faqat siz o'zingiz kiritgan ma'lumotlar.\nTexnik ma'lumotlar: IP-manzil, brauzer va qurilma turi, tashrif buyurilgan sahifalar - analitika xizmati tomonidan anonim ko'rinishda avtomatik to'planadi.\nCookies: sayt ishlashi va statistika uchun zarur bo'lgan brauzeringizdagi kichik fayllar."
+    },
+    "s3": {
+      "title": "3. Qayta ishlash maqsadlari",
+      "text": "Ma'lumotlardan so'rovlaringizga javob berish, sayt ishi va mazmunini yaxshilash hamda anonim tashrif statistikasini yuritish uchun foydalanamiz. Alohida rozilishingizsiz ma'lumotlaringizdan xabarnomalar uchun foydalanmaymiz."
+    },
+    "s4": {
+      "title": "4. Cookies",
+      "text": "Cookies tanlangan tilni, rozilik banneridagi qaroringizni eslab qolish va statistika to'plash uchun ishlatiladi. Bannerda majburiy bo'lmagan cookies'ni rad etishingiz yoki brauzer sozlamalarida o'chirishingiz mumkin - sayt ishlashda davom etadi."
+    },
+    "s5": {
+      "title": "5. Uchinchi shaxslar",
+      "text": "Anonim tashrif statistikasi veb-analitika xizmati (Yandex Metrika) tomonidan qayta ishlanishi mumkin. Aloqa formasi ma'lumotlari serverimizga yuboriladi va qonunda nazarda tutilgan hollardan tashqari uchinchi shaxslarga sotilmaydi va berilmaydi."
+    },
+    "s6": {
+      "title": "6. Ma'lumotlarni saqlash va huquqlaringiz",
+      "text": "So'rov ma'lumotlari murojaatni ko'rib chiqish uchun zarur bo'lgan muddat davomida saqlanadi. Siz o'z ma'lumotlaringizga kirish, ularni tuzatish yoki o'chirishni so'rashingiz mumkin - hi{'@'}esys.pro manziliga yozing, biz o'z vaqtida javob beramiz."
+    },
+    "s7": {
+      "title": "7. Kontaktlar",
+      "text": "Evolution Systems, Toshkent, O'zbekiston.\nEmail: hi{'@'}esys.pro\nTelefon: +998 71 200 00 00"
+    }
+  },
+  "nav": {
+    "services": "Xizmatlar",
+    "portfolio": "Portfolio",
+    "blog": "Blog",
+    "about": "Biz haqimizda"
+  },
+  "services": {
+    "seo": {
+      "title": "Xizmatlar: saytlar, ilovalar, CRM, brending",
+      "description": "Evolution Systems xizmatlari: Toshkentda saytlar, mobil ilovalar, CRM tizimlari va brendingni to'liq tayyor holda ishlab chiqish."
+    },
+    "eyebrow": "Xizmatlar",
+    "title": "Biz nima qilamiz",
+    "subtitle": "Raqamli ishlab chiqishning to'liq sikli - g'oya va dizayndan tortib ishga tushirish va qo'llab-quvvatlashgacha.",
+    "error": "Xizmatlarni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
+    "cta": "Loyihani muhokama qilish",
+    "ai": {
+      "title": "AI-yechimlar",
+      "text": "Sun'iy intellektni biznesga joriy qilamiz: chat-botlar, jarayonlarni avtomatlashtirish, tahlil va AI integratsiyasi."
+    }
+  },
+  "about": {
+    "seo": {
+      "title": "Biz haqimizda",
+      "description": "Evolution Systems - Toshkentlik dasturchilar va dizaynerlar jamoasi. Biznesingiz o'sishiga yordam beradigan saytlar, ilovalar va CRM tizimlarini yaratamiz."
+    },
+    "eyebrow": "Biz haqimizda",
+    "title": "Raqamli mahsulotlar yaratadigan jamoa",
+    "intro": "Biz Toshkentdagi raqamli ishlab chiqish studiyasimiz. Saytlar, mobil ilovalar va CRM tizimlarini to'liq tayyor holda loyihalaymiz va yaratamiz: birinchi uchrashuvdan ishga tushirish va qo'llab-quvvatlashgacha butun jarayonni o'z zimmamizga olamiz.",
+    "process": {
+      "eyebrow": "Jarayon",
+      "title": "Biz qanday ishlaymiz",
+      "subtitle": "Kutilmagan holatlarsiz shaffof jarayon - loyiha qaysi bosqichda ekanini doim bilasiz.",
+      "s1": {
+        "title": "Brifing va tahlil",
+        "text": "Biznesingizga chuqur kirib boramiz: maqsadlar, auditoriya, raqobatchilar. Talablarni shakllantirib, ish hajmini kelishamiz."
+      },
+      "s2": {
+        "title": "Dizayn",
+        "text": "Tuzilma va interfeysni loyihalaymiz. Maketlarni ko'rsatamiz, fikr-mulohazalarni yig'ib, mukammal holatga keltiramiz."
+      },
+      "s3": {
+        "title": "Ishlab chiqish",
+        "text": "Toza va tez ishlaydigan kod yozamiz. Oraliq natijalarni muntazam ko'rsatib boramiz - hech qanday sir yo'q."
+      },
+      "s4": {
+        "title": "Ishga tushirish",
+        "text": "Haqiqiy qurilmalarda sinovdan o'tkazamiz, hosting va analitikani sozlab, mahsulotni ishga tushiramiz."
+      },
+      "s5": {
+        "title": "Qo'llab-quvvatlash",
+        "text": "Ishga tushirilgandan keyin yo'qolib qolmaymiz: mahsulotni rivojlantiramiz, yangi funksiyalar qo'shamiz va barqarorligini kuzatamiz."
+      }
+    },
+    "values": {
+      "eyebrow": "Qadriyatlar",
+      "title": "Bizning tamoyillarimiz",
+      "v1": {
+        "title": "Shaffoflik",
+        "text": "Halol muddatlar va byudjet. Loyiha holatini har bosqichda ko'rib turasiz."
+      },
+      "v2": {
+        "title": "Sifat",
+        "text": "O'zimiz faxrlanmagunimizcha ishni topshirmaymiz. Har bir loyiha - bizning tashrif qog'ozimiz."
+      },
+      "v3": {
+        "title": "Natija",
+        "text": "Shunchaki sayt emas, biznes vazifalarini hal qiladigan vosita yaratamiz."
+      }
+    },
+    "cta": {
+      "title": "Loyihangizni muhokama qilishga tayyormisiz?",
+      "text": "G'oyangizni aytib bering - yechim, muddat va narxni bepul taklif qilamiz.",
+      "button": "Biz bilan bog'lanish"
+    }
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Ko'p beriladigan savollar",
+    "subtitle": "Eng ko'p so'raladigan savollarga qisqa javoblar. Javob topolmadingizmi - bizga yozing.",
+    "q1": {
+      "question": "Sayt ishlab chiqish qancha turadi?",
+      "answer": "Vazifalarga bog'liq: lending, korporativ sayt va internet-do'kon turli hajmdagi ishni talab qiladi. Brifingdan so'ng belgilangan narx bilan smetani bepul tayyorlaymiz - yashirin to'lovlarsiz."
+    },
+    "q2": {
+      "question": "Loyiha qancha vaqt oladi?",
+      "answer": "Lending - 2 haftadan, korporativ sayt - 4–6 haftadan, mobil ilova yoki CRM - 2–3 oydan boshlanadi. Aniq muddatlar talablar kelishilgach belgilanadi."
+    },
+    "q3": {
+      "question": "Boshlash uchun bizdan nima kerak?",
+      "answer": "G'oya va maqsadlar tavsifi kifoya. Materiallarni - matnlar, suratlar, logotipni - birgalikda tayyorlashimiz mumkin: tuzilma va kontent bo'yicha yordam beramiz."
+    },
+    "q4": {
+      "question": "Ishga tushirilgandan keyin loyihani qo'llab-quvvatlaysizmi?",
+      "answer": "Ha. Texnik qo'llab-quvvatlash, funksiyalarni rivojlantirish va kontent yuritishni taklif qilamiz. Shartlarni loyihangizga moslaymiz."
+    },
+    "q5": {
+      "question": "O'zbekistondan tashqaridagi mijozlar bilan ishlaysizmi?",
+      "answer": "Ha, istalgan davlatdagi mijozlar bilan masofadan ishlaymiz. Qo'ng'iroqlar, hisobotlar va demolarni sizga qulay vaqtda onlayn o'tkazamiz."
+    },
+    "q6": {
+      "question": "Mavjud sayt yoki ilovani takomillashtira olasizmi?",
+      "answer": "Ha. Joriy yechimni tahlil qilib, reja taklif qilamiz: nuqtaviy yaxshilashlardan to'liq qayta dizayngacha."
+    }
   }
 }

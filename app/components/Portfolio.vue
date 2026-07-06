@@ -1,9 +1,11 @@
 <script setup>
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
+
 const { portfolioApi } = useApiService();
 const { locale } = useI18n();
 const localePath = useLocalePath();
 
-// Refetches when locale changes — API returns content in the active language.
+// Refetches when locale changes - API returns content in the active language.
 const { data, pending, error } = await useAsyncData(
   "portfolios",
   () => portfolioApi.getPortfolios(),
@@ -12,48 +14,70 @@ const { data, pending, error } = await useAsyncData(
 
 const items = computed(() => data.value?.data ?? []);
 
-// Bento rhythm: per 6 items — first is featured (2×2), fourth is tall (1×2).
+// Bento rhythm: per 6 items - first is featured (2×2). No vertical/tall cards.
 const cardClass = (index) => ({
   "card--featured": index % 6 === 0,
-  "card--tall": index % 6 === 3,
 });
 
-// Scroll-reveal: fade-up section once it enters the viewport.
+// GSAP scroll-reveal: stagger cards in as they enter the viewport. Cards are
+// rendered after async data resolves, so batch is wired once items populate.
 const root = ref(null);
-const revealed = ref(false);
-let observer = null;
+let scope = null;
+let stopWatch = null;
 
 onMounted(() => {
-  if (!root.value) return;
+  scope = useGsapScope(({ gsap, ScrollTrigger, isReducedMotion }) => {
+    if (isReducedMotion) return;
 
-  // Respect reduced-motion: show immediately, skip animation.
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    revealed.value = true;
-    return;
-  }
+    const wireBatch = () => {
+      ScrollTrigger.batch(".portfolio__grid .card:not(.card--skeleton)", {
+        start: "top 90%",
+        onEnter: (batch) =>
+          gsap.from(batch, {
+            opacity: 0,
+            y: 40,
+            duration: 0.6,
+            ease: "power2.out",
+            stagger: 0.1,
+            overwrite: true,
+          }),
+      });
+      // Cards + images land after async data: recalc trigger positions so
+      // reveals fire at the right scroll offsets.
+      ScrollTrigger.refresh();
+    };
 
-  observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0]?.isIntersecting) {
-        revealed.value = true;
-        observer.disconnect();
-      }
-    },
-    { threshold: 0.15 }
-  );
-  observer.observe(root.value);
+    // Cards already in DOM (cached data) → wire now. Otherwise wait for the
+    // watch fired by useAsyncData resolving.
+    if (items.value.length) {
+      nextTick(wireBatch);
+    } else {
+      stopWatch = watch(
+        items,
+        (vals) => {
+          if (vals?.length) {
+            nextTick(() => {
+              wireBatch();
+              stopWatch?.();
+              stopWatch = null;
+            });
+          }
+        },
+        { immediate: true }
+      );
+    }
+  }, root);
 });
 
-onBeforeUnmount(() => observer?.disconnect());
+onBeforeUnmount(() => {
+  stopWatch?.();
+  scope?.revert();
+  scope = null;
+});
 </script>
 
 <template>
-  <section
-    ref="root"
-    class="portfolio"
-    :class="{ 'is-revealed': revealed }"
-    id="portfolio"
-  >
+  <section ref="root" class="portfolio" id="portfolio">
     <div class="portfolio__inner">
       <UiSectionHead
         :eyebrow="$t('portfolio.eyebrow')"
@@ -141,26 +165,9 @@ onBeforeUnmount(() => observer?.disconnect());
   color: #eef1f7;
 }
 
-/* Scroll-reveal: fade + rise on enter */
 .portfolio__inner {
-  opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.portfolio.is-revealed .portfolio__inner {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .portfolio__inner {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
 }
 
 .portfolio__error {
@@ -198,9 +205,6 @@ onBeforeUnmount(() => observer?.disconnect());
     grid-column: span 2;
     grid-row: span 2;
   }
-  .card--tall {
-    grid-row: span 2;
-  }
 }
 
 .portfolio__more {
@@ -236,7 +240,7 @@ onBeforeUnmount(() => observer?.disconnect());
   color: inherit;
 }
 
-/* Cyan hairline sweep — signature accent on hover */
+/* Cyan hairline sweep - signature accent on hover */
 .card::before {
   content: "";
   position: absolute;
@@ -281,7 +285,7 @@ onBeforeUnmount(() => observer?.disconnect());
   transform: scale(1.06);
 }
 
-/* Scrim — text legibility over the image */
+/* Scrim - text legibility over the image */
 .card__scrim {
   position: absolute;
   inset: 0;
@@ -355,7 +359,7 @@ onBeforeUnmount(() => observer?.disconnect());
   background: rgba(42, 111, 151, 0.45);
 }
 
-/* Short text — collapsed, revealed on hover/focus */
+/* Short text - collapsed, revealed on hover/focus */
 .card__text {
   margin: 0;
   max-height: 0;

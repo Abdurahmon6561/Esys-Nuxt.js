@@ -1,6 +1,18 @@
 {
+  "home": {
+    "seo": {
+      "title": "Digital agency in Tashkent: websites, apps, CRM",
+      "description": "Evolution Systems - we build websites, mobile apps, CRM and branding. Modern design, fast development and ongoing support. Tashkent, Uzbekistan."
+    }
+  },
+  "errorPage": {
+    "notFound": "Page not found",
+    "serverError": "Something went wrong",
+    "text": "The page may have been moved or deleted.",
+    "home": "Back home"
+  },
   "hero": {
-    "title": "Websites, mobile apps, CRM and branding — all in one place",
+    "title": "Websites, mobile apps, CRM and branding - all in one place",
     "subtitle": "We craft solutions that set you apart from competitors through modern design, usability and effective management.",
     "cta_projects": "Our projects",
     "cta_contact": "Contact us"
@@ -8,9 +20,9 @@
   "portfolio": {
     "eyebrow": "Portfolio",
     "title": "Our work",
-    "subtitle": "Projects we're proud of — from investment platforms to corporate websites.",
+    "subtitle": "Projects we're proud of - from investment platforms to corporate websites.",
     "error": "Failed to load portfolio. Please try again later.",
-    "empty": "New projects are on the way — check back soon.",
+    "empty": "New projects are on the way - check back soon.",
     "all": "All projects"
   },
   "footer": {
@@ -19,20 +31,22 @@
     "phone": "Call us",
     "ctaEyebrow": "Ready to start?",
     "cta": "Discuss a project",
-    "tagline": "Web studio in Tashkent. We design and build fast, modern websites and digital products that move business forward.",
+    "tagline": "Digital agency in Tashkent. We design and build fast, modern websites and digital products that move business forward.",
     "links": {
       "portfolio": "Portfolio",
       "blog": "Blog",
-      "contact": "Contact"
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "services": "Services",
+      "about": "About us"
     },
     "rights": "Evolution Systems. All rights reserved."
   },
   "cookie": {
-    "title": "We use cookies",
-    "text": "to improve the website. By clicking «Accept», you agree to their use.",
-    "accept": "Accept",
-    "decline": "Decline",
-    "more": "Learn more"
+    "text": "This site uses cookies to enhance your experience. By continuing, you agree to our use of cookies as outlined in our {privacy} and {terms}.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "acceptAll": "Accept all"
   },
   "blog": {
     "eyebrow": "Blog",
@@ -56,7 +70,7 @@
   "contact": {
     "eyebrow": "Contact",
     "title": "Let's build something great",
-    "subtitle": "Tell us about your project — we'll get back to you within one business day.",
+    "subtitle": "Tell us about your project - we'll get back to you within one business day.",
     "name": "Name",
     "namePlaceholder": "Your name",
     "email": "Email",
@@ -80,12 +94,152 @@
   },
   "consultant": {
     "title": "AI Consultant",
-    "empty": "Ask a question — I'm here to help.",
+    "empty": "Ask a question - I'm here to help.",
     "placeholder": "Type a message...",
     "error": "Failed to connect to the server.",
     "new_session": "New conversation",
     "close": "Close chat",
     "send": "Send message",
     "typing": "Consultant is typing"
+  },
+  "privacy": {
+    "eyebrow": "Legal",
+    "title": "Privacy Policy",
+    "updatedLabel": "Updated",
+    "updatedDate": "July 5, 2026",
+    "intro": "This policy explains what data the esys.pro website (Evolution Systems) collects, why it is needed, and how we handle it. By using the website you agree to the terms of this policy.",
+    "s1": {
+      "title": "1. General",
+      "text": "The esys.pro website is operated by Evolution Systems, a digital agency based in Tashkent, Uzbekistan. For any questions about data processing, write to hi{'@'}esys.pro."
+    },
+    "s2": {
+      "title": "2. What data we collect",
+      "text": "Contact form data: name, email, subject and message text - only what you provide yourself.\nTechnical data: IP address, browser and device type, pages visited - collected automatically by the analytics service in anonymized form.\nCookies: small files in your browser required for the website to function and for statistics."
+    },
+    "s3": {
+      "title": "3. Purposes of processing",
+      "text": "We use the data to respond to your inquiries and messages, to improve the website's performance and content, and to keep anonymized visit statistics. We do not use your data for mailings without separate consent."
+    },
+    "s4": {
+      "title": "4. Cookies",
+      "text": "Cookies are used to remember your language choice, your decision in the consent banner, and to collect statistics. You can decline non-essential cookies in the banner or disable cookies in your browser settings - the website will keep working."
+    },
+    "s5": {
+      "title": "5. Third parties",
+      "text": "Anonymized visit statistics may be processed by a web analytics service (Yandex Metrica). Contact form data is sent to our server and is never sold or shared with third parties, except where required by law."
+    },
+    "s6": {
+      "title": "6. Data retention and your rights",
+      "text": "Inquiry data is kept for as long as needed to handle your request. You may request access to, correction of, or deletion of your data - write to hi{'@'}esys.pro and we will respond within a reasonable time."
+    },
+    "s7": {
+      "title": "7. Contact",
+      "text": "Evolution Systems, Tashkent, Uzbekistan.\nEmail: hi{'@'}esys.pro\nPhone: +998 71 200 00 00"
+    }
+  },
+  "nav": {
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "blog": "Blog",
+    "about": "About"
+  },
+  "services": {
+    "seo": {
+      "title": "Services: websites, apps, CRM, branding",
+      "description": "Evolution Systems services: turnkey development of websites, mobile applications, CRM systems and branding in Tashkent."
+    },
+    "eyebrow": "Services",
+    "title": "What we do",
+    "subtitle": "Full-cycle digital development - from idea and design to launch and support.",
+    "error": "Failed to load services. Please try again later.",
+    "cta": "Discuss a project",
+    "ai": {
+      "title": "AI Solutions",
+      "text": "We bring artificial intelligence into your business: chatbots, process automation, analytics and AI integration into your products."
+    }
+  },
+  "about": {
+    "seo": {
+      "title": "About us",
+      "description": "Evolution Systems is a team of developers and designers from Tashkent. We build websites, apps and CRM systems that help businesses grow."
+    },
+    "eyebrow": "About us",
+    "title": "A team that builds digital products",
+    "intro": "We are a digital development studio from Tashkent. We design and build turnkey websites, mobile applications and CRM systems - handling the entire process from the first meeting to launch and support.",
+    "process": {
+      "eyebrow": "Process",
+      "title": "How we work",
+      "subtitle": "A transparent process with no surprises - you always know what stage the project is at.",
+      "s1": {
+        "title": "Brief and analysis",
+        "text": "We dive into your business: goals, audience, competitors. We define the requirements and agree on the scope of work."
+      },
+      "s2": {
+        "title": "Design",
+        "text": "We design the structure and interface, show the mockups, gather feedback and polish until it's right."
+      },
+      "s3": {
+        "title": "Development",
+        "text": "We write clean, fast code and regularly show intermediate results - no black boxes."
+      },
+      "s4": {
+        "title": "Launch",
+        "text": "We test on real devices, set up hosting and analytics, and take the product to production."
+      },
+      "s5": {
+        "title": "Support",
+        "text": "We don't disappear after launch: we grow the product, add features and keep it stable."
+      }
+    },
+    "values": {
+      "eyebrow": "Values",
+      "title": "What we stand on",
+      "v1": {
+        "title": "Transparency",
+        "text": "Honest timelines and budget. You see the project status at every stage."
+      },
+      "v2": {
+        "title": "Quality",
+        "text": "We don't hand over work until we're proud of it ourselves. Every project is our calling card."
+      },
+      "v3": {
+        "title": "Results",
+        "text": "We build not “just a website” but a tool that solves real business problems."
+      }
+    },
+    "cta": {
+      "title": "Ready to discuss your project?",
+      "text": "Tell us about your idea - we'll propose a solution, timeline and estimate for free.",
+      "button": "Contact us"
+    }
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "subtitle": "Quick answers to what we're asked most often. Didn't find yours - drop us a line.",
+    "q1": {
+      "question": "How much does a website cost?",
+      "answer": "It depends on the scope: a landing page, a corporate site and an online store require different amounts of work. After the brief we prepare a fixed-price estimate for free - no hidden extras."
+    },
+    "q2": {
+      "question": "How long does a project take?",
+      "answer": "A landing page from 2 weeks, a corporate website from 4–6 weeks, a mobile app or CRM from 2–3 months. Exact timelines are fixed once the requirements are agreed."
+    },
+    "q3": {
+      "question": "What do you need from us to start?",
+      "answer": "A description of your idea and goals is enough. Materials - copy, photos, logo - can be prepared together with us: we'll help with structure and content."
+    },
+    "q4": {
+      "question": "Do you support the project after launch?",
+      "answer": "Yes. We offer technical support, feature development and content maintenance. Terms are tailored to your project."
+    },
+    "q5": {
+      "question": "Do you work with clients outside Uzbekistan?",
+      "answer": "Yes, we work remotely with clients from any country. Calls, reports and demos are held online at a time convenient for you."
+    },
+    "q6": {
+      "question": "Can you improve an existing website or app?",
+      "answer": "Yes. We'll audit your current solution and propose a plan - from targeted improvements to a full redesign."
+    }
   }
 }

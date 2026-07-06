@@ -17,6 +17,7 @@ yarn-error.log*
 # Build artifacts
 dist/
 build/
+.playwright-mcp/
 
 # IDE
 .vscode/

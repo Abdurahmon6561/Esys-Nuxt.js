@@ -10,10 +10,14 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/fonts": "^0.14.0",
     "@nuxtjs/i18n": "^10.0.6",
+    "@nuxtjs/sitemap": "^8.2.2",
     "@paper-design/shaders": "^0.0.76",
+    "gsap": "^3.15.0",
     "motion-v": "^2.3.0",
     "nuxt": "^4.0.3",
+    "three": "^0.185.1",
     "vue": "^3.5.20",
     "vue-router": "^4.5.1"
   }

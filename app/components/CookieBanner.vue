@@ -19,39 +19,36 @@ const persist = (value) => {
   try {
     localStorage.setItem(STORAGE_KEY, value);
   } catch {
-    /* storage unavailable — dismiss for this session only */
+    /* storage unavailable - dismiss for this session only */
   }
   visible.value = false;
 };
 
-const accept = () => persist("accepted");
-const decline = () => persist("declined");
+const acceptAll = () => persist("accepted");
 </script>
 
 <template>
   <Transition name="cookie">
     <div v-if="visible" class="cookie" role="dialog" aria-live="polite">
-      <button class="cookie__close" :aria-label="t('cookie.decline')" @click="decline">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-        </svg>
-      </button>
+      <span class="cookie__icon" aria-hidden="true">🍪</span>
 
-      <p class="cookie__text">
-        <strong class="cookie__title">{{ t("cookie.title") }}</strong>
-        {{ t("cookie.text") }}
-      </p>
+      <i18n-t keypath="cookie.text" tag="p" class="cookie__text" scope="global">
+        <template #privacy>
+          <NuxtLink :to="localePath('/privacy')" class="cookie__link">
+            {{ t("cookie.privacy") }}
+          </NuxtLink>
+        </template>
+        <template #terms>
+          <NuxtLink :to="localePath('/privacy')" class="cookie__link">
+            {{ t("cookie.terms") }}
+          </NuxtLink>
+        </template>
+      </i18n-t>
 
       <div class="cookie__actions">
-        <button class="cookie__btn cookie__btn--accept" @click="accept">
-          {{ t("cookie.accept") }}
+        <button class="cookie__btn cookie__btn--accept" @click="acceptAll">
+          {{ t("cookie.acceptAll") }}
         </button>
-        <button class="cookie__btn cookie__btn--decline" @click="decline">
-          {{ t("cookie.decline") }}
-        </button>
-        <NuxtLink :to="localePath('/privacy')" class="cookie__more">
-          {{ t("cookie.more") }}
-        </NuxtLink>
       </div>
     </div>
   </Transition>
@@ -63,123 +60,68 @@ const decline = () => persist("declined");
   left: 20px;
   bottom: 20px;
   z-index: 1000;
-  width: 320px;
+  width: 300px;
   max-width: calc(100vw - 32px);
-  padding: 16px 18px;
-  background: linear-gradient(
-    150deg,
-    rgba(255, 255, 255, 0.62),
-    rgba(255, 255, 255, 0.42)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(17, 24, 39, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 -1px 0 rgba(17, 24, 39, 0.04);
-  -webkit-backdrop-filter: blur(22px) saturate(190%);
-  backdrop-filter: blur(22px) saturate(190%);
+  padding: 20px;
+  background: #14161d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   font-family: inherit;
-  overflow: hidden;
-  isolation: isolate;
-}
-/* liquid sheen: soft diagonal light sweeping the top-left */
-.cookie::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(
-    120% 80% at 0% 0%,
-    rgba(255, 255, 255, 0.35),
-    transparent 60%
-  );
-  pointer-events: none;
 }
 
-.cookie__close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: #6b7280;
-  cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-}
-.cookie__close:hover {
-  color: #1f2937;
-  background: rgba(255, 255, 255, 0.5);
+.cookie__icon {
+  display: block;
+  font-size: 22px;
+  line-height: 1;
+  margin-bottom: 14px;
 }
 
 .cookie__text {
-  margin: 0 0 12px;
-  padding-right: 16px;
-  font-size: 12.5px;
-  line-height: 1.45;
-  color: #4b5563;
+  margin: 0 0 18px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #9ca3af;
 }
-.cookie__title {
-  color: #111827;
-  font-weight: 600;
+
+.cookie__link {
+  color: #7c93ff;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.cookie__link:hover {
+  color: #a3b3ff;
 }
 
 .cookie__actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .cookie__btn {
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 8px 16px;
+  padding: 9px 18px;
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s, border-color 0.15s,
-    box-shadow 0.15s, color 0.15s;
+  transition: transform 0.15s ease, background 0.15s, color 0.15s,
+    border-color 0.15s;
 }
 .cookie__btn:active {
   transform: translateY(1px);
 }
+
 .cookie__btn--accept {
-  border: 1px solid rgba(47, 109, 246, 0.9);
-  background: linear-gradient(180deg, #4480ff, #2f6df6);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(47, 109, 246, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 1px solid #ffffff;
+  background: #ffffff;
+  color: #111318;
 }
 .cookie__btn--accept:hover {
-  background: linear-gradient(180deg, #3a76ff, #2560e0);
-  box-shadow: 0 8px 20px rgba(47, 109, 246, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-.cookie__btn--decline {
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.4);
-  color: #374151;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-.cookie__btn--decline:hover {
-  background: rgba(255, 255, 255, 0.66);
-}
-
-.cookie__more {
-  margin-left: auto;
-  font-size: 12.5px;
-  color: #4b5563;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  white-space: nowrap;
-}
-.cookie__more:hover {
-  color: #111827;
+  background: #e9e9ee;
+  border-color: #e9e9ee;
 }
 
 .cookie-enter-active {
@@ -205,8 +147,7 @@ const decline = () => persist("declined");
   .cookie-enter-from {
     transform: none;
   }
-  .cookie__btn,
-  .cookie__close {
+  .cookie__btn {
     transition: none;
   }
 }

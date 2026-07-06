@@ -1,15 +1,14 @@
-import { useAuth } from "./useAuth.js";
-
 export function useApiService() {
-  const { apiUrl, headers } = useAuth();
+  const { locale } = useI18n();
 
+  // All requests go through the server-side proxy (/api/backend/**),
+  // which attaches Basic Auth credentials. The browser never sees them.
   const makeRequest = async (endpoint, options = {}) => {
     try {
-      const url = `${apiUrl}${endpoint}`;
-      const response = await $fetch(url, {
+      const response = await $fetch(`/api/backend/${endpoint}`, {
         ...options,
         headers: {
-          ...headers,
+          "Content-Language": locale.value,
           ...options.headers,
         },
       });
@@ -41,11 +40,11 @@ export function useApiService() {
 
   const reviewsApi = {
     getReviews: () => makeRequest("reviews"),
-  }
+  };
 
   const servicesApi = {
     getServices: () => makeRequest("services"),
-  }
+  };
 
   const api = {
     // GET request
@@ -57,19 +56,6 @@ export function useApiService() {
         method: "POST",
         body: data,
       }),
-
-    // PUT request
-    put: (endpoint, data) =>
-      makeRequest(endpoint, {
-        method: "PUT",
-        body: data,
-      }),
-
-    // DELETE request
-    delete: (endpoint) =>
-      makeRequest(endpoint, {
-        method: "DELETE",
-      }),
   };
 
   return {
@@ -78,6 +64,5 @@ export function useApiService() {
     reviewsApi,
     servicesApi,
     api,
-    apiUrl,
   };
 }
