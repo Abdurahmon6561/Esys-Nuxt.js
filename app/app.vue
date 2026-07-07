@@ -19,7 +19,7 @@ const organizationJsonLd = {
     addressLocality: "Tashkent",
     addressCountry: "UZ",
   },
-  sameAs: ["https://t.me/esyspro", "https://instagram.com/esys.pro"],
+  sameAs: ["https://t.me/esyspro", "https://www.instagram.com/esysuz"],
 };
 
 useHead(() => ({
