@@ -66,6 +66,13 @@ export default defineNuxtConfig({
       cookieKey: "i18n_redirected",
       redirectOn: "root",
     },
+    // Bundle all locale messages into the build. @nuxtjs/i18n v10 lazy-loads
+    // each locale from a /_i18n/{code}/messages.json Nitro endpoint by default;
+    // prerendering /about and /privacy fetches that endpoint before the i18n
+    // server context is initialized → 500 "Nuxt I18n server context has not
+    // been set up yet" + missing-key warnings. Three small locales, static
+    // marketing site — bundling is cheaper than the runtime endpoint.
+    lazy: false,
   },
 
   // SSR-safe: tree-shakes GSAP plugins not imported. Without this, Vite
