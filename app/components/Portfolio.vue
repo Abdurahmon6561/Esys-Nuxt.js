@@ -30,21 +30,44 @@ onMounted(() => {
     if (isReducedMotion) return;
 
     const wireBatch = () => {
-      ScrollTrigger.batch(".portfolio__grid .card:not(.card--skeleton)", {
+      const selector = ".portfolio__grid .card:not(.card--skeleton)";
+      // Pre-hide once, idempotently. fromTo below sets the same start state,
+      // but this guarantees cards are hidden before they're measured so a
+      // late scroll-restoration event can't snapshot a mid-animation opacity
+      // as the tween's end value (the gsap.from + overwrite footgun).
+      gsap.set(selector, { opacity: 0, y: 40 });
+
+      ScrollTrigger.batch(selector, {
         start: "top 90%",
         onEnter: (batch) =>
-          gsap.from(batch, {
-            opacity: 0,
-            y: 40,
-            duration: 0.6,
-            ease: "power2.out",
-            stagger: 0.1,
-            overwrite: true,
-          }),
+          // fromTo (not from): explicit end state => the tween always resolves
+          // to opacity:1 even if interrupted/overwritten mid-flight. gsap.from
+          // records its end from the live computed value, which on a mid-page
+          // refresh can be a partial opacity, leaving cards stuck mid-fade.
+          gsap.fromTo(
+            batch,
+            { opacity: 0, y: 40 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.1, overwrite: "auto" },
+          ),
       });
+
+      // Reveal cards already in the viewport at wire time. ScrollTrigger only
+      // fires onEnter on a scroll-driven toggle; on the first refresh a card
+      // already past `start` doesn't toggle, so onEnter never fires for it.
+      const revealInView = () => {
+        const cards = Array.from(document.querySelectorAll(selector));
+        const entering = cards.filter((c) => {
+          const r = c.getBoundingClientRect();
+          return r.top < window.innerHeight * 0.9;
+        });
+        if (entering.length) gsap.to(entering, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.1, overwrite: "auto" });
+      };
+
       // Cards + images land after async data: recalc trigger positions so
-      // reveals fire at the right scroll offsets.
+      // reveals fire at the right scroll offsets, then reveal any cards that
+      // are already in view (e.g. mid-page refresh with scroll restoration).
       ScrollTrigger.refresh();
+      revealInView();
     };
 
     // Cards already in DOM (cached data) → wire now. Otherwise wait for the
