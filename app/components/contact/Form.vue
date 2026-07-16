@@ -6,6 +6,7 @@ import { ref, reactive, computed } from "vue";
 
 const { api } = useApiService();
 const { t } = useI18n();
+const track = useTrackEvent();
 
 // Emits `submitted` so a parent modal can close itself on success.
 const emit = defineEmits(["submitted"]);
@@ -50,6 +51,7 @@ const handleSubmit = async () => {
       message: form.message.trim(),
     });
     status.value = "success";
+    track("form_submit");
     emit("submitted");
   } catch (e) {
     status.value = "error";

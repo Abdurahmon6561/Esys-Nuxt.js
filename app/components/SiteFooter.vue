@@ -3,6 +3,10 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const localePath = useLocalePath();
 const { open: openContact } = useContactModal();
+const track = useTrackEvent();
+
+// Social/contact link clicks → analytics goals (telegram_click, email_click…)
+const onSocialClick = (name) => track(`${name.toLowerCase()}_click`);
 
 // Brand + contact.
 const brand = "Evolution Systems";
@@ -13,7 +17,7 @@ const email = "hi@esys.pro";
 const socials = [
   {
     name: "Telegram",
-    href: "https://t.me/esyspro",
+    href: "https://t.me/esys_pro",
     path: "M21.94 4.6 18.9 19.2c-.23 1.02-.84 1.27-1.7.79l-4.7-3.47-2.27 2.18c-.25.25-.46.46-.94.46l.34-4.78L18.6 6.3c.38-.34-.08-.53-.6-.19L7.27 13.04l-4.66-1.46c-1.01-.32-1.03-1.01.21-1.5L20.64 3.2c.84-.31 1.58.2 1.3 1.4Z",
   },
   {
@@ -21,11 +25,12 @@ const socials = [
     href: "https://www.instagram.com/esysuz",
     path: "M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 1.62c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.18.4-.55.22-.94.47-1.35.88-.41.41-.66.8-.88 1.35-.16.42-.35 1.04-.4 2.18-.06 1.24-.07 1.59-.07 4.74s.01 3.5.07 4.74c.05 1.14.24 1.76.4 2.18.22.55.47.94.88 1.35.41.41.8.66 1.35.88.42.16 1.04.35 2.18.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.18-.4.55-.22.94-.47 1.35-.88.41-.41.66-.8.88-1.35.16-.42.35-1.04.4-2.18.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.18-.22-.55-.47-.94-.88-1.35-.41-.41-.8-.66-1.35-.88-.42-.16-1.04-.35-2.18-.4-1.24-.06-1.59-.07-4.74-.07Zm0 2.76a5.46 5.46 0 1 1 0 10.92 5.46 5.46 0 0 1 0-10.92Zm0 9a3.54 3.54 0 1 0 0-7.08 3.54 3.54 0 0 0 0 7.08Zm6.95-9.2a1.28 1.28 0 1 1-2.55 0 1.28 1.28 0 0 1 2.55 0Z",
   },
-  {
-    name: "LinkedIn",
-    href: "https://linkedin.com/company/esys",
-    path: "M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.3 8.48h3.3V21H3.3V8.48Zm5.41 0h3.16v1.71h.05c.44-.83 1.51-1.71 3.11-1.71 3.33 0 3.94 2.19 3.94 5.04V21h-3.3v-5.79c0-1.38-.02-3.16-1.93-3.16-1.93 0-2.23 1.51-2.23 3.06V21h-3.3V8.48Z",
-  },
+  // LinkedIn hidden until the company page is live.
+  // {
+  //   name: "LinkedIn",
+  //   href: "https://linkedin.com/company/esys",
+  //   path: "M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0ZM3.3 8.48h3.3V21H3.3V8.48Zm5.41 0h3.16v1.71h.05c.44-.83 1.51-1.71 3.11-1.71 3.33 0 3.94 2.19 3.94 5.04V21h-3.3v-5.79c0-1.38-.02-3.16-1.93-3.16-1.93 0-2.23 1.51-2.23 3.06V21h-3.3V8.48Z",
+  // },
   {
     name: "Email",
     href: `mailto:${email}`,
@@ -111,7 +116,11 @@ onBeforeUnmount(() => {
               />
             </svg>
           </button>
-          <a :href="`mailto:${email}`" class="footer__btn footer__btn--ghost">
+          <a
+            :href="`mailto:${email}`"
+            class="footer__btn footer__btn--ghost"
+            @click="track('email_click')"
+          >
             {{ $t("footer.email") }}
           </a>
         </div>
@@ -145,6 +154,7 @@ onBeforeUnmount(() => {
               :aria-label="s.name"
               target="_blank"
               rel="noopener noreferrer"
+              @click="onSocialClick(s.name)"
             >
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                 <path :d="s.path" fill="currentColor" />

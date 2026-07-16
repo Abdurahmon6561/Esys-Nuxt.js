@@ -13,13 +13,13 @@ const organizationJsonLd = {
   url: siteUrl,
   logo: `${siteUrl}/images/logo.webp`,
   email: "hi@esys.pro",
-  telephone: "+998712000000",
+  telephone: "+998712001133",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Tashkent",
     addressCountry: "UZ",
   },
-  sameAs: ["https://t.me/esyspro", "https://www.instagram.com/esysuz"],
+  sameAs: ["https://t.me/esys_pro", "https://www.instagram.com/esysuz"],
 };
 
 useHead(() => ({

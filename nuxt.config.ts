@@ -109,6 +109,8 @@ export default defineNuxtConfig({
       consultantKey: process.env.NUXT_PUBLIC_CONSULTANT_KEY,
       // Yandex Metrika counter id — analytics disabled when empty
       metrikaId: process.env.NUXT_PUBLIC_METRIKA_ID || "",
+      // Google tag id (G-… for GA4 or AW-… for Ads) — disabled when empty
+      gtagId: process.env.NUXT_PUBLIC_GTAG_ID || "",
     },
   },
 });

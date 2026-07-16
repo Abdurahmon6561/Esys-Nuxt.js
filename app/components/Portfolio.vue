@@ -160,7 +160,9 @@ onBeforeUnmount(() => {
                   </svg>
                 </span>
               </div>
-              <p class="card__text">{{ item.short_text }}</p>
+              <div class="card__text-wrap">
+                <p class="card__text">{{ item.short_text }}</p>
+              </div>
             </div>
           </NuxtLink>
         </div>
@@ -382,12 +384,25 @@ onBeforeUnmount(() => {
   background: rgba(42, 111, 151, 0.45);
 }
 
-/* Short text - collapsed, revealed on hover/focus */
+/* Short text - collapsed, revealed on hover/focus.
+   grid-template-rows 0fr→1fr animates the track without reflowing text
+   contents (unlike max-height), so the reveal stays on the compositor
+   friendly path and doesn't drop frames on hover. */
+.card__text-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .card__text-wrap,
+.card:focus-visible .card__text-wrap {
+  grid-template-rows: 1fr;
+}
+
 .card__text {
   margin: 0;
-  max-height: 0;
-  opacity: 0;
   overflow: hidden;
+  opacity: 0;
   font-size: 0.9375rem;
   line-height: 1.5;
   color: #c3cad8;
@@ -395,12 +410,11 @@ onBeforeUnmount(() => {
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
+  transition: opacity 0.3s ease;
 }
 
 .card:hover .card__text,
 .card:focus-visible .card__text {
-  max-height: 3.2em;
   opacity: 1;
 }
 
@@ -448,6 +462,7 @@ onBeforeUnmount(() => {
   .card__img,
   .card__arrow,
   .card__text,
+  .card__text-wrap,
   .card::before {
     transition: none;
   }
@@ -457,8 +472,11 @@ onBeforeUnmount(() => {
   .card:hover .card__img {
     transform: none;
   }
+  .card__text-wrap {
+    grid-template-rows: 1fr;
+    transition: none;
+  }
   .card__text {
-    max-height: 3.2em;
     opacity: 1;
   }
   .portfolio__grid:hover .card {

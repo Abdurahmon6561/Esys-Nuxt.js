@@ -1,8 +1,9 @@
 <script setup>
 const { t } = useI18n();
+const track = useTrackEvent();
 
 const email = "hi@esys.pro";
-const phone = "+998 71 200 00 00";
+const phone = "+998 71 200 11 33";
 
 useSeoMeta({
   title: () => t("contact.title"),
@@ -28,11 +29,19 @@ useSeoMeta({
       </div>
 
       <aside class="contact__info">
-        <a :href="`mailto:${email}`" class="contact__info-item">
+        <a
+          :href="`mailto:${email}`"
+          class="contact__info-item"
+          @click="track('email_click')"
+        >
           <span class="contact__info-label">{{ $t("contact.infoEmail") }}</span>
           <span class="contact__info-value">{{ email }}</span>
         </a>
-        <a :href="`tel:${phone.replace(/\s/g, '')}`" class="contact__info-item">
+        <a
+          :href="`tel:${phone.replace(/\s/g, '')}`"
+          class="contact__info-item"
+          @click="track('phone_click')"
+        >
           <span class="contact__info-label">{{ $t("contact.infoPhone") }}</span>
           <span class="contact__info-value">{{ phone }}</span>
         </a>

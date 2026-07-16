@@ -24,7 +24,18 @@ const persist = (value) => {
   visible.value = false;
 };
 
-const acceptAll = () => persist("accepted");
+const acceptAll = () => {
+  persist("accepted");
+  // Consent Mode v2 - lift the "denied" defaults set by gtag.client.js.
+  if (typeof window.gtag === "function") {
+    window.gtag("consent", "update", {
+      ad_storage: "granted",
+      ad_user_data: "granted",
+      ad_personalization: "granted",
+      analytics_storage: "granted",
+    });
+  }
+};
 </script>
 
 <template>
