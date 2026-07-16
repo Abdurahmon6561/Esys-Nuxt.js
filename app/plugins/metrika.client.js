@@ -5,21 +5,22 @@ export default defineNuxtPlugin((nuxtApp) => {
   const { metrikaId } = useRuntimeConfig().public;
   if (!metrikaId) return;
 
-  /* eslint-disable */
-  (function (m, e, t, r, i, k, a) {
-    m[i] =
-      m[i] ||
-      function () {
-        (m[i].a = m[i].a || []).push(arguments);
-      };
-    m[i].l = 1 * new Date();
-    k = e.createElement(t);
-    a = e.getElementsByTagName(t)[0];
-    k.async = 1;
-    k.src = r;
-    a.parentNode.insertBefore(k, a);
-  })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-  /* eslint-enable */
+  // Queue stub — calls made before tag.js loads replay once it arrives.
+  window.ym =
+    window.ym ||
+    function () {
+      (window.ym.a = window.ym.a || []).push(arguments);
+    };
+  window.ym.l = 1 * new Date();
+
+  // Defer the tag.js download until idle or first interaction — its
+  // evaluation is a long main-thread task (TBT).
+  onIdleOrInteraction(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://mc.yandex.ru/metrika/tag.js";
+    document.head.appendChild(script);
+  });
 
   window.ym(metrikaId, "init", {
     clickmap: true,

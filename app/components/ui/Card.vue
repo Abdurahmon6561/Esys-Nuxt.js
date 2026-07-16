@@ -23,10 +23,12 @@ const tags = computed(() => props.item.tags?.length ? props.item.tags : props.it
 <template>
   <NuxtLink :to="target" class="ucard" :class="{ 'ucard--featured': featured }">
     <div class="ucard__media">
-      <img
+      <NuxtImg
         :src="item.image"
         :alt="item.title"
         loading="lazy"
+        format="webp"
+        sizes="100vw md:50vw lg:33vw"
         class="ucard__img"
       />
       <div class="ucard__overlay" aria-hidden="true" />

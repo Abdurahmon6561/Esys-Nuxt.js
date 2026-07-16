@@ -132,10 +132,12 @@ onBeforeUnmount(() => {
             class="card"
             :class="cardClass(index)"
           >
-            <img
+            <NuxtImg
               :src="item.image"
               :alt="item.title"
               loading="lazy"
+              format="webp"
+              sizes="100vw md:50vw"
               class="card__img"
             />
             <div class="card__scrim" aria-hidden="true" />

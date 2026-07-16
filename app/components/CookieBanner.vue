@@ -40,7 +40,13 @@ const acceptAll = () => {
 
 <template>
   <Transition name="cookie">
-    <div v-if="visible" class="cookie" role="dialog" aria-live="polite">
+    <div
+      v-if="visible"
+      class="cookie"
+      role="dialog"
+      :aria-label="t('cookie.ariaLabel')"
+      aria-live="polite"
+    >
       <span class="cookie__icon" aria-hidden="true">🍪</span>
 
       <i18n-t keypath="cookie.text" tag="p" class="cookie__text" scope="global">
@@ -98,7 +104,9 @@ const acceptAll = () => {
 
 .cookie__link {
   color: #7c93ff;
-  text-decoration: none;
+  /* Underline: links must be distinguishable without relying on color (a11y). */
+  text-decoration: underline;
+  text-underline-offset: 2px;
   transition: color 0.15s;
 }
 .cookie__link:hover {

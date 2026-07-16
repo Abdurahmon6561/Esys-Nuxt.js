@@ -37,3 +37,5 @@ Thumbs.db
 # Logs
 logs
 *.log
+# Deploy (server creds/paths — keep local)
+deploy.sh

@@ -46,7 +46,8 @@
     "text": "Ushbu sayt tajribangizni yaxshilash uchun cookie'lardan foydalanadi. Davom etib, {privacy} va {terms} shartlariga muvofiq ulardan foydalanishga rozilik bildirasiz.",
     "privacy": "Maxfiylik siyosati",
     "terms": "Foydalanish shartlari",
-    "acceptAll": "Hammasini qabul qilish"
+    "acceptAll": "Hammasini qabul qilish",
+    "ariaLabel": "Cookie fayllardan foydalanish haqida bildirishnoma"
   },
   "blog": {
     "eyebrow": "Blog",

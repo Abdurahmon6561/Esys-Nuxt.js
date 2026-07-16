@@ -18,6 +18,12 @@ const host = ref(null);
 let mount = null;
 
 onMounted(async () => {
+  // Footer background — below the fold. Load the shader lib only when the
+  // element approaches the viewport, and never before the thread is idle.
+  await waitForVisible(host.value);
+  await waitForIdle();
+  if (!host.value) return; // unmounted while waiting
+
   const {
     ShaderMount,
     meshGradientFragmentShader,

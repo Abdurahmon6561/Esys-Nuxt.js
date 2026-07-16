@@ -996,6 +996,11 @@ async function initScene(container) {
 
 onMounted(async () => {
   if (!containerRef.value) return;
+  // three.js is a ~600KB chunk whose evaluation alone is a long main-thread
+  // task. Wait for idle so hydration and first paint finish first (TBT);
+  // the CSS background layers cover the gap visually.
+  await waitForIdle();
+  if (!containerRef.value) return; // unmounted while waiting
   try {
     cleanup = await initScene(containerRef.value);
   } catch (error) {

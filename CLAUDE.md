@@ -13,6 +13,18 @@ npm run preview    # Preview production build
 
 No test runner or linter is configured. Prettier is installed but `.prettierrc` is empty (no enforced style rules beyond defaults).
 
+## Deployment
+
+Use the `deploy` project skill (`.claude/skills/deploy/`). All logic lives in `./deploy.sh` (gitignored, repo root):
+
+```bash
+./deploy.sh frontend   # this repo → /var/www/esys.pro (git pull, build, pm2 restart esys-app)
+./deploy.sh admin      # ../admin.esys → /var/www/admin.esys.pro (git pull, composer, vite, artisan)
+./deploy.sh all        # both
+```
+
+Server pulls from git — **push before deploying**. Frontend remote is GitHub, admin remote is Bitbucket. The script is quiet on success and dumps the last 30 log lines on failure.
+
 ## Architecture
 
 This is a **Nuxt 4** marketing/portfolio site for Evolution Systems (a Tashkent web agency). All application code lives under `app/` (Nuxt 4 convention).

@@ -92,9 +92,12 @@ useHead(() => ({
 
       <div class="article__inner">
         <UiReveal tag="figure" class="article__media">
-          <img
+          <NuxtImg
             :src="blog.image"
             :alt="blog.title"
+            format="webp"
+            sizes="100vw lg:1200px"
+            fetchpriority="high"
             class="article__hero-img"
           />
         </UiReveal>
@@ -108,7 +111,13 @@ useHead(() => ({
           <div class="article__text" v-html="blog.text" />
 
           <figure v-if="blog.inner_image" class="article__inner-media">
-            <img :src="blog.inner_image" :alt="blog.title" loading="lazy" />
+            <NuxtImg
+              :src="blog.inner_image"
+              :alt="blog.title"
+              loading="lazy"
+              format="webp"
+              sizes="100vw lg:1200px"
+            />
           </figure>
 
           <button

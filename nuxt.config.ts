@@ -1,3 +1,8 @@
+// Backend host serving CMS images — allowed through ipx for resize/WebP.
+const apiHost = process.env.NUXT_PUBLIC_API_URL
+  ? new URL(process.env.NUXT_PUBLIC_API_URL).hostname
+  : undefined;
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
@@ -23,7 +28,20 @@ export default defineNuxtConfig({
     host: "localhost",
   },
 
-  modules: ["@nuxtjs/i18n", "motion-v/nuxt", "@nuxtjs/sitemap", "@nuxt/fonts"],
+  modules: [
+    "@nuxtjs/i18n",
+    "motion-v/nuxt",
+    "@nuxtjs/sitemap",
+    "@nuxt/fonts",
+    "@nuxt/image",
+  ],
+
+  image: {
+    // CMS images come full-size from the backend; ipx serves resized WebP
+    // variants (srcset) instead. PageSpeed flagged ~1.4MB of savings here.
+    domains: apiHost ? [apiHost] : [],
+    quality: 75,
+  },
 
   fonts: {
     families: [
@@ -88,6 +106,24 @@ export default defineNuxtConfig({
         "X-Frame-Options": "SAMEORIGIN",
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        // script-src is the directive that matters for XSS; 'unsafe-inline'
+        // is required by Nuxt's inline payload script. img/connect stay
+        // broad-https for analytics beacons and CMS media.
+        "Content-Security-Policy": [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://mc.yandex.ru https://mc.yandex.com",
+          "style-src 'self' 'unsafe-inline'",
+          "img-src 'self' data: blob: https:",
+          "font-src 'self' data:",
+          "connect-src 'self' https: wss:",
+          "frame-src 'self' https://www.googletagmanager.com https://td.doubleclick.net https://mc.yandex.ru https://mc.yandex.com",
+          "object-src 'none'",
+          "base-uri 'self'",
+          "form-action 'self'",
+          "frame-ancestors 'self'",
+        ].join("; "),
       },
     },
     // Fully static content, no API fetch - safe to prerender at build time.

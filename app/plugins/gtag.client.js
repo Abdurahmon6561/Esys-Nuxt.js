@@ -5,11 +5,6 @@ export default defineNuxtPlugin(() => {
   const { gtagId } = useRuntimeConfig().public;
   if (!gtagId) return;
 
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${gtagId}`;
-  document.head.appendChild(script);
-
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag() {
     window.dataLayer.push(arguments);
@@ -34,6 +29,16 @@ export default defineNuxtPlugin(() => {
 
   window.gtag("js", new Date());
   window.gtag("config", gtagId);
+
+  // Defer the actual gtag.js download until idle or first interaction —
+  // its evaluation is a long main-thread task (TBT). All calls above are
+  // queued in dataLayer and replay once the script loads, so nothing is lost.
+  onIdleOrInteraction(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gtagId}`;
+    document.head.appendChild(script);
+  });
 
   const router = useRouter();
   router.afterEach((to, from) => {

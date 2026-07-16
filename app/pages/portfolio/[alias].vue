@@ -88,9 +88,12 @@ useHead(() => ({
 
       <div class="case__inner">
         <UiReveal tag="figure" class="case__media">
-          <img
+          <NuxtImg
             :src="portfolio.image"
             :alt="portfolio.title"
+            format="webp"
+            sizes="100vw lg:1200px"
+            fetchpriority="high"
             class="case__hero-img"
           />
         </UiReveal>
@@ -136,7 +139,13 @@ useHead(() => ({
               :key="img.id"
               class="gallery__item"
             >
-              <img :src="img.image" :alt="portfolio.title" loading="lazy" />
+              <NuxtImg
+                :src="img.image"
+                :alt="portfolio.title"
+                loading="lazy"
+                format="webp"
+                sizes="100vw md:50vw"
+              />
             </figure>
           </UiReveal>
         </section>
