@@ -30,7 +30,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const router = useRouter();
   router.afterEach((to, from) => {
-    if (to.fullPath === from.fullPath) return;
+    // Skip the initial navigation - `init` above already sent the first hit.
+    if (!from.matched.length || to.fullPath === from.fullPath) return;
     window.ym(metrikaId, "hit", to.fullPath, { referer: from.fullPath });
   });
 });

@@ -4,6 +4,7 @@ const localeHead = useLocaleHead();
 const config = useRuntimeConfig();
 
 const siteUrl = config.public.siteUrl || "https://esys.pro";
+const metrikaId = config.public.metrikaId;
 
 // Organization schema - emitted once, site-wide
 const organizationJsonLd = {
@@ -34,6 +35,15 @@ useHead(() => ({
       innerHTML: JSON.stringify(organizationJsonLd),
     },
   ],
+  // Yandex Metrika fallback for JS-less clients. Must be server-rendered
+  // HTML - the client plugin cannot provide it.
+  noscript: metrikaId
+    ? [
+        {
+          innerHTML: `<div><img src="https://mc.yandex.ru/watch/${metrikaId}" style="position:absolute;left:-9999px" alt="" /></div>`,
+        },
+      ]
+    : [],
 }));
 
 // Default social sharing image - pages with their own ogImage override it
