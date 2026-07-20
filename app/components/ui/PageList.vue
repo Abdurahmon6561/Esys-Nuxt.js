@@ -11,6 +11,9 @@ defineProps({
   pending: { type: Boolean, default: false },
   error: { type: Boolean, default: false },
   skeletonCount: { type: Number, default: 6 },
+  // When true the first card spans both columns (portfolio). Blog wants a
+  // uniform grid, so it opts out.
+  featureFirst: { type: Boolean, default: true },
 });
 </script>
 
@@ -25,16 +28,18 @@ defineProps({
 
       <p v-if="error" class="page__error">{{ errorText }}</p>
 
-      <div v-else-if="pending" class="page__grid">
+      <div v-else-if="pending" class="page__grid"
+        :class="{ 'page__grid--feature-first': featureFirst }">
         <UiSkeleton
           v-for="n in skeletonCount"
           :key="n"
-          :min-height="n === 1 ? '520px' : '440px'"
-          :featured="n === 1"
+          :min-height="featureFirst && n === 1 ? '520px' : '440px'"
+          :featured="featureFirst && n === 1"
         />
       </div>
 
-      <UiReveal v-else tag="div" class="page__grid">
+      <UiReveal v-else tag="div" class="page__grid"
+        :class="{ 'page__grid--feature-first': featureFirst }">
         <slot
           v-for="(item, index) in items"
           :key="item.alias"
@@ -75,11 +80,12 @@ defineProps({
   .page__grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  /* Featured first card spans both columns - matches homepage portfolio. */
+  /* Featured first card spans both columns - matches homepage portfolio.
+     Only when the page opts in; blog renders a uniform 2-up grid. */
   .page__grid > :deep(*) {
     grid-column: span 1;
   }
-  .page__grid > :deep(*:first-child) {
+  .page__grid--feature-first > :deep(*:first-child) {
     grid-column: span 2;
   }
 }

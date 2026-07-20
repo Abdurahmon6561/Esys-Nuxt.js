@@ -26,6 +26,7 @@ useSeoMeta({
     :items="items"
     :pending="pending"
     :error="!!error"
+    :feature-first="false"
   >
     <template #item="{ item }">
       <UiCard
