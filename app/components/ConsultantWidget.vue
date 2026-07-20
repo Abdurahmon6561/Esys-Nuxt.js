@@ -243,6 +243,13 @@ const newSession = () => {
 
 <style scoped>
 .consultant {
+  /* Brand accent — teal. Dark ink on accent keeps AA contrast (6.8:1). */
+  --consultant-accent: #1aab9a;
+  --consultant-accent-hi: #27c8b4;
+  --consultant-accent-lo: #12897b;
+  --consultant-accent-rgb: 26, 171, 154;
+  --consultant-ink: #04231f;
+
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
@@ -263,7 +270,7 @@ const newSession = () => {
   margin-bottom: 0.75rem;
   border-radius: 1.25rem;
   background: rgba(8, 12, 30, 0.92);
-  border: 1px solid rgba(169, 214, 229, 0.16);
+  border: 1px solid rgba(var(--consultant-accent-rgb), 0.16);
   backdrop-filter: blur(18px) saturate(160%);
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
@@ -289,7 +296,7 @@ const newSession = () => {
   justify-content: space-between;
   flex-shrink: 0;
   padding: 0.625rem 0.75rem 0.625rem 1rem;
-  border-bottom: 1px solid rgba(169, 214, 229, 0.12);
+  border-bottom: 1px solid rgba(var(--consultant-accent-rgb), 0.12);
 }
 
 .consultant__status {
@@ -302,7 +309,7 @@ const newSession = () => {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: #a9d6e5;
+  background: var(--consultant-accent);
   animation: consultant-pulse 2s ease infinite;
 }
 
@@ -343,7 +350,7 @@ const newSession = () => {
 }
 
 .consultant__icon-btn:focus-visible {
-  outline: 2px solid #46e6e1;
+  outline: 2px solid var(--consultant-accent-hi);
   outline-offset: 1px;
 }
 
@@ -394,8 +401,8 @@ const newSession = () => {
   align-self: flex-end;
   border-radius: 1rem;
   border-bottom-right-radius: 0.25rem;
-  background: #a9d6e5;
-  color: #05051a;
+  background: var(--consultant-accent);
+  color: var(--consultant-ink);
 }
 
 .consultant__msg--error {
@@ -447,7 +454,7 @@ const newSession = () => {
   gap: 0.5rem;
   flex-shrink: 0;
   padding: 0.75rem;
-  border-top: 1px solid rgba(169, 214, 229, 0.12);
+  border-top: 1px solid rgba(var(--consultant-accent-rgb), 0.12);
 }
 
 .consultant__input {
@@ -456,7 +463,7 @@ const newSession = () => {
   resize: none;
   padding: 0.5rem 0.75rem;
   border-radius: 0.75rem;
-  border: 1px solid rgba(169, 214, 229, 0.18);
+  border: 1px solid rgba(var(--consultant-accent-rgb), 0.18);
   background: rgba(255, 255, 255, 0.05);
   font-size: 0.875rem;
   font-family: inherit;
@@ -471,7 +478,7 @@ const newSession = () => {
 }
 
 .consultant__input:focus {
-  border-color: rgba(169, 214, 229, 0.5);
+  border-color: rgba(var(--consultant-accent-rgb), 0.5);
 }
 
 .consultant__send {
@@ -483,18 +490,24 @@ const newSession = () => {
   height: 2.25rem;
   border: none;
   border-radius: 0.75rem;
-  background: #a9d6e5;
-  color: #05051a;
+  background: linear-gradient(
+    140deg,
+    var(--consultant-accent-hi),
+    var(--consultant-accent-lo)
+  );
+  color: var(--consultant-ink);
+  box-shadow: 0 4px 14px rgba(var(--consultant-accent-rgb), 0.35);
   cursor: pointer;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  transition: filter 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .consultant__send:hover:not(:disabled) {
-  background: #c3e3ee;
+  filter: brightness(1.12);
+  box-shadow: 0 6px 18px rgba(var(--consultant-accent-rgb), 0.5);
 }
 
 .consultant__send:focus-visible {
-  outline: 2px solid #46e6e1;
+  outline: 2px solid var(--consultant-accent-hi);
   outline-offset: 2px;
 }
 
@@ -513,12 +526,16 @@ const newSession = () => {
   height: 3.5rem;
   border: none;
   border-radius: 50%;
-  background: #a9d6e5;
-  color: #05051a;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(
+    140deg,
+    var(--consultant-accent-hi),
+    var(--consultant-accent-lo)
+  );
+  color: var(--consultant-ink);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45),
+    0 6px 20px rgba(var(--consultant-accent-rgb), 0.4);
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: filter 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Idle attention: soft breathing glow to draw the eye when closed */
@@ -532,7 +549,7 @@ const newSession = () => {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 2px solid rgba(70, 230, 225, 0.7);
+  border: 2px solid rgba(var(--consultant-accent-rgb), 0.7);
   animation: consultant-ring 2.4s ease-out infinite;
   pointer-events: none;
 }
@@ -541,11 +558,11 @@ const newSession = () => {
   0%,
   100% {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45),
-      0 0 0 0 rgba(70, 230, 225, 0);
+      0 0 0 0 rgba(var(--consultant-accent-rgb), 0.35);
   }
   50% {
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45),
-      0 0 26px 4px rgba(70, 230, 225, 0.55);
+      0 0 26px 6px rgba(var(--consultant-accent-rgb), 0.6);
   }
 }
 
@@ -565,9 +582,10 @@ const newSession = () => {
 }
 
 .consultant__toggle:hover {
-  background: #46e6e1;
-  color: #05051a;
+  filter: brightness(1.12);
   transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.5),
+    0 8px 26px rgba(var(--consultant-accent-rgb), 0.55);
   animation: none;
 }
 
@@ -578,7 +596,7 @@ const newSession = () => {
 }
 
 .consultant__toggle:focus-visible {
-  outline: 2px solid #46e6e1;
+  outline: 2px solid var(--consultant-accent-hi);
   outline-offset: 3px;
 }
 
