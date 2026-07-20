@@ -8,22 +8,71 @@ const apiUrl = `${config.public.apiUrl}consultant/chat`;
 const widgetKey = config.public.consultantKey;
 
 const INPUT_MAX_HEIGHT_PX = 96;
+const STORAGE_KEY = "consultant_state";
+const TTL_MS = 24 * 60 * 60 * 1000; // 24h
+
+// Persist { session_id, messages, ts } for 24h. Expired or malformed state is discarded.
+const loadState = () => {
+  if (!import.meta.client) return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.ts !== "number" || Date.now() - parsed.ts > TTL_MS) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+    return null;
+  }
+};
+
+const saveState = () => {
+  if (!import.meta.client) return;
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        session_id: sessionId.value,
+        // Don't persist the transient "typing" placeholder.
+        messages: messages.value.filter((m) => m.role !== "typing"),
+        ts: Date.now(),
+      })
+    );
+  } catch {
+    /* storage full / disabled — non-fatal */
+  }
+};
+
+const persisted = loadState();
 
 const isOpen = ref(false);
 const input = ref("");
 const loading = ref(false);
-const messages = ref([]);
+const messages = ref(persisted?.messages ?? []);
 const messagesEl = ref(null);
 const inputEl = ref(null);
-const sessionId = ref(
-  import.meta.client
-    ? sessionStorage.getItem("consultant_session_id") ?? null
-    : null
+const sessionId = ref(persisted?.session_id ?? null);
+// Assistant replies received while the panel was closed. Cleared on open.
+const unread = ref(0);
+
+// Persist on every message change (skip the typing placeholder via saveState filter).
+watch(
+  messages,
+  () => saveState(),
+  { deep: true }
 );
 
-// Opening the panel: focus the input; Escape closes from anywhere inside.
+watch(sessionId, () => saveState());
+
+// Opening the panel: focus the input, clear unread badge; Escape closes from anywhere inside.
 watch(isOpen, (open) => {
-  if (open) nextTick(() => inputEl.value?.focus());
+  if (open) {
+    unread.value = 0;
+    nextTick(() => inputEl.value?.focus());
+  }
 });
 
 const onEscape = () => {
@@ -69,12 +118,12 @@ const send = async () => {
 
     messages.value = messages.value.slice(0, -1);
     sessionId.value = data.session_id;
-    if (import.meta.client)
-      sessionStorage.setItem("consultant_session_id", data.session_id);
     messages.value = [
       ...messages.value,
       { role: "assistant", content: data.reply },
     ];
+    // Reply arrived after the user closed the panel → count as unread.
+    if (!isOpen.value) unread.value += 1;
   } catch (err) {
     messages.value = messages.value.slice(0, -1);
     const errMsg = err?.data?.error ?? t("consultant.error");
@@ -87,8 +136,9 @@ const send = async () => {
 
 const newSession = () => {
   sessionId.value = null;
-  if (import.meta.client) sessionStorage.removeItem("consultant_session_id");
   messages.value = [];
+  unread.value = 0;
+  if (import.meta.client) localStorage.removeItem(STORAGE_KEY);
 };
 </script>
 
@@ -216,6 +266,11 @@ const newSession = () => {
       :aria-expanded="isOpen"
       @click="isOpen = !isOpen"
     >
+      <span
+        v-if="!isOpen && unread > 0"
+        class="consultant__badge"
+        aria-label="unread"
+      >{{ unread > 99 ? "99+" : unread }}</span>
       <svg
         v-if="!isOpen"
         viewBox="0 0 24 24"
@@ -600,10 +655,43 @@ const newSession = () => {
   outline-offset: 3px;
 }
 
+/* ── Unread badge ── */
+.consultant__badge {
+  position: absolute;
+  top: -0.15rem;
+  right: -0.15rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border: 2px solid #08152f;
+  z-index: 2;
+  animation: consultant-badge-pop 0.3s ease-out;
+}
+
+@keyframes consultant-badge-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .consultant__dot,
   .consultant__msg,
-  .consultant__typing-dot {
+  .consultant__typing-dot,
+  .consultant__badge {
     animation: none;
   }
   .consultant__toggle,
