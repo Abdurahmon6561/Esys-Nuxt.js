@@ -27,11 +27,10 @@ useSeoMeta({
     :pending="pending"
     :error="!!error"
   >
-    <template #item="{ item, index }">
+    <template #item="{ item }">
       <UiCard
         :item="item"
         :to="`/blog/${item.alias}`"
-        :featured="index === 0"
         show-date
         :show-text="false"
       />

@@ -5,6 +5,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const localePath = useLocalePath();
+const { open: openContact } = useContactModal();
 
 const hero = ref(null);
 const title = ref(null);
@@ -85,9 +86,9 @@ onBeforeUnmount(() => {
         <NuxtLink :to="localePath('/portfolio')" class="btn btn--primary">
           {{ $t("hero.cta_projects") }}
         </NuxtLink>
-        <NuxtLink :to="localePath('/contact')" class="btn btn--ghost">
+        <button type="button" class="btn btn--ghost" @click="openContact">
           {{ $t("hero.cta_contact") }}
-        </NuxtLink>
+        </button>
       </div>
     </div>
   </section>
@@ -248,6 +249,9 @@ onBeforeUnmount(() => {
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
+  font-family: inherit;
+  line-height: 1.2;
+  cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 

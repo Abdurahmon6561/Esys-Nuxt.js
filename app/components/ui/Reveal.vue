@@ -39,6 +39,16 @@ onMounted(() => {
         start: `top ${startPct}%`,
         once: true,
       },
+      // will-change promotes the element to its own compositor layer. The
+      // reveal runs once, so holding the hint forever leaks a layer per
+      // element — dozens on a long page — and the page degrades the longer
+      // it stays open. Apply it only for the duration of the tween.
+      onStart: () => {
+        root.value.style.willChange = "opacity, transform";
+      },
+      onComplete: () => {
+        root.value.style.willChange = "auto";
+      },
     });
   }, root);
 });
@@ -58,8 +68,8 @@ onBeforeUnmount(() => {
 <style scoped>
 /* No transition styles here — GSAP owns the motion. The class is kept as a
    styling hook for consumers and so reduced-motion users see content (GSAP
-   sets opacity:1 immediately in that branch). */
-.ui-reveal {
-  will-change: opacity, transform;
-}
+   sets opacity:1 immediately in that branch).
+   will-change is applied by the tween's onStart and cleared onComplete — it
+   must NOT live here, or every revealed element keeps a compositor layer for
+   the lifetime of the page. */
 </style>

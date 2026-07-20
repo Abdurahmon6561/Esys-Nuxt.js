@@ -936,9 +936,36 @@ async function initScene(container) {
     renderer.render(scene, camera);
   };
 
+  // Fully stop the loop when the scene can't be seen — off-screen or the tab
+  // is backgrounded. Previously the RAF kept rescheduling itself forever and
+  // the Timer kept accumulating wall-clock time, so a page left open for hours
+  // paid for frames nobody watched.
+  let running = false;
+
   const animate = () => {
     rafId = requestAnimationFrame(animate);
-    if (isInView) renderFrame();
+    renderFrame();
+  };
+
+  const start = () => {
+    if (running) return;
+    running = true;
+    // Re-baseline the clock so the first frame after a pause gets a normal
+    // delta instead of the whole idle gap.
+    timer.update();
+    rafId = requestAnimationFrame(animate);
+  };
+
+  const stop = () => {
+    if (!running) return;
+    running = false;
+    cancelAnimationFrame(rafId);
+    rafId = 0;
+  };
+
+  const syncPlayback = () => {
+    if (isInView && !document.hidden) start();
+    else stop();
   };
 
   const renderStatic = () => {
@@ -951,13 +978,18 @@ async function initScene(container) {
   if (reducedMotion) {
     renderStatic();
   } else {
-    animate();
+    start();
   }
 
   const observer = new IntersectionObserver(([entry]) => {
     isInView = entry.isIntersecting;
+    if (!reducedMotion) syncPlayback();
   });
   observer.observe(container);
+
+  if (!reducedMotion) {
+    document.addEventListener("visibilitychange", syncPlayback);
+  }
 
   const resizeObserver = new ResizeObserver(() => {
     const w = container.clientWidth;
@@ -973,7 +1005,8 @@ async function initScene(container) {
   resizeObserver.observe(container);
 
   return () => {
-    cancelAnimationFrame(rafId);
+    stop();
+    document.removeEventListener("visibilitychange", syncPlayback);
     observer.disconnect();
     resizeObserver.disconnect();
     starGeo.dispose();
