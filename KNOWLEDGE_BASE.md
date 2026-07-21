@@ -46,7 +46,7 @@
 
 **Добавлено 2026-07-21:** Веб-приложения (id=5, Laravel+Vue/Inertia, от 10 млн сум). short_text_* заполнены во всех 3 локалях после фикса MCP-тулов (см. ниже).
 
-> **Фикс 2026-07-21:** `CreateServiceTool`/`UpdateServiceTool` пропускали `short_text_ru/uz/en` из-за stale-комментария «у services нет таких колонок». Live-DB колонки есть (миграцией не описаны — добавлены вручную). Фикс в admin.esys коммит `35e6024`, задеплоено. TODO: добавить миграцию `add_short_text_columns_to_services` для schema-integrity (fresh-install).
+> **Фикс 2026-07-21:** `CreateServiceTool`/`UpdateServiceTool` пропускали `short_text_ru/uz/en` из-за stale-комментария «у services нет таких колонок». Live-DB колонки есть. Фикс в admin.esys коммит `35e6024`. Миграция `2026_07_21_120000_add_short_text_columns_to_services_table` (коммит `be5fb86`) формализовала колонки для fresh-install — idempotent, на production no-op. Оба задеплоены.
 
 ### Портфолио (9 в CMS, заявлено 30+ на сайте)
 PIAMG, Sound Bar, Asacar, V-UNITED, BBD, Школа слова, UMeat, Crystal (glaz.uz), ACG.
