@@ -7,6 +7,13 @@ const { open: openContact } = useContactModal();
 
 const alias = computed(() => route.params.alias);
 
+// Reject scanner probes (Inertia.js, *.php, .env) before hitting the backend
+// API. CMS aliases are slugs — no dots/extensions. Cuts log spam and saves a
+// backend round-trip per probe.
+if (alias.value.includes(".")) {
+  throw createError({ statusCode: 404, message: "Not found", fatal: true });
+}
+
 // view response envelope: { portfolio, similar }
 const { data, pending, error } = await useAsyncData(
   () => `portfolio-${alias.value}`,
@@ -16,7 +23,7 @@ const { data, pending, error } = await useAsyncData(
 
 // Missing case must return a real 404 status, not a 200 with error text
 if (error.value?.statusCode === 404 || (!error.value && !data.value?.portfolio)) {
-  throw createError({ statusCode: 404, statusMessage: "Portfolio case not found", fatal: true });
+  throw createError({ statusCode: 404, message: "Portfolio case not found", fatal: true });
 }
 
 const portfolio = computed(() => data.value?.portfolio ?? null);
