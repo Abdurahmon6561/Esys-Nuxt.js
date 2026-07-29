@@ -39,6 +39,18 @@ const meta = computed(() => {
   return m;
 });
 
+const lightboxIndex = ref(-1);
+const lightboxImages = computed(() =>
+  portfolio.value?.images?.map((img) => ({ src: img.image, alt: portfolio.value.title })) ?? []
+);
+const isLightboxOpen = computed(() => lightboxIndex.value >= 0);
+const openLightbox = (index) => {
+  lightboxIndex.value = index;
+};
+const closeLightbox = () => {
+  lightboxIndex.value = -1;
+};
+
 // BreadcrumbList structured data for search engines
 const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
@@ -141,21 +153,34 @@ useHead(() => ({
             {{ $t("portfolioDetail.gallery") }}
           </h2>
           <UiReveal tag="div" class="gallery__grid">
-            <figure
-              v-for="img in portfolio.images"
+            <button
+              v-for="(img, index) in portfolio.images"
               :key="img.id"
-              class="gallery__item"
+              type="button"
+              class="gallery__item gallery__trigger"
+              :aria-label="$t('portfolioDetail.lightbox.counter', { current: index + 1, total: portfolio.images.length })"
+              @click="openLightbox(index)"
             >
-              <NuxtImg
-                :src="img.image"
-                :alt="portfolio.title"
-                loading="lazy"
-                format="webp"
-                sizes="100vw md:50vw"
-              />
-            </figure>
+              <figure class="gallery__figure">
+                <NuxtImg
+                  :src="img.image"
+                  :alt="portfolio.title"
+                  loading="lazy"
+                  format="webp"
+                  sizes="100vw md:50vw"
+                />
+              </figure>
+            </button>
           </UiReveal>
         </section>
+
+        <!-- Lightbox -->
+        <UiLightbox
+          v-if="isLightboxOpen"
+          :images="lightboxImages"
+          :initial-index="lightboxIndex"
+          @close="closeLightbox"
+        />
 
         <!-- Contact CTA -->
         <section class="case__contact">
@@ -324,10 +349,37 @@ useHead(() => ({
   margin: 0;
 }
 
-.gallery__item img {
+.gallery__trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: zoom-in;
+  text-align: left;
+}
+
+.gallery__figure {
+  margin: 0;
+}
+
+.gallery__figure img {
   width: 100%;
   border-radius: 1rem;
   background: #0a0a2e;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery__trigger:hover .gallery__figure img,
+.gallery__trigger:focus-visible .gallery__figure img {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.gallery__trigger:focus-visible {
+  outline: 2px solid #46e6e1;
+  outline-offset: 4px;
+  border-radius: 1rem;
 }
 
 /* Contact CTA block */

@@ -66,7 +66,13 @@
     "technologies": "Technologies",
     "gallery": "Gallery",
     "similar": "More projects",
-    "visitSite": "Visit website"
+    "visitSite": "Visit website",
+    "lightbox": {
+      "close": "Close",
+      "previous": "Previous image",
+      "next": "Next image",
+      "counter": "{current} of {total}"
+    }
   },
   "contact": {
     "eyebrow": "Contact",
