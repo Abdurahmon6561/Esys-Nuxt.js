@@ -6,6 +6,15 @@ import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 const props = defineProps({
   images: { type: Array, required: true },
   initialIndex: { type: Number, default: 0 },
+  labels: {
+    type: Object,
+    default: () => ({
+      close: "Close",
+      previous: "Previous image",
+      next: "Next image",
+      counter: (current, total) => `${current} / ${total}`,
+    }),
+  },
 });
 const emit = defineEmits(["close"]);
 
@@ -77,7 +86,7 @@ watch(
         ref="closeButtonRef"
         type="button"
         class="lightbox__close"
-        :aria-label="$t('portfolioDetail.lightbox.close')"
+        :aria-label="labels.close"
         @click="close"
       >
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
@@ -96,7 +105,7 @@ watch(
         v-if="hasMultiple"
         type="button"
         class="lightbox__nav lightbox__nav--prev"
-        :aria-label="$t('portfolioDetail.lightbox.previous')"
+        :aria-label="labels.previous"
         @click="previous"
       >
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
@@ -120,7 +129,7 @@ watch(
           class="lightbox__img"
         />
         <figcaption v-if="hasMultiple" class="lightbox__counter">
-          {{ $t("portfolioDetail.lightbox.counter", { current: currentIndex + 1, total }) }}
+          {{ labels.counter(currentIndex + 1, total) }}
         </figcaption>
       </figure>
 
@@ -128,7 +137,7 @@ watch(
         v-if="hasMultiple"
         type="button"
         class="lightbox__nav lightbox__nav--next"
-        :aria-label="$t('portfolioDetail.lightbox.next')"
+        :aria-label="labels.next"
         @click="next"
       >
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">

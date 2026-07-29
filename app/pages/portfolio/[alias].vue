@@ -51,6 +51,15 @@ const closeLightbox = () => {
   lightboxIndex.value = -1;
 };
 
+// Resolve lightbox labels in the parent so nested i18n keys survive bundling
+// and runtime resolution inside the Teleport client component.
+const lightboxLabels = computed(() => ({
+  close: t("portfolioDetail.lightbox.close"),
+  previous: t("portfolioDetail.lightbox.previous"),
+  next: t("portfolioDetail.lightbox.next"),
+  counter: (current, total) => t("portfolioDetail.lightbox.counter", { current, total }),
+}));
+
 // BreadcrumbList structured data for search engines
 const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
@@ -158,7 +167,7 @@ useHead(() => ({
               :key="img.id"
               type="button"
               class="gallery__item gallery__trigger"
-              :aria-label="$t('portfolioDetail.lightbox.counter', { current: index + 1, total: portfolio.images.length })"
+              :aria-label="lightboxLabels.counter(index + 1, portfolio.images.length)"
               @click="openLightbox(index)"
             >
               <figure class="gallery__figure">
@@ -179,6 +188,7 @@ useHead(() => ({
           v-if="isLightboxOpen"
           :images="lightboxImages"
           :initial-index="lightboxIndex"
+          :labels="lightboxLabels"
           @close="closeLightbox"
         />
 
