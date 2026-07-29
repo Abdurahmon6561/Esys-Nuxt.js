@@ -91,6 +91,13 @@ export default defineNuxtConfig({
     // been set up yet" + missing-key warnings. Three small locales, static
     // marketing site — bundling is cheaper than the runtime endpoint.
     lazy: false,
+    bundle: {
+      // Keep all messages, including nested objects used by dynamic routes and
+      // client-only components. The default optimizer drops keys it thinks are
+      // unused, which breaks strings like portfolioDetail.lightbox.* that are
+      // only referenced inside UiLightbox.
+      optimizeTranslationDirective: false,
+    },
   },
 
   // SSR-safe: tree-shakes GSAP plugins not imported. Without this, Vite

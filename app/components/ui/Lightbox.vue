@@ -112,12 +112,11 @@ watch(
       </button>
 
       <figure class="lightbox__figure">
-        <NuxtImg
+        <img
           v-if="currentImage"
           :src="currentImage.src"
           :alt="currentImage.alt || ''"
-          format="webp"
-          sizes="90vw"
+          loading="eager"
           class="lightbox__img"
         />
         <figcaption v-if="hasMultiple" class="lightbox__counter">
