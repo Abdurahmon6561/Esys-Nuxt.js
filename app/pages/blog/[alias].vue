@@ -39,9 +39,14 @@ const apiOrigin = config.public.apiUrl ? new URL(config.public.apiUrl).origin : 
 const absoluteOgImage = (image) =>
   image ? (image.startsWith("http") ? image : `${apiOrigin}${image}`) : undefined;
 
+// `short_text` arrives from the CMS wrapped in editor markup on some posts, so
+// it is stripped before it reaches the lead paragraph, the meta description,
+// or the JSON-LD.
+const summary = computed(() => plainText(blog.value?.short_text));
+
 useSeoMeta({
   title: () => blog.value?.title || t("blog.title"),
-  description: () => blog.value?.short_text || t("blog.subtitle"),
+  description: () => metaDescription(blog.value?.short_text) || t("blog.subtitle"),
   ogImage: () => absoluteOgImage(blog.value?.image),
 });
 
@@ -52,7 +57,7 @@ const articleJsonLd = computed(() => {
       "@context": "https://schema.org",
       "@type": "Article",
       headline: blog.value.title,
-      description: blog.value.short_text || undefined,
+      description: summary.value || undefined,
       image: blog.value.image || undefined,
       datePublished: blog.value.published_at || undefined,
       inLanguage: locale.value,
@@ -110,8 +115,8 @@ useHead(() => ({
         </UiReveal>
 
         <UiReveal tag="div" class="article__body">
-          <p v-if="blog.short_text" class="article__lead">
-            {{ blog.short_text }}
+          <p v-if="summary" class="article__lead">
+            {{ summary }}
           </p>
 
           <!-- Rich text from the CMS - render as-is. -->

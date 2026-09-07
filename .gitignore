@@ -39,3 +39,6 @@ logs
 *.log
 # Deploy (server creds/paths — keep local)
 deploy.sh
+
+# SEO audit artifacts (local only)
+esys.pro-audit/

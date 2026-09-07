@@ -6,6 +6,8 @@ defineProps({
   eyebrow: { type: String, default: "" },
   title: { type: String, default: "" },
   subtitle: { type: String, default: "" },
+  // This header is the page title on list pages, so it defaults to h1.
+  level: { type: String, default: "h1" },
   errorText: { type: String, default: "" },
   items: { type: Array, default: () => [] },
   pending: { type: Boolean, default: false },
@@ -24,6 +26,7 @@ defineProps({
         :eyebrow="eyebrow"
         :title="title"
         :subtitle="subtitle"
+        :level="level"
       />
 
       <p v-if="error" class="page__error">{{ errorText }}</p>

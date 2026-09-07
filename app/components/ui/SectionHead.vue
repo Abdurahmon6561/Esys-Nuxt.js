@@ -5,6 +5,10 @@ defineProps({
   eyebrow: { type: String, default: "" },
   title: { type: String, default: "" },
   subtitle: { type: String, default: "" },
+  // Heading level for the title. Defaults to h2 because most call sites are
+  // sections within a page that already has an h1. Pages where this header IS
+  // the page title (list pages, /services) pass "h1".
+  level: { type: String, default: "h2" },
 });
 </script>
 
@@ -12,7 +16,9 @@ defineProps({
   <header class="shead">
     <div class="shead__text">
       <p v-if="eyebrow" class="shead__eyebrow">{{ eyebrow }}</p>
-      <h2 v-if="title" class="shead__title">{{ title }}</h2>
+      <component :is="level" v-if="title" class="shead__title">
+        {{ title }}
+      </component>
       <p v-if="subtitle" class="shead__subtitle">{{ subtitle }}</p>
     </div>
   </header>

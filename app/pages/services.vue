@@ -33,6 +33,7 @@ useSeoMeta({
   <main class="services page--dark">
     <div class="services__inner">
       <UiSectionHead
+        level="h1"
         :eyebrow="$t('services.eyebrow')"
         :title="$t('services.title')"
         :subtitle="$t('services.subtitle')"
