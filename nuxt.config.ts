@@ -115,6 +115,8 @@ export default defineNuxtConfig({
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
         "Cross-Origin-Opener-Policy": "same-origin",
+        // Non-standard opt-out honoured by some AI scrapers; search engines ignore it.
+        "X-Robots-Tag": "noai, noimageai",
         // script-src is the directive that matters for XSS; 'unsafe-inline'
         // is required by Nuxt's inline payload script. img/connect stay
         // broad-https for analytics beacons and CMS media.
@@ -133,9 +135,11 @@ export default defineNuxtConfig({
         ].join("; "),
       },
     },
-    // Fully static content, no API fetch - safe to prerender at build time.
-    "/about": { prerender: true },
-    "/privacy": { prerender: true },
+    // Fully static content, no API fetch. Cached SSR rather than prerender:
+    // prerendered HTML is served as a public asset *before* server middleware,
+    // which would let AI crawlers past block-ai-crawlers.ts.
+    "/about": { swr: 86400 },
+    "/privacy": { swr: 86400 },
     // Backend-driven lists - cache briefly instead of hitting the API every request.
     "/blog": { swr: 300 },
     "/portfolio": { swr: 300 },
