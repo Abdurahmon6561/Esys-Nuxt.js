@@ -29,3 +29,8 @@ All logic lives in `./deploy.sh` (gitignored, repo root). Run ONE command — do
 - Script is quiet by design (token economy): success prints `✓ ... deployed`; on failure it prints last 30 log lines. Full log path printed at end — read it only if debugging.
 - Do NOT run build steps locally as part of deploy; the server builds.
 - If `deploy.sh` is missing (fresh clone), recreate it from this skill's spec or ask the user — it is intentionally not committed.
+- `admin` target also restarts the demo-platform queue worker (`sudo -u www-data pm2 restart admin-esys-queue`) when it exists — keep that in any recreated script, or deploys silently stop processing.
+
+## Demo deploy platform (one-time server setup)
+
+The Vercel-like demo platform (`<slug>-demo.esys.pro`, lives in admin) needs one-time server setup before first use. Runbook: `../admin.esys/docs/demo-deploy-server-setup.md` — follow its "Release order" table (merge branch → push → server steps 0–6 → `.env` → `./deploy.sh admin` → queue worker/grant/webhook/firewall → smoke test). Server steps need root SSH and secrets (Cloudflare token, Origin CA key) — confirm with the user before running them; never paste secrets into chat or commits.
