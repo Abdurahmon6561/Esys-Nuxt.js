@@ -143,6 +143,7 @@ export default defineNuxtConfig({
     // Backend-driven lists - cache briefly instead of hitting the API every request.
     "/blog": { swr: 300 },
     "/portfolio": { swr: 300 },
+    "/services/**": { swr: 300 },
   },
 
   runtimeConfig: {

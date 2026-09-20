@@ -3,6 +3,18 @@ import type { SitemapUrlInput } from "#sitemap/types";
 
 type ListResponse = { data?: { alias?: string }[] };
 
+// services/sitemap rows: one per published locale+alias pair, with the
+// service's other published translations pre-grouped by the backend.
+type ServiceSitemapRow = {
+  locale: string;
+  alias: string;
+  updated_at?: string;
+  alternates?: Record<string, string>;
+};
+
+const serviceLoc = (locale: string, alias: string) =>
+  locale === "ru" ? `/services/${alias}` : `/${locale}/services/${alias}`;
+
 // Feeds dynamic blog/portfolio URLs into @nuxtjs/sitemap.
 // Uses server-only Basic Auth credentials - never exposed to the client.
 export default defineSitemapEventHandler(
@@ -33,9 +45,38 @@ export default defineSitemapEventHandler(
       }
     };
 
-    const [blogAliases, portfolioAliases] = await Promise.all([
+    const fetchServiceEntries = async (): Promise<SitemapUrlInput[]> => {
+      try {
+        const rows = await $fetch<ServiceSitemapRow[]>(
+          `${apiUrl}services/sitemap`,
+          { headers: { Authorization: `Basic ${credentials}` } },
+        );
+        // Services deliberately skip _i18nTransform: it would expand each
+        // URL into every locale, including unpublished ones. The backend
+        // already emits one row per published pair, with alternates built
+        // only from published translations.
+        return (rows ?? []).map((row) => ({
+          loc: serviceLoc(row.locale, row.alias),
+          lastmod: row.updated_at,
+          alternatives: {
+            languages: Object.fromEntries(
+              Object.entries(row.alternates ?? {}).map(([loc, alias]) => [
+                loc,
+                serviceLoc(loc, alias),
+              ]),
+            ),
+          },
+        }));
+      } catch (error) {
+        console.error("Sitemap: failed to fetch services/sitemap", error);
+        return [];
+      }
+    };
+
+    const [blogAliases, portfolioAliases, serviceEntries] = await Promise.all([
       fetchAliases("blog/all"),
       fetchAliases("portfolio/all"),
+      fetchServiceEntries(),
     ]);
 
     return [
@@ -47,6 +88,7 @@ export default defineSitemapEventHandler(
         loc: `/portfolio/${alias}`,
         _i18nTransform: true,
       })),
+      ...serviceEntries,
     ];
   },
 );
