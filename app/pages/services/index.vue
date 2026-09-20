@@ -1,6 +1,7 @@
 <script setup>
 const { servicesApi } = useApiService();
 const { locale, t } = useI18n();
+const localePath = useLocalePath();
 const { open: openContact } = useContactModal();
 
 // getServices() → services. Envelope: { data: [{ title, short_text, text, image }] }.
@@ -11,13 +12,6 @@ const { data, pending, error } = await useAsyncData(
 );
 
 const items = computed(() => data.value?.data ?? []);
-
-// AI service is appended locally - the backend list has no AI entry yet.
-// Rendered with an inline icon so it never depends on a backend image.
-const cards = computed(() => [
-  ...items.value,
-  { title: t("services.ai.title"), text: t("services.ai.text"), ai: true },
-]);
 
 const SKELETON_COUNT = 4;
 
@@ -50,39 +44,26 @@ useSeoMeta({
       </div>
 
       <UiReveal v-else tag="div" class="services__grid">
-        <article
-          v-for="(item, index) in cards"
-          :key="item.title"
+        <NuxtLink
+          v-for="(item, index) in items"
+          :key="item.alias"
+          :to="localePath(`/services/${item.alias}`)"
           class="scard"
-          :class="{ 'scard--ai': item.ai }"
         >
           <span class="scard__num">{{ String(index + 1).padStart(2, "0") }}</span>
           <div class="scard__icon" aria-hidden="true">
-            <svg
-              v-if="item.ai"
-              class="scard__ai-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
-              <path d="M12 8.5 13.4 11 16 12l-2.6 1L12 15.5 10.6 13 8 12l2.6-1L12 8.5Z" />
-            </svg>
-            <img v-else :src="item.image" alt="" loading="lazy" />
+            <img :src="item.image" alt="" loading="lazy" />
           </div>
           <h2 class="scard__title">{{ item.title }}</h2>
           <p class="scard__text">{{ item.text }}</p>
-          <button type="button" class="scard__cta" @click="openContact">
+          <button type="button" class="scard__cta" @click.prevent="openContact">
             {{ $t("services.cta") }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M5 12h14" />
               <path d="m12 5 7 7-7 7" />
             </svg>
           </button>
-        </article>
+        </NuxtLink>
       </UiReveal>
     </div>
   </main>
@@ -128,6 +109,8 @@ useSeoMeta({
   background: rgba(20, 28, 48, 0.38);
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
   transition:
     transform 0.35s ease,
     border-color 0.35s ease,
@@ -167,12 +150,6 @@ useSeoMeta({
   /* Source SVGs use a near-black fill (#222) - invert to white so they
      are visible on the dark card. */
   filter: brightness(0) invert(1);
-}
-
-.scard__ai-icon {
-  width: 1.75rem;
-  height: 1.75rem;
-  color: #ffffff;
 }
 
 .scard__title {

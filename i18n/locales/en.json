@@ -159,11 +159,7 @@
     "title": "What we do",
     "subtitle": "Full-cycle digital development - from idea and design to launch and support.",
     "error": "Failed to load services. Please try again later.",
-    "cta": "Discuss a project",
-    "ai": {
-      "title": "AI Solutions",
-      "text": "We bring artificial intelligence into your business: chatbots, process automation, analytics and AI integration into your products."
-    }
+    "cta": "Discuss a project"
   },
   "about": {
     "seo": {

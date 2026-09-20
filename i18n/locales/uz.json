@@ -159,11 +159,7 @@
     "title": "Biz nima qilamiz",
     "subtitle": "Raqamli ishlab chiqishning to'liq sikli - g'oya va dizayndan tortib ishga tushirish va qo'llab-quvvatlashgacha.",
     "error": "Xizmatlarni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
-    "cta": "Loyihani muhokama qilish",
-    "ai": {
-      "title": "AI-yechimlar",
-      "text": "Sun'iy intellektni biznesga joriy qilamiz: chat-botlar, jarayonlarni avtomatlashtirish, tahlil va AI integratsiyasi."
-    }
+    "cta": "Loyihani muhokama qilish"
   },
   "about": {
     "seo": {

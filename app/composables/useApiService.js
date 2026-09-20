@@ -44,6 +44,7 @@ export function useApiService() {
 
   const servicesApi = {
     getServices: () => makeRequest("services"),
+    getServiceByAlias: (alias) => makeRequest(`services/view/${alias}`),
   };
 
   const api = {
