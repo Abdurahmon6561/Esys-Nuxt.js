@@ -9,13 +9,18 @@ const isServicePath = (pathname: string) =>
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
+// NOTE: defineCachedFunction JSON-serializes the cached value - a Map would
+// come back as {} on cache hits. Keep the payload a plain record.
+type RedirectTarget = { to: string; code: number };
+type RedirectMap = Record<string, RedirectTarget>;
+
 const loadRedirectMap = defineCachedFunction(
-  async () => {
+  async (): Promise<RedirectMap> => {
     const config = useRuntimeConfig();
     const apiUrl = config.public.apiUrl;
 
     if (!apiUrl || !config.apiUsername || !config.apiPassword) {
-      return new Map<string, { to: string; code: number }>();
+      return {};
     }
 
     const credentials = Buffer.from(
@@ -28,7 +33,7 @@ const loadRedirectMap = defineCachedFunction(
         { headers: { Authorization: `Basic ${credentials}` } },
       );
 
-      return new Map(
+      return Object.fromEntries(
         (rows ?? []).map((row) => [
           row.from,
           { to: row.to, code: row.code ?? 301 },
@@ -37,7 +42,7 @@ const loadRedirectMap = defineCachedFunction(
     } catch (error) {
       // A missing map must never take the page down - serve it unredirected.
       console.error("Redirects: failed to load the redirect map", error);
-      return new Map<string, { to: string; code: number }>();
+      return {};
     }
   },
   { maxAge: 300, name: "services-redirect-map" },
@@ -51,7 +56,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const redirectMap = await loadRedirectMap();
-  const hit = redirectMap.get(pathname);
+  const hit = redirectMap[pathname];
 
   if (hit) {
     return sendRedirect(event, hit.to, hit.code);
