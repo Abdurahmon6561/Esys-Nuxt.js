@@ -159,7 +159,22 @@
     "title": "Biz nima qilamiz",
     "subtitle": "Raqamli ishlab chiqishning to'liq sikli - g'oya va dizayndan tortib ishga tushirish va qo'llab-quvvatlashgacha.",
     "error": "Xizmatlarni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
-    "cta": "Loyihani muhokama qilish"
+    "cta": "Loyihani muhokama qilish",
+    "blocks": {
+      "hero": "Xizmat haqida",
+      "problems": "Muammolar",
+      "audience": "Kimlar uchun",
+      "features": "Imkoniyatlar",
+      "technologies": "Texnologiyalar",
+      "stages": "Ish bosqichlari",
+      "timeline": "Muddatlar",
+      "pricing": "Tariflar",
+      "benefits": "Afzalliklar",
+      "cases": "Keyslar",
+      "articles": "Maqolalar",
+      "faq": "Ko'p beriladigan savollar",
+      "cta": "Loyihani muhokama qilish"
+    }
   },
   "about": {
     "seo": {

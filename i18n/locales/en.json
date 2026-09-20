@@ -159,7 +159,22 @@
     "title": "What we do",
     "subtitle": "Full-cycle digital development - from idea and design to launch and support.",
     "error": "Failed to load services. Please try again later.",
-    "cta": "Discuss a project"
+    "cta": "Discuss a project",
+    "blocks": {
+      "hero": "Overview",
+      "problems": "Problems",
+      "audience": "Target Audience",
+      "features": "Features",
+      "technologies": "Technologies",
+      "stages": "Stages",
+      "timeline": "Timeline",
+      "pricing": "Pricing",
+      "benefits": "Benefits",
+      "cases": "Cases",
+      "articles": "Articles",
+      "faq": "FAQ",
+      "cta": "Start a Project"
+    }
   },
   "about": {
     "seo": {
