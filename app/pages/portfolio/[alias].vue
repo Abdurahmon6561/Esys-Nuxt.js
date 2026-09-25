@@ -69,11 +69,33 @@ const apiOrigin = config.public.apiUrl ? new URL(config.public.apiUrl).origin : 
 const absoluteOgImage = (image) =>
   image ? (image.startsWith("http") ? image : `${apiOrigin}${image}`) : undefined;
 
+// `seo.resolved` comes from the backend resolver (same values the MCP tools
+// report). It carries the complete title, so the global titleTemplate is
+// bypassed; a locale without its own translation resolves to noindex.
+const resolved = computed(() => data.value?.seo?.resolved ?? null);
+
 useSeoMeta({
-  title: () => portfolio.value?.title || t("portfolio.title"),
-  description: () => portfolio.value?.short_text || t("portfolio.subtitle"),
-  ogImage: () => absoluteOgImage(portfolio.value?.image),
+  title: () => resolved.value?.title || portfolio.value?.title || t("portfolio.title"),
+  titleTemplate: () => (resolved.value?.title ? "%s" : undefined),
+  description: () =>
+    resolved.value?.description || portfolio.value?.short_text || t("portfolio.subtitle"),
+  ogTitle: () => resolved.value?.og_title || undefined,
+  ogDescription: () => resolved.value?.og_description || undefined,
+  ogImage: () => resolved.value?.og_image || absoluteOgImage(portfolio.value?.image),
+  ogImageAlt: () => resolved.value?.og_image_alt || undefined,
+  robots: () => resolved.value?.robots || undefined,
 });
+
+usePageAlternates(() =>
+  data.value?.seo?.alternates
+    ? Object.fromEntries(
+        Object.entries(data.value.seo.alternates).map(([loc, a]) => [
+          loc,
+          loc === "ru" ? `/portfolio/${a}` : `/${loc}/portfolio/${a}`,
+        ])
+      )
+    : null
+);
 
 const breadcrumbJsonLd = computed(() => {
   if (!portfolio.value) return "";
@@ -89,6 +111,9 @@ const breadcrumbJsonLd = computed(() => {
 });
 
 useHead(() => ({
+  link: resolved.value?.canonical
+    ? [{ rel: "canonical", key: "i18n-canonical", href: resolved.value.canonical }]
+    : [],
   script: breadcrumbJsonLd.value
     ? [{ type: "application/ld+json", innerHTML: breadcrumbJsonLd.value }]
     : [],
@@ -102,7 +127,7 @@ useHead(() => ({
     <template v-else-if="portfolio">
       <UiPageHeader
         :eyebrow="$t('portfolio.eyebrow')"
-        :title="portfolio.title"
+        :title="resolved?.h1 || portfolio.title"
         :meta="meta"
       >
         <template #aside>

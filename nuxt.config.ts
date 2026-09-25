@@ -66,6 +66,9 @@ export default defineNuxtConfig({
   sitemap: {
     // Dynamic blog/portfolio URLs come from the server endpoint
     sources: ["/api/__sitemap__/urls"],
+    // The sitemap lists only canonical URLs we want indexed. /privacy renders
+    // `noindex, follow`, so it must not be advertised here (all locales).
+    exclude: ["/privacy", "/en/privacy", "/uz/privacy"],
   },
 
   i18n: {
@@ -97,6 +100,18 @@ export default defineNuxtConfig({
       // unused, which breaks strings like portfolioDetail.lightbox.* that are
       // only referenced inside UiLightbox.
       optimizeTranslationDirective: false,
+    },
+  },
+
+  nitro: {
+    storage: {
+      // Production runs under pm2 cluster mode: with the default in-memory
+      // driver every worker kept its own copy of each swr page, so edits
+      // surfaced worker by worker (hours for low-traffic pages) and a purge
+      // reached only the worker that received it. A shared fs store fixes
+      // both. It lives in .output/, so every build/deploy starts with an
+      // empty cache and never serves HTML pointing at deleted _nuxt chunks.
+      cache: { driver: "fs", base: ".output/cache" },
     },
   },
 
@@ -150,6 +165,9 @@ export default defineNuxtConfig({
     // Private keys (only available on server-side)
     apiUsername: process.env.NUXT_API_USERNAME,
     apiPassword: process.env.NUXT_API_PASSWORD,
+    // Shared secret for POST /api/__cache/invalidate (admin backend purges
+    // the swr SSR cache after content writes). Empty = endpoint disabled.
+    cacheInvalidateToken: process.env.NUXT_CACHE_INVALIDATE_TOKEN || "",
     // Public keys (exposed to client-side)
     public: {
       apiUrl: process.env.NUXT_PUBLIC_API_URL,

@@ -12,8 +12,10 @@ type ServiceSitemapRow = {
   alternates?: Record<string, string>;
 };
 
-const serviceLoc = (locale: string, alias: string) =>
-  locale === "ru" ? `/services/${alias}` : `/${locale}/services/${alias}`;
+const localizedLoc = (section: string) => (locale: string, alias: string) =>
+  locale === "ru" ? `/${section}/${alias}` : `/${locale}/${section}/${alias}`;
+const serviceLoc = localizedLoc("services");
+const portfolioLoc = localizedLoc("portfolio");
 
 // Feeds dynamic blog/portfolio URLs into @nuxtjs/sitemap.
 // Uses server-only Basic Auth credentials - never exposed to the client.
@@ -45,38 +47,35 @@ export default defineSitemapEventHandler(
       }
     };
 
-    const fetchServiceEntries = async (): Promise<SitemapUrlInput[]> => {
+    // services/sitemap and portfolio/sitemap rows: one per published,
+    // indexable, self-canonical locale+alias pair with published alternates.
+    // They deliberately skip _i18nTransform: it would expand each URL into
+    // every locale, including untranslated ones.
+    const fetchLocalizedEntries = async (
+      endpoint: string,
+      toLoc: (locale: string, alias: string) => string,
+    ): Promise<SitemapUrlInput[]> => {
       try {
-        const rows = await $fetch<ServiceSitemapRow[]>(
-          `${apiUrl}services/sitemap`,
-          { headers: { Authorization: `Basic ${credentials}` } },
-        );
-        // Services deliberately skip _i18nTransform: it would expand each
-        // URL into every locale, including unpublished ones. The backend
-        // already emits one row per published pair, with alternates built
-        // only from published translations.
+        const rows = await $fetch<ServiceSitemapRow[]>(`${apiUrl}${endpoint}`, {
+          headers: { Authorization: `Basic ${credentials}` },
+        });
         return (rows ?? []).map((row) => ({
-          loc: serviceLoc(row.locale, row.alias),
+          loc: toLoc(row.locale, row.alias),
           lastmod: row.updated_at,
-          alternatives: {
-            languages: Object.fromEntries(
-              Object.entries(row.alternates ?? {}).map(([loc, alias]) => [
-                loc,
-                serviceLoc(loc, alias),
-              ]),
-            ),
-          },
+          alternatives: Object.entries(row.alternates ?? {}).map(
+            ([loc, alias]) => ({ hreflang: loc, href: toLoc(loc, alias) }),
+          ),
         }));
       } catch (error) {
-        console.error("Sitemap: failed to fetch services/sitemap", error);
+        console.error(`Sitemap: failed to fetch ${endpoint}`, error);
         return [];
       }
     };
 
-    const [blogAliases, portfolioAliases, serviceEntries] = await Promise.all([
+    const [blogAliases, portfolioEntries, serviceEntries] = await Promise.all([
       fetchAliases("blog/all"),
-      fetchAliases("portfolio/all"),
-      fetchServiceEntries(),
+      fetchLocalizedEntries("portfolio/sitemap", portfolioLoc),
+      fetchLocalizedEntries("services/sitemap", serviceLoc),
     ]);
 
     return [
@@ -84,10 +83,7 @@ export default defineSitemapEventHandler(
         loc: `/blog/${alias}`,
         _i18nTransform: true,
       })),
-      ...portfolioAliases.map((alias) => ({
-        loc: `/portfolio/${alias}`,
-        _i18nTransform: true,
-      })),
+      ...portfolioEntries,
       ...serviceEntries,
     ];
   },

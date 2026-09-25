@@ -45,29 +45,61 @@ const apiOrigin = config.public.apiUrl ? new URL(config.public.apiUrl).origin : 
 const absoluteOgImage = (image) =>
   image ? (image.startsWith("http") ? image : `${apiOrigin}${image}`) : undefined;
 
-// SEO meta
+// SEO meta. `seo.resolved` is computed by the backend resolver (the same one
+// the MCP get_page_seo/inspect tools report), so SSR renders exactly what the
+// editor previewed. The title is complete - brand suffix included - so the
+// global titleTemplate is bypassed. The local fallbacks only cover an API
+// that predates `resolved`.
+const resolved = computed(() => seo.value?.resolved ?? null);
+
 useSeoMeta({
-  title: () => seo.value?.seo_title || service.value?.title || t("services.eyebrow"),
+  title: () =>
+    resolved.value?.title ||
+    seo.value?.seo_title ||
+    service.value?.title ||
+    t("services.eyebrow"),
+  titleTemplate: () => (resolved.value?.title ? "%s" : undefined),
   description: () =>
+    resolved.value?.description ||
     seo.value?.meta_description ||
     leadText.value ||
     t("services.subtitle"),
   ogTitle: () =>
+    resolved.value?.og_title ||
     seo.value?.og_title ||
     seo.value?.seo_title ||
     service.value?.title ||
     t("services.eyebrow"),
   ogDescription: () =>
+    resolved.value?.og_description ||
     seo.value?.og_description ||
     seo.value?.meta_description ||
     leadText.value ||
     t("services.subtitle"),
-  ogImage: () => absoluteOgImage(seo.value?.og_image || service.value?.image),
-  robots: () => seo.value?.robots || "index",
+  ogImage: () =>
+    resolved.value?.og_image ||
+    absoluteOgImage(seo.value?.og_image || service.value?.image),
+  ogImageAlt: () => resolved.value?.og_image_alt || undefined,
+  robots: () => resolved.value?.robots || seo.value?.robots || "index",
 });
 
-// hreflang alternates mapped to { slug }
-const setI18nParams = useSetI18nParams();
+const localizedPath = (loc, section, alias) =>
+  loc === "ru" ? `/${section}/${alias}` : `/${loc}/${section}/${alias}`;
+
+usePageAlternates(() =>
+  data.value?.alternates
+    ? Object.fromEntries(
+        Object.entries(data.value.alternates).map(([loc, a]) => [
+          loc,
+          localizedPath(loc, "services", a),
+        ])
+      )
+    : null
+);
+
+// Per-locale slugs for the language switcher. seo=false: hreflang links come
+// from usePageAlternates above (published translations only).
+const setI18nParams = useSetI18nParams(false);
 watchEffect(() => {
   if (data.value?.alternates) {
     setI18nParams(
@@ -148,7 +180,10 @@ useHead(() => ({
     {
       rel: "canonical",
       key: "i18n-canonical",
-      href: seo.value?.canonical || `${siteUrl}${route.path}`,
+      href:
+        resolved.value?.canonical ||
+        seo.value?.canonical ||
+        `${siteUrl}${route.path}`,
     },
   ],
   script: serviceJsonLd.value
@@ -173,7 +208,7 @@ const similarTitle = computed(() => {
     <template v-else-if="service">
       <UiPageHeader
         :eyebrow="$t('services.eyebrow')"
-        :title="service.h1 || service.title"
+        :title="resolved?.h1 || service.h1 || service.title"
       >
         <template #aside>
           <UiArrowLink

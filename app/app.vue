@@ -5,6 +5,21 @@ const config = useRuntimeConfig();
 
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 const metrikaId = config.public.metrikaId;
+const route = useRoute();
+const pageAlternates = usePageAlternatesState();
+
+// Keep only hreflang links for locales the current page really has (see
+// usePageAlternates). x-default points at the ru URL, so it goes with ru.
+const i18nLinks = computed(() => {
+  const links = localeHead.value.link || [];
+  const { path, locales } = pageAlternates.value;
+  if (path !== route.path || !Array.isArray(locales)) return links;
+  return links.filter((link) => {
+    if (!link.hreflang) return true;
+    const code = link.hreflang === "x-default" ? "ru" : link.hreflang;
+    return locales.includes(code);
+  });
+});
 
 // Organization schema - emitted once, site-wide
 const organizationJsonLd = {
@@ -25,7 +40,7 @@ const organizationJsonLd = {
 
 useHead(() => ({
   htmlAttrs: localeHead.value.htmlAttrs,
-  link: localeHead.value.link,
+  link: i18nLinks.value,
   meta: localeHead.value.meta,
   titleTemplate: (chunk) =>
     chunk ? `${chunk} - Evolution Systems` : "Evolution Systems",
