@@ -282,7 +282,7 @@ const similarTitle = computed(() => {
               </div>
               <h3 class="scard__title">{{ item.title }}</h3>
               <p v-if="item.short_text || item.text" class="scard__text">
-                {{ item.short_text || item.text }}
+                {{ plainText(item.short_text) || metaDescription(item.text, 220) }}
               </p>
               <button
                 type="button"

@@ -15,6 +15,10 @@ const items = computed(() => data.value?.data ?? []);
 
 const SKELETON_COUNT = 4;
 
+// `text` is the full HTML body; prefer the short summary, stripped of markup.
+const cardText = (item) =>
+  plainText(item.short_text) || metaDescription(item.text, 220);
+
 useSeoMeta({
   title: () => t("services.seo.title"),
   description: () => t("services.seo.description"),
@@ -55,7 +59,7 @@ useSeoMeta({
             <img :src="item.image" alt="" loading="lazy" />
           </div>
           <h2 class="scard__title">{{ item.title }}</h2>
-          <p class="scard__text">{{ item.text }}</p>
+          <p class="scard__text">{{ cardText(item) }}</p>
           <button type="button" class="scard__cta" @click.prevent="openContact">
             {{ $t("services.cta") }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
