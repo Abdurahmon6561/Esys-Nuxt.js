@@ -1,8 +1,6 @@
 import { defineSitemapEventHandler } from "#imports";
 import type { SitemapUrlInput } from "#sitemap/types";
 
-type ListResponse = { data?: { alias?: string }[] };
-
 // services/sitemap rows: one per published locale+alias pair, with the
 // service's other published translations pre-grouped by the backend.
 type ServiceSitemapRow = {
@@ -16,6 +14,7 @@ const localizedLoc = (section: string) => (locale: string, alias: string) =>
   locale === "ru" ? `/${section}/${alias}` : `/${locale}/${section}/${alias}`;
 const serviceLoc = localizedLoc("services");
 const portfolioLoc = localizedLoc("portfolio");
+const blogLoc = localizedLoc("blog");
 
 // Feeds dynamic blog/portfolio URLs into @nuxtjs/sitemap.
 // Uses server-only Basic Auth credentials - never exposed to the client.
@@ -32,20 +31,6 @@ export default defineSitemapEventHandler(
     const credentials = Buffer.from(
       `${config.apiUsername}:${config.apiPassword}`,
     ).toString("base64");
-
-    const fetchAliases = async (endpoint: string): Promise<string[]> => {
-      try {
-        const response = await $fetch<ListResponse>(`${apiUrl}${endpoint}`, {
-          headers: { Authorization: `Basic ${credentials}` },
-        });
-        return (response?.data ?? [])
-          .map((item) => item.alias)
-          .filter((alias): alias is string => Boolean(alias));
-      } catch (error) {
-        console.error(`Sitemap: failed to fetch ${endpoint}`, error);
-        return [];
-      }
-    };
 
     // services/sitemap and portfolio/sitemap rows: one per published,
     // indexable, self-canonical locale+alias pair with published alternates.
@@ -72,17 +57,14 @@ export default defineSitemapEventHandler(
       }
     };
 
-    const [blogAliases, portfolioEntries, serviceEntries] = await Promise.all([
-      fetchAliases("blog/all"),
+    const [blogEntries, portfolioEntries, serviceEntries] = await Promise.all([
+      fetchLocalizedEntries("blog/sitemap", blogLoc),
       fetchLocalizedEntries("portfolio/sitemap", portfolioLoc),
       fetchLocalizedEntries("services/sitemap", serviceLoc),
     ]);
 
     return [
-      ...blogAliases.map((alias) => ({
-        loc: `/blog/${alias}`,
-        _i18nTransform: true,
-      })),
+      ...blogEntries,
       ...portfolioEntries,
       ...serviceEntries,
     ];

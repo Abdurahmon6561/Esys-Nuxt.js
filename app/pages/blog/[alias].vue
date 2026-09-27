@@ -44,11 +44,33 @@ const absoluteOgImage = (image) =>
 // or the JSON-LD.
 const summary = computed(() => plainText(blog.value?.short_text));
 
+// `seo.resolved` comes from the backend resolver (same values the MCP tools
+// report). It carries the complete title, so the global titleTemplate is
+// bypassed; a locale without its own translation resolves to noindex.
+const resolved = computed(() => data.value?.seo?.resolved ?? null);
+
 useSeoMeta({
-  title: () => blog.value?.title || t("blog.title"),
-  description: () => metaDescription(blog.value?.short_text) || t("blog.subtitle"),
-  ogImage: () => absoluteOgImage(blog.value?.image),
+  title: () => resolved.value?.title || blog.value?.title || t("blog.title"),
+  titleTemplate: () => (resolved.value?.title ? "%s" : undefined),
+  description: () =>
+    resolved.value?.description || metaDescription(blog.value?.short_text) || t("blog.subtitle"),
+  ogTitle: () => resolved.value?.og_title || undefined,
+  ogDescription: () => resolved.value?.og_description || undefined,
+  ogImage: () => resolved.value?.og_image || absoluteOgImage(blog.value?.image),
+  ogImageAlt: () => resolved.value?.og_image_alt || undefined,
+  robots: () => resolved.value?.robots || undefined,
 });
+
+usePageAlternates(() =>
+  data.value?.seo?.alternates
+    ? Object.fromEntries(
+        Object.entries(data.value.seo.alternates).map(([loc, a]) => [
+          loc,
+          loc === "ru" ? `/blog/${a}` : `/${loc}/blog/${a}`,
+        ])
+      )
+    : null
+);
 
 const articleJsonLd = computed(() => {
   if (!blog.value) return "";
@@ -78,6 +100,9 @@ const articleJsonLd = computed(() => {
 });
 
 useHead(() => ({
+  link: resolved.value?.canonical
+    ? [{ rel: "canonical", key: "i18n-canonical", href: resolved.value.canonical }]
+    : [],
   script: articleJsonLd.value
     ? [{ type: "application/ld+json", innerHTML: articleJsonLd.value }]
     : [],
@@ -91,7 +116,7 @@ useHead(() => ({
     <template v-else-if="blog">
       <UiPageHeader
         :eyebrow="$t('blog.eyebrow')"
-        :title="blog.title"
+        :title="resolved?.h1 || blog.title"
         :meta="[
           { label: $t('blog.published'), value: blog.published_at },
           ...(tagsText ? [{ label: $t('blog.tags'), value: tagsText }] : []),
