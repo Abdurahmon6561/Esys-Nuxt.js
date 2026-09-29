@@ -29,7 +29,7 @@ All logic lives in `./deploy.sh` (gitignored, repo root). Run ONE command — do
 - Script is quiet by design (token economy): success prints `✓ ... deployed`; on failure it prints last 30 log lines. Full log path printed at end — read it only if debugging.
 - Do NOT run build steps locally as part of deploy; the server builds.
 - If `deploy.sh` is missing (fresh clone), recreate it from this skill's spec or ask the user — it is intentionally not committed.
-- `admin` target also restarts the demo-platform queue worker (`sudo -u www-data pm2 restart admin-esys-queue`) when it exists — keep that in any recreated script, or deploys silently stop processing.
+- `admin` target also runs `sudo -u www-data php artisan queue:restart` so the demo-platform queue worker (systemd unit `admin-esys-queue`, not pm2 — www-data has no nvm) picks up new code — keep that in any recreated script.
 
 ## Demo deploy platform (one-time server setup)
 
