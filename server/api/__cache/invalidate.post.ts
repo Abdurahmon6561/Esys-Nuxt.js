@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   // Slug renames change the CMS redirect map cached by server/middleware/redirects.ts.
   if (body?.redirects === true) {
     keys.push(
-      ...(await storage.getKeys("nitro:functions:services-redirect-map")),
+      ...(await storage.getKeys("nitro:functions:redirect-map")),
     );
   }
 

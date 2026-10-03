@@ -47,6 +47,20 @@ const links = [
   { label: "footer.links.privacy", to: "/privacy" },
 ];
 
+const serviceLinks = [
+  { label: "footer.serviceLinks.websites", to: "/services/websites" },
+  { label: "footer.serviceLinks.branding", to: "/services/branding" },
+  {
+    label: "footer.serviceLinks.webApplications",
+    to: "/services/web-applications",
+  },
+  { label: "footer.serviceLinks.crmSystems", to: "/services/crm-systems" },
+  {
+    label: "footer.serviceLinks.mobileApplications",
+    to: "/services/mobile-applications",
+  },
+];
+
 const year = new Date().getFullYear();
 
 // Spotlight follows cursor.
@@ -124,6 +138,24 @@ onBeforeUnmount(() => {
             {{ $t("footer.email") }}
           </a>
         </div>
+      </div>
+
+      <!-- Service links -->
+      <div class="footer__services">
+        <h3 class="footer__services-title">{{ $t("footer.links.services") }}</h3>
+        <nav
+          class="footer__services-nav"
+          :aria-label="$t('footer.links.services')"
+        >
+          <NuxtLink
+            v-for="link in serviceLinks"
+            :key="link.to"
+            :to="localePath(link.to)"
+            class="footer__link"
+          >
+            {{ $t(link.label) }}
+          </NuxtLink>
+        </nav>
       </div>
 
       <!-- Compact link bar -->
@@ -312,6 +344,31 @@ onBeforeUnmount(() => {
   outline-offset: 3px;
 }
 
+/* ── Service links ── */
+.footer__services {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 1.5rem 3rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer__services-title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(169, 214, 229, 0.75);
+}
+
+.footer__services-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+}
+
 /* ── Link bar ── */
 .footer__bar {
   display: flex;
@@ -375,6 +432,16 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .footer__services {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer__services-nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .footer__bar {
     flex-direction: column;
     justify-content: center;

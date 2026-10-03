@@ -40,6 +40,13 @@
       "services": "Services",
       "about": "About us"
     },
+    "serviceLinks": {
+      "websites": "Website development",
+      "branding": "Branding",
+      "webApplications": "Web applications",
+      "crmSystems": "CRM systems",
+      "mobileApplications": "Mobile applications"
+    },
     "rights": "Evolution Systems. All rights reserved."
   },
   "cookie": {

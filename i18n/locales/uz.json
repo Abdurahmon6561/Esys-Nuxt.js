@@ -40,6 +40,13 @@
       "services": "Xizmatlar",
       "about": "Biz haqimizda"
     },
+    "serviceLinks": {
+      "websites": "Saytlar ishlab chiqarish",
+      "branding": "Brending",
+      "webApplications": "Veb-ilovalar",
+      "crmSystems": "CRM tizimlari",
+      "mobileApplications": "Mobil ilovalar"
+    },
     "rights": "Evolution Systems. Barcha huquqlar himoyalangan."
   },
   "cookie": {

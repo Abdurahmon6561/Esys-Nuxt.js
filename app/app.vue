@@ -6,6 +6,7 @@ const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 const metrikaId = config.public.metrikaId;
 const route = useRoute();
+const localePath = useLocalePath();
 const pageAlternates = usePageAlternatesState();
 
 // Keep only hreflang links for locales the current page really has (see
@@ -22,21 +23,25 @@ const i18nLinks = computed(() => {
 });
 
 // Organization schema - emitted once, site-wide
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Evolution Systems",
-  url: siteUrl,
-  logo: `${siteUrl}/images/logo.webp`,
-  email: "hi@esys.pro",
-  telephone: "+998712001133",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Tashkent",
-    addressCountry: "UZ",
-  },
-  sameAs: ["https://t.me/esys_pro", "https://www.instagram.com/esysuz"],
-};
+const organizationJsonLd = computed(() => {
+  const localizedHome = localePath("/");
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Evolution Systems",
+    url: `${siteUrl}${localizedHome === "/" ? "" : localizedHome}`,
+    logo: `${siteUrl}/images/logo.webp`,
+    email: "hi@esys.pro",
+    telephone: "+998712001133",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Tashkent",
+      addressCountry: "UZ",
+    },
+    sameAs: ["https://t.me/esys_pro", "https://www.instagram.com/esysuz"],
+  };
+});
 
 useHead(() => ({
   htmlAttrs: localeHead.value.htmlAttrs,
@@ -47,7 +52,7 @@ useHead(() => ({
   script: [
     {
       type: "application/ld+json",
-      innerHTML: JSON.stringify(organizationJsonLd),
+      innerHTML: JSON.stringify(organizationJsonLd.value),
     },
   ],
   // Yandex Metrika fallback for JS-less clients. Must be server-rendered

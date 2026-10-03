@@ -40,6 +40,13 @@
       "services": "Услуги",
       "about": "О нас"
     },
+    "serviceLinks": {
+      "websites": "Разработка сайтов",
+      "branding": "Брендинг",
+      "webApplications": "Веб-приложения",
+      "crmSystems": "CRM-системы",
+      "mobileApplications": "Мобильные приложения"
+    },
     "rights": "Evolution Systems. Все права защищены."
   },
   "cookie": {
