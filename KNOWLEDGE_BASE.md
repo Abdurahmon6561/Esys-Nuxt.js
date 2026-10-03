@@ -113,3 +113,38 @@ Wedigital, BBD, PIAMG, lawtax, shkolaslova.
 - [ ] Новые кейсы портфолио (3-5): название, клиент, стек, результат
 - [ ] Дополнительные отзывы: имя, компания, текст
 - [ ] Уточнить счётчик «30+ проектов» на сайте vs 9 в CMS
+
+## SEO indexability ops runbook
+
+Сводка по устранённым проблемам индексируемости (факты проверены 2026-10-03) и порядок действий при повторении симптомов в GSC/Яндекс.Вебмастере.
+
+### Устранённые корневые причины
+
+1. **JSON-LD org url был захардкожен в ru-корень** на `/uz`, `/en` → Яндекс помечал страницы NOT_CANONICAL. Фикс: url теперь строится с учётом локали в `app/app.vue`.
+2. **Удалённый слаг портфолио `/portfolio/v-united`** отдавал 404. Фикс: статический 301-фолбэк на `/portfolio` в `server/utils/redirects.ts`. Карта редиректов из CMS может переопределять фолбэк; кэш — имя `redirect-map`, сбрасывается через `server/api/__cache/invalidate.post.ts`.
+3. **В футере не было ссылок на детальные страницы услуг.** Фикс: 5 ссылок на каждую локаль (ru/en/uz) в `SiteFooter.vue`, ключи `footer.serviceLinks.*`.
+
+### Caveat про stale-данные
+
+Статус индексации в GSC/Яндексе запаздывает ~2 дня. Прежде чем считать регрессией, проверяйте живое состояние через curl: цепочку 301, meta robots, canonical, JSON-LD org url.
+
+### Переиндексация в Яндексе
+
+В admin.esys появится команда `php artisan seo:recrawl` (в разработке): `--url=` — для конкретных страниц; без аргументов — по сохранённому списку неиндексированных URL. Учитывать дневную квоту Яндекса на перепроверку.
+
+### Переиндексация в Google
+
+API переиндексации нет. Рычаги: sitemap `https://esys.pro/sitemap_index.xml` (3 файла локалей, по 24 URL), sitewide-ссылки в футере. Вручную остаётся опция «Request Indexing» в UI GSC.
+
+### Чек-лист проверки (curl one-liners)
+
+```bash
+# /ru/* должны отдавать 301 на путь без префикса
+curl -sI https://esys.pro/ru/services | grep -iE 'HTTP/|location'
+
+# meta robots на странице услуги: ожидаем index, follow
+curl -s https://esys.pro/services/mobile-applications | grep -i 'name="robots"'
+
+# /uz: org url в ld+json должен быть https://esys.pro/uz
+curl -s https://esys.pro/uz | grep -o '"url":"https://esys.pro/uz"'
+```
