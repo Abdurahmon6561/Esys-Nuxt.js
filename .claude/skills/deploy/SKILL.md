@@ -30,7 +30,7 @@ All logic lives in `./deploy.sh` (gitignored, repo root). Run ONE command — do
 - Do NOT run build steps locally as part of deploy; the server builds.
 - If `deploy.sh` is missing (fresh clone), recreate it from this skill's spec or ask the user — it is intentionally not committed.
 - `admin` target also runs `sudo -u www-data php artisan queue:restart` so the demo-platform queue worker (systemd unit `admin-esys-queue`, not pm2 — www-data has no nvm) picks up new code — keep that in any recreated script.
-- `admin` target runs `chmod -R ug=rwX storage`, which leaves the dev-runner SSH key `0660`; ssh refuses it. The script re-tightens `storage/app/dev-runner` to `700`/`600` right after — keep that in any recreated script.
+- `admin` target runs `chmod -R ug=rwX storage`, which leaves the dev-runner SSH key `0660`; ssh refuses it. The script re-tightens `storage/app/dev-runner` with `find -type d → 700`, `find -type f → 600` — keep that in any recreated script. Never `chmod 600 <dir>` there: a directory without the `x` bit breaks `mkdir` in `DevRepos::issueDeployKey` (agent run dies with `mkdir(): Permission denied`).
 
 ## Demo deploy platform (one-time server setup)
 
