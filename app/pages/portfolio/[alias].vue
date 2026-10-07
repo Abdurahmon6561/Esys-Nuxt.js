@@ -28,12 +28,28 @@ if (error.value?.statusCode === 404 || (!error.value && !data.value?.portfolio))
 
 const portfolio = computed(() => data.value?.portfolio ?? null);
 const similar = computed(() => data.value?.similar ?? []);
-const servicesText = computed(() => portfolio.value?.services?.join(" · ") || "");
+
+// Additive API field: locale-aware {title, alias} pairs. Rendered as links
+// (portfolio → service internal linking); the plain title text below stays
+// the fallback for cached responses without service_links.
+const serviceLinks = computed(() =>
+  (portfolio.value?.service_links ?? [])
+    .filter((s) => s?.title && s?.alias)
+    .map((s) => ({ label: s.title, to: localePath(`/services/${s.alias}`) }))
+);
+const servicesText = computed(() =>
+  (serviceLinks.value.length
+    ? serviceLinks.value.map((l) => l.label)
+    : portfolio.value?.services ?? []
+  ).join(" · ")
+);
 const techText = computed(() => portfolio.value?.technologies?.join(" · ") || "");
 
 const meta = computed(() => {
   const m = [];
-  if (servicesText.value) m.push({ label: t("portfolioDetail.services"), value: servicesText.value });
+  if (servicesText.value) {
+    m.push({ label: t("portfolioDetail.services"), value: servicesText.value, links: serviceLinks.value });
+  }
   if (portfolio.value?.client) m.push({ label: t("portfolioDetail.client"), value: portfolio.value.client });
   if (techText.value) m.push({ label: t("portfolioDetail.technologies"), value: techText.value });
   return m;

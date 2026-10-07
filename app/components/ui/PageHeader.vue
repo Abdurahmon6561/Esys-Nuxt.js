@@ -5,7 +5,8 @@
 defineProps({
   eyebrow: { type: String, default: "" },
   title: { type: String, default: "" },
-  // [{ label, value }]
+  // [{ label, value, links?: [{ label, to }] }] - when `links` is a
+  // non-empty array the value renders as NuxtLinks instead of plain text.
   meta: { type: Array, default: () => [] },
 });
 </script>
@@ -22,7 +23,17 @@ defineProps({
     <dl v-if="meta.length" class="phead__meta">
       <div v-for="m in meta" :key="m.label" class="phead__meta-item">
         <dt>{{ m.label }}</dt>
-        <dd>{{ m.value }}</dd>
+        <dd>
+          <template v-if="m.links?.length">
+            <NuxtLink
+              v-for="l in m.links"
+              :key="l.to"
+              :to="l.to"
+              class="phead__meta-link"
+            >{{ l.label }}</NuxtLink>
+          </template>
+          <template v-else>{{ m.value }}</template>
+        </dd>
       </div>
     </dl>
   </header>
@@ -85,6 +96,25 @@ defineProps({
   font-weight: 500;
   color: #eef1f7;
   max-width: 28ch;
+}
+
+.phead__meta-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(169, 214, 229, 0.45);
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.phead__meta-link:hover {
+  color: #a9d6e5;
+}
+
+/* Recreates the " · " join the plain-text fallback used between services */
+.phead__meta-link + .phead__meta-link::before {
+  content: "·";
+  margin: 0 0.5em;
+  text-decoration: none;
 }
 
 @media (max-width: 640px) {
