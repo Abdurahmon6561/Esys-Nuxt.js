@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 
+const route = useRoute();
 const { locale, locales } = useI18n();
 const switchLocalePath = useSwitchLocalePath();
 const localePath = useLocalePath();
@@ -9,6 +10,7 @@ const { open: openContact } = useContactModal();
 const SCROLL_THRESHOLD = 24;
 const scrolled = ref(false);
 const langOpen = ref(false);
+const mobileMenuOpen = ref(false);
 const langRef = ref(null);
 const nav = ref(null);
 const cta = ref(null);
@@ -34,14 +36,38 @@ const toggleLang = () => {
   langOpen.value = !langOpen.value;
 };
 
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+};
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+};
+
 const onClickOutside = (e) => {
   if (langRef.value && !langRef.value.contains(e.target)) {
     langOpen.value = false;
   }
 };
 
+const onKeydown = (e) => {
+  if (e.key === "Escape") {
+    mobileMenuOpen.value = false;
+    langOpen.value = false;
+  }
+};
+
+watch(
+  () => route.fullPath,
+  () => {
+    mobileMenuOpen.value = false;
+    langOpen.value = false;
+  }
+);
+
 onMounted(() => {
   document.addEventListener("click", onClickOutside);
+  window.addEventListener("keydown", onKeydown);
 
   // ScrollTrigger drives the compact-pill toggle instead of a manual scroll
   // listener. `is-scrolled`/`is-compact` classes + their CSS stay unchanged.
@@ -57,6 +83,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", onClickOutside);
+  window.removeEventListener("keydown", onKeydown);
   scope?.revert();
   scope = null;
 });
@@ -136,8 +163,69 @@ onBeforeUnmount(() => {
             </ul>
           </transition>
         </div>
+
+        <button
+          type="button"
+          class="navbar__burger"
+          :class="{ 'is-open': mobileMenuOpen }"
+          :aria-expanded="mobileMenuOpen"
+          aria-controls="mobile-nav"
+          :aria-label="mobileMenuOpen ? 'Закрыть меню' : 'Открыть меню'"
+          @click="toggleMobileMenu"
+        >
+          <span class="navbar__burger-line" />
+          <span class="navbar__burger-line" />
+        </button>
       </div>
     </div>
+
+    <transition name="mobile-nav">
+      <div
+        v-if="mobileMenuOpen"
+        id="mobile-nav"
+        class="mobile-nav"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Навигация"
+      >
+        <div class="mobile-nav__backdrop" @click="closeMobileMenu" />
+        <nav class="mobile-nav__panel">
+          <ul class="mobile-nav__list">
+            <li v-for="link in links" :key="link.to">
+              <NuxtLink
+                :to="localePath(link.to)"
+                class="mobile-nav__link"
+                @click="closeMobileMenu"
+              >
+                <span>{{ $t(link.label) }}</span>
+                <svg
+                  class="mobile-nav__arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              </NuxtLink>
+            </li>
+          </ul>
+
+          <div class="mobile-nav__footer">
+            <button
+              type="button"
+              class="mobile-nav__cta"
+              @click="closeMobileMenu(); openContact()"
+            >
+              {{ $t("hero.cta_contact") }}
+            </button>
+          </div>
+        </nav>
+      </div>
+    </transition>
   </header>
 </template>
 
@@ -397,15 +485,180 @@ onBeforeUnmount(() => {
   transform: translateY(0);
 }
 
+/* Mobile burger button */
+.navbar__burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  color: #fff;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.navbar__burger:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar__burger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease;
+  transform-origin: center;
+}
+
+.navbar__burger.is-open .navbar__burger-line:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.navbar__burger.is-open .navbar__burger-line:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+/* Mobile nav drawer */
+.mobile-nav {
+  position: fixed;
+  inset: 0;
+  top: 68px;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-nav__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 4, 15, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.mobile-nav__panel {
+  position: relative;
+  z-index: 2;
+  margin: 8px 16px 0;
+  padding: 18px 20px 24px;
+  border-radius: 24px;
+  background: rgba(14, 20, 38, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-nav__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.mobile-nav__link:hover,
+.mobile-nav__link:active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.mobile-nav__arrow {
+  width: 18px;
+  height: 18px;
+  color: rgba(169, 214, 229, 0.7);
+  transition: transform 0.2s ease;
+}
+
+.mobile-nav__link:hover .mobile-nav__arrow {
+  transform: translateX(4px);
+  color: #a9d6e5;
+}
+
+.mobile-nav__footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav__cta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #fff;
+  color: #0a0a2e;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease;
+}
+
+.mobile-nav__cta:hover {
+  background: #f0f3f7;
+}
+
+.mobile-nav-enter-active,
+.mobile-nav-leave-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mobile-nav-enter-from,
+.mobile-nav-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+@media (max-width: 768px) {
+  .navbar__nav {
+    display: none;
+  }
+  .navbar__burger {
+    display: flex;
+  }
+}
+
 @media (max-width: 640px) {
   .navbar__inner {
     padding: 12px 16px;
   }
   .navbar__right {
-    gap: 16px;
-  }
-  .navbar__nav {
-    gap: 16px;
+    gap: 12px;
   }
   .navbar__cta {
     padding: 9px 16px;
@@ -413,10 +666,8 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Four localized links don't fit next to CTA + language switcher on phones -
-   hide them; the footer carries the same navigation. */
-@media (max-width: 768px) {
-  .navbar__nav {
+@media (max-width: 480px) {
+  .navbar__cta {
     display: none;
   }
 }

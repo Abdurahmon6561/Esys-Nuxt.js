@@ -88,8 +88,8 @@ useHead(() => ({
 
 <style scoped>
 .faq {
-  background: #05051a;
-  color: #eef1f7;
+  background: var(--color-ground, #05051a);
+  color: var(--color-text-primary, #eef1f7);
 }
 
 .faq__inner {
@@ -161,6 +161,7 @@ useHead(() => ({
 .faq__answer {
   display: grid;
   grid-template-rows: 0fr;
+  overflow: hidden;
   transition: grid-template-rows 0.35s ease;
 }
 
@@ -169,25 +170,19 @@ useHead(() => ({
 }
 
 .faq__answer-text {
-  overflow: hidden;
+  min-height: 0;
   margin: 0;
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 1.35rem;
   font-size: 0.9375rem;
   line-height: 1.7;
   color: #aab2c4;
-  transition: padding 0.35s ease;
-}
-
-.faq__item.is-open .faq__answer-text {
-  padding: 0 1.5rem 1.35rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .faq__item,
   .faq__question,
   .faq__chevron,
-  .faq__answer,
-  .faq__answer-text {
+  .faq__answer {
     transition: none;
   }
 }

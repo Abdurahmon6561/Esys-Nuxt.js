@@ -214,8 +214,8 @@ onBeforeUnmount(() => {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: #05051a;
-  color: #eef1f7;
+  background: var(--color-ground, #05051a);
+  color: var(--color-text-primary, #eef1f7);
   --mx: 50%;
   --my: 50%;
 }
@@ -287,10 +287,25 @@ onBeforeUnmount(() => {
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.03em;
-  color: transparent;
+  color: #ffffff;
   background: linear-gradient(180deg, #ffffff 0%, rgba(238, 241, 247, 0.55) 100%);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@supports not (background-clip: text) {
+  .footer__prompt {
+    -webkit-text-fill-color: initial;
+    color: #ffffff;
+  }
+}
+
+@media (forced-colors: active) {
+  .footer__prompt {
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+  }
 }
 
 .footer__actions {

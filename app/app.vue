@@ -104,6 +104,18 @@ useSeoMeta({
 </template>
 
 <style>
+:root {
+  --color-ground: #05051a;
+  --color-surface: #0b0b10;
+  --color-surface-card: rgba(20, 28, 48, 0.45);
+  --color-teal: #1aab9a;
+  --color-teal-soft: #9ae2d6;
+  --color-sky: #a9d6e5;
+  --color-text-primary: #eef1f7;
+  --color-text-secondary: #aab2c4;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -116,6 +128,8 @@ body,
 }
 body {
   font-family: "Montserrat", sans-serif;
+  background-color: var(--color-ground);
+  color: var(--color-text-primary);
 }
 
 /* Page transition: fade + subtle rise on route change. CSS-only so it

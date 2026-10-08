@@ -52,10 +52,25 @@ const goHome = () => clearError({ redirect: localePath("/") });
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.04em;
+  color: #46e6e1;
   background: linear-gradient(135deg, #46e6e1, #6d7cff);
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@supports not (background-clip: text) {
+  .error-page__code {
+    -webkit-text-fill-color: initial;
+    color: #46e6e1;
+  }
+}
+
+@media (forced-colors: active) {
+  .error-page__code {
+    -webkit-text-fill-color: CanvasText;
+    color: CanvasText;
+  }
 }
 
 .error-page__title {
