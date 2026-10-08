@@ -53,6 +53,7 @@ useHead(() => ({
           :class="{ 'is-open': openIndex === n }"
         >
           <button
+            :id="`faq-btn-${n}`"
             type="button"
             class="faq__question"
             :aria-expanded="openIndex === n"
@@ -77,8 +78,11 @@ useHead(() => ({
             :id="`faq-answer-${n}`"
             class="faq__answer"
             role="region"
+            :aria-labelledby="`faq-btn-${n}`"
           >
-            <p class="faq__answer-text">{{ $t(`faq.q${n}.answer`) }}</p>
+            <div class="faq__answer-inner">
+              <p class="faq__answer-text">{{ $t(`faq.q${n}.answer`) }}</p>
+            </div>
           </div>
         </div>
       </UiReveal>
@@ -161,7 +165,6 @@ useHead(() => ({
 .faq__answer {
   display: grid;
   grid-template-rows: 0fr;
-  overflow: hidden;
   transition: grid-template-rows 0.35s ease;
 }
 
@@ -169,8 +172,12 @@ useHead(() => ({
   grid-template-rows: 1fr;
 }
 
-.faq__answer-text {
+.faq__answer-inner {
+  overflow: hidden;
   min-height: 0;
+}
+
+.faq__answer-text {
   margin: 0;
   padding: 0 1.5rem 1.35rem;
   font-size: 0.9375rem;
@@ -196,9 +203,6 @@ useHead(() => ({
     padding: 1.15rem 1.25rem;
   }
   .faq__answer-text {
-    padding: 0 1.25rem;
-  }
-  .faq__item.is-open .faq__answer-text {
     padding: 0 1.25rem 1.15rem;
   }
 }
