@@ -28,6 +28,14 @@ if (error.value?.statusCode === 404 || (!error.value && !data.value?.blog)) {
 
 const blog = computed(() => data.value?.blog ?? null);
 const similar = computed(() => data.value?.similar ?? []);
+
+// Additive API field: locale-aware {title, alias} pairs. May be missing on
+// old cached responses - treated as an empty list.
+const serviceLinks = computed(() =>
+  (blog.value?.service_links ?? [])
+    .filter((s) => s?.title && s?.alias)
+    .map((s) => ({ label: s.title, to: localePath(`/services/${s.alias}`) }))
+);
 const tagsText = computed(() => blog.value?.tags?.join(" · ") || "");
 
 // Article + BreadcrumbList structured data for search engines
@@ -166,6 +174,22 @@ useHead(() => ({
             {{ $t("contact.eyebrow") }}
           </button>
         </UiReveal>
+
+        <!-- Related services linked to this blog post -->
+        <section v-if="serviceLinks.length" class="article__services">
+          <h2 class="similar__title">{{ $t("blog.services_title") }}</h2>
+          <UiReveal tag="nav" class="services__list">
+            <NuxtLink
+              v-for="link in serviceLinks"
+              :key="link.to"
+              :to="link.to"
+              class="services__pill"
+            >
+              <span>{{ link.label }}</span>
+              <span class="services__arrow" aria-hidden="true">→</span>
+            </NuxtLink>
+          </UiReveal>
+        </section>
 
         <!-- Related portfolio projects linked to this blog post -->
         <section v-if="blog.portfolio?.length" class="article__related">
@@ -334,10 +358,42 @@ useHead(() => ({
 }
 
 .article__related,
+.article__services,
 .article__similar {
   margin-top: 4rem;
   border-top: 1px solid rgba(169, 214, 229, 0.14);
   padding-top: 3rem;
+}
+
+.services__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.services__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #eef1f7;
+  text-decoration: none;
+  border: 1px solid rgba(169, 214, 229, 0.3);
+  border-radius: 999px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.services__pill:hover {
+  border-color: #46e6e1;
+  transform: translateY(-2px);
+}
+
+.services__arrow {
+  color: #46e6e1;
 }
 
 .similar__title {
