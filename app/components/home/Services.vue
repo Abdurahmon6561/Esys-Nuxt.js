@@ -110,10 +110,24 @@ const cardText = (item) => plainText(item.short_text);
   color: #ffb4b4;
 }
 
+/* Five services: one row on desktop, 3 + 2 on tablets - auto-fill left a
+   lone fifth card on a second row. */
 .hservices__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 1100px) {
+  .hservices__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .hservices__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .hservices__grid > * {
