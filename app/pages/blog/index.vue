@@ -1,6 +1,7 @@
 <script setup>
 const { blogApi } = useApiService();
 const { locale, t } = useI18n();
+const localePath = useLocalePath();
 
 // getBlogs() → blog/all (paginated 10). Envelope: { data: [...], links, meta }.
 const { data, pending, error } = await useAsyncData(
@@ -12,8 +13,10 @@ const { data, pending, error } = await useAsyncData(
 const items = computed(() => data.value?.data ?? []);
 
 useSeoMeta({
-  title: () => t("blog.title"),
-  description: () => t("blog.subtitle"),
+  title: () => t("blog.seo.title"),
+  description: () => t("blog.seo.description"),
+  ogTitle: () => t("blog.seo.title"),
+  ogDescription: () => t("blog.seo.description"),
 });
 </script>
 
@@ -28,6 +31,45 @@ useSeoMeta({
     :error="!!error"
     :feature-first="false"
   >
+    <template #intro>
+      <i18n-t
+        keypath="blog.intro.p1"
+        tag="p"
+        scope="global"
+      >
+        <template #webCost>
+          <NuxtLink :to="localePath('/services/websites')">
+            {{ $t("blog.intro.webCost") }}
+          </NuxtLink>
+        </template>
+        <template #crm>
+          <NuxtLink :to="localePath('/services/crm-systems')">
+            {{ $t("blog.intro.crm") }}
+          </NuxtLink>
+        </template>
+        <template #webApps>
+          <NuxtLink :to="localePath('/services/web-applications')">
+            {{ $t("blog.intro.webApps") }}
+          </NuxtLink>
+        </template>
+      </i18n-t>
+      <i18n-t
+        keypath="blog.intro.p2"
+        tag="p"
+        scope="global"
+      >
+        <template #mobileDev>
+          <NuxtLink :to="localePath('/services/mobile-applications')">
+            {{ $t("blog.intro.mobileDev") }}
+          </NuxtLink>
+        </template>
+        <template #branding>
+          <NuxtLink :to="localePath('/services/branding')">
+            {{ $t("blog.intro.branding") }}
+          </NuxtLink>
+        </template>
+      </i18n-t>
+    </template>
     <template #item="{ item }">
       <UiCard
         :item="item"

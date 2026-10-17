@@ -8,6 +8,8 @@ const phone = "+998 71 200 11 33";
 useSeoMeta({
   title: () => t("contact.title"),
   description: () => t("contact.subtitle"),
+  ogTitle: () => t("contact.title"),
+  ogDescription: () => t("contact.subtitle"),
 });
 </script>
 

@@ -14,7 +14,10 @@ useSeoMeta({
 <template>
   <div class="home-page">
     <Hero />
+    <HomeServices />
     <Portfolio />
+    <HomeAbout />
+    <HomeProcess />
     <Reviews />
     <Faq />
   </div>

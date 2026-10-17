@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 const { t, locale } = useI18n();
 
-const FAQ_COUNT = 6;
+const FAQ_COUNT = 8;
 const items = Array.from({ length: FAQ_COUNT }, (_, i) => i + 1);
 
 const openIndex = ref(null);

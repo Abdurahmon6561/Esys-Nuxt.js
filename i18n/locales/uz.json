@@ -1,8 +1,8 @@
 {
   "home": {
     "seo": {
-      "title": "Toshkentdagi dijital agentlik: saytlar, ilovalar, CRM",
-      "description": "Evolution Systems - veb-saytlar, mobil ilovalar, CRM va brending yaratamiz. Zamonaviy dizayn, tezkor ishlab chiqish va qo'llab-quvvatlash. Toshkent, O'zbekiston."
+      "title": "Toshkentdagi veb-studiya - sayt yaratish",
+      "description": "Toshkentdagi veb-studiya: saytlar, landinglar va internet-do'konlar yaratish. Vizitka yoki korporativ sayt tayyor holda - brifdan ishga tushirishgacha."
     }
   },
   "errorPage": {
@@ -12,10 +12,82 @@
     "home": "Bosh sahifaga"
   },
   "hero": {
-    "title": "Veb-saytlar, mobil ilovalar, CRM va brending - barchasi bir joyda",
-    "subtitle": "Zamonaviy dizayn, qulaylik va samarali boshqaruv orqali sizni raqobatchilardan ajratib turadigan yechimlarni yaratamiz.",
+    "title": "Toshkentdagi veb-studiya: sayt, ilova va CRM ishlab chiqish",
+    "subtitle": "Vizitka saytlari, landinglar, korporativ saytlar va internet-do'konlar, shuningdek mobil ilovalar va CRM tizimlari yaratamiz. Zamonaviy dizayn, puxta tuzilma va ishga tushirilgandan keyingi qo'llab-quvvatlash.",
     "cta_projects": "Bizning loyihalar",
     "cta_contact": "Biz bilan bog'lanish"
+  },
+  "homeServices": {
+    "eyebrow": "Xizmatlar",
+    "title": "Toshkentdagi veb-studiya xizmatlari",
+    "subtitle": "Besh yo'nalish - vizitka saytdan CRM tizimgacha. Yechimni shablon sotmasdan, sizning vazifangizga qarab quramiz.",
+    "all_link": "Barcha xizmatlar",
+    "error": "Xizmatlarni yuklashda xatolik. Sahifani yangilab ko'ring."
+  },
+  "homeAbout": {
+    "eyebrow": "Studiya haqida",
+    "title": "Toshkentda saytlarni tayyor holda yaratish",
+    "p1a": "Evolution Systems - Toshkentdagi veb-studiya bo'lib, saytlarni g'oyadan prototipgacha, ishga tushirish va qo'llab-quvvatlashgacha to'liq sikl bilan yaratadi. Biz ",
+    "link_websites": "vizitka saytlari",
+    "p1b": ", landinglar, korporativ saytlar va internet-do'konlar, shuningdek ",
+    "link_webapps": "veb-ilovalar",
+    "p1c": " va ",
+    "link_crm": "CRM tizimlari",
+    "p1d": " yasaymiz.",
+    "p2": "Har bir loyiha brif va bepul smetadan boshlanadi. Keyin tuzilma, dizayn, ishlab chiqish va SEO-asos keladi - sayt nafaqat zamonaviy ko'rinsin, balki qidiruvdan mijozlar ham keltirsin. Butun O'zbekiston bo'ylab va istalgan davlatdagi mijozlar bilan masofadan ishlaymiz.",
+    "p3a": "Yaratgan saytlarimiz qanday ko'rinishini baholash uchun ",
+    "link_portfolio": "loyihalarimizni ko'ring",
+    "p3b": " - yoki vazifangizni aytib bering: qaysi format sizga eng mos ekanini tavsiya qilamiz.",
+    "stats_title": "Qisqacha biz haqimizda",
+    "stats": {
+      "s1": { "value": "5", "label": "xizmat yo'nalishi" },
+      "s2": { "value": "RU · UZ · EN", "label": "uch tilda saytlar" },
+      "s3": { "value": "Laravel · Vue · Nuxt · Inertia", "label": "texnologik stek" },
+      "s4": { "value": "Qo'llab-quvvatlash", "label": "ishga tushirgandan keyin" }
+    },
+    "stack_title": "Bizning stek",
+    "stack": {
+      "s1": "Laravel",
+      "s2": "Vue 3",
+      "s3": "Nuxt",
+      "s4": "Inertia.js"
+    }
+  },
+  "homeProcess": {
+    "eyebrow": "Jarayon",
+    "title": "Qanday ishlaymiz va muddatlar",
+    "subtitle": "Shaffof bosqichlar va tushunarli muddatlar - loyihada nima bo'layotgani va u qachon tayyor bo'lishini doim bilib turasiz.",
+    "steps": {
+      "s1": {
+        "title": "Brif va smeta",
+        "text": "Vazifa, maqsad va istaklarni muhokama qilamiz. Brif natijasida smetani bepul tayyorlaymiz - narx ish boshlanishidan oldin belgilanadi."
+      },
+      "s2": {
+        "title": "Prototip va dizayn",
+        "text": "Sahifalar tuzilmasini loyihalaymiz, prototip va brendingiz hamda auditoriyangizga mos dizaynni kelishamiz."
+      },
+      "s3": {
+        "title": "Ishlab chiqish",
+        "text": "Dasturlaymiz va kodlaymiz, jarayonni demo-versiyada ko'rsatamiz - saytni ishga tushirishdan ancha oldin ko'rasiz."
+      },
+      "s4": {
+        "title": "Ishga tushirish va SEO-asos",
+        "text": "Loyihani nashr qilamiz, analitikani ulaymiz va qidiruvdagi o'sish uchun asosiy SEO-sozlamalarni bajaramiz."
+      },
+      "s5": {
+        "title": "Qo'llab-quvvatlash",
+        "text": "Ishga tushirgandan keyin ham aloqadamiz: yangilanishlar, yaxshilashlar va loyihani rivojlantirishda yordam."
+      }
+    },
+    "timeline_title": "Loyiha turlari bo'yicha muddatlar",
+    "timeline": {
+      "t1": { "label": "Vizitka sayt yoki landing", "value": "2 haftadan" },
+      "t2": { "label": "Korporativ sayt", "value": "4-6 haftadan" },
+      "t3": { "label": "Internet-do'kon", "value": "6-8 haftadan" },
+      "t4": { "label": "Mobil ilova yoki CRM", "value": "2-3 oydan" }
+    },
+    "price_note": "Narx smeta bo'yicha: qisqa brifdan keyin hisob-kitob bepul, yashirin to'lovlarsiz.",
+    "cta": "Loyihani muhokama qilish"
   },
   "portfolio": {
     "eyebrow": "Portfolio",
@@ -23,7 +95,19 @@
     "subtitle": "Biz faxrlanadigan loyihalar - investitsiya platformalaridan korporativ saytlargacha.",
     "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
     "empty": "Yangi loyihalar tayyorlanmoqda - tez orada qaytib ko'ring.",
-    "all": "Barcha loyihalar"
+    "all": "Barcha loyihalar",
+    "seo": {
+      "title": "Toshkent veb-studiyasi portfoliosi: saytlar, ilovalar, CRM",
+      "description": "Evolution Systems portfoliosi: biznes uchun korporativ saytlar, internet do'konlar, CRM tizimlari va ilovalar. Toshkentdagi loyihalarimizni ko'ring."
+    },
+    "intro": {
+      "p1": "Evolution Systems - Toshkentdagi veb-studiya. Biz O'zbekistondagi biznes uchun raqamli mahsulotlar yaratamiz: korporativ saytlar, internet do'konlar, ovqat buyurtma servislar, klinikalar saytlari, investitsiya platformalari va CRM. Portfoliodagi har bir loyiha - hal etilgan biznes vazifasi: ko'proq murojaatlar, avtomatlashtirish va qulay mijoz tajribasi.",
+      "p2": "Yechimni mijoz vazifasiga moslab tanlaymiz: {websites} va {webApps}dan tortib {crm} va {mobile}gacha. Keyslarda qanday vazifa turgani, qanday texnologiyalarni tanlaganimiz va biznes qanday natijaga erishganini aytib beramiz.",
+      "websites": "korporativ saytlar",
+      "webApps": "veb-ilovalar",
+      "crm": "CRM tizimlari",
+      "mobile": "mobil ilovalar"
+    }
   },
   "footer": {
     "prompt": "Keling, ajoyib narsa yaratamiz",
@@ -64,7 +148,20 @@
     "back": "Blogga qaytish",
     "published": "Chop etilgan",
     "tags": "Teglar",
-    "similar": "Yana maqolalar"
+    "similar": "Yana maqolalar",
+    "seo": {
+      "title": "Toshkent veb-studiyasi blogi: saytlar, CRM, ilovalar",
+      "description": "Sayt yaratish va veb-ilovalar haqida maqolalar: loyiha narxi, biznes uchun CRM, mobil ilovalar va dizayn. Toshkent veb-studiyasidan amaliy maslahatlar."
+    },
+    "intro": {
+      "p1": "Biz Toshkentda saytlar va raqamli mahsulotlar loyihalaymiz va yaratamiz. Evolution Systems blogida biznes uchun amaliy yozuvlar: {webCost} qancha turadi va narx nimalardan tashkil topadi, {crm} murojaatlarni yo'qotmaslikka qanday yordam beradi, kompaniyaga qachon {webApps} va SaaS platformalar kerak bo'ladi.",
+      "p2": "Shuningdek, {mobileDev} va {branding} mavzularini yoritamiz, Toshkentda mahsulotlarni ishga tushirish tajribamiz bilan bo'lishamiz va mijozlar eng ko'p beradigan savollarga javob beramiz.",
+      "webCost": "sayt yaratish",
+      "crm": "biznes uchun CRM",
+      "webApps": "veb-ilovalar",
+      "mobileDev": "mobil ilovalar yaratish",
+      "branding": "dizayn va brending"
+    }
   },
   "portfolioDetail": {
     "back": "Portfolioga qaytish",
@@ -265,6 +362,14 @@
     "q6": {
       "question": "Mavjud sayt yoki ilovani takomillashtira olasizmi?",
       "answer": "Ha. Joriy yechimni tahlil qilib, reja taklif qilamiz: nuqtaviy yaxshilashlardan to'liq qayta dizayngacha."
+    },
+    "q7": {
+      "question": "Toshkentda vizitka sayt qancha turadi?",
+      "answer": "Hajmga bog'liq: sahifalar soni, dizayn va integratsiyalar. Qisqa brifdan so'ng smetani bepul tayyorlab, aniq narxni ish boshlanishidan oldin belgilaymiz - yashirin to'lovlarsiz."
+    },
+    "q8": {
+      "question": "Frilanserning o'rniga veb-studiyani tanlash nega foydali?",
+      "answer": "Studiya - bu jamoa: loyiha ustida tahlilchi, dizayner va dasturchilar ishlaydi, muddatlar va natija shartnoma bilan mustahkamlanadi, qo'llab-quvvatlash esa bitta odamning ta'tiliga bog'liq bo'lmaydi."
     }
   }
 }

@@ -63,10 +63,44 @@ export default defineSitemapEventHandler(
       fetchLocalizedEntries("services/sitemap", serviceLoc),
     ]);
 
+    // Listing pages come from app sources without a lastmod; the module's
+    // `defaults` is not applied to the i18n multi-sitemaps. Emit a bare
+    // entry per listing whose lastmod is its newest item - it merges with the
+    // app-source entry on the same loc. Home gets the newest item overall.
+    const newestByLoc = new Map<string, string>();
+    const bump = (loc: string, lastmod?: string) => {
+      if (!lastmod) return;
+      const current = newestByLoc.get(loc);
+      if (!current || Date.parse(lastmod) > Date.parse(current)) {
+        newestByLoc.set(loc, lastmod);
+      }
+    };
+    const listingLoc = (locale: string, section: string) =>
+      locale === "ru" ? `/${section}` : `/${locale}/${section}`;
+    const homeLoc = (locale: string) => (locale === "ru" ? "/" : `/${locale}`);
+    const sections: [string, SitemapUrlInput[]][] = [
+      ["blog", blogEntries],
+      ["portfolio", portfolioEntries],
+      ["services", serviceEntries],
+    ];
+    for (const [section, entries] of sections) {
+      for (const entry of entries) {
+        const loc = String(entry.loc);
+        const locale = /^\/(en|uz)\//.exec(loc)?.[1] ?? "ru";
+        const lastmod = entry.lastmod ? String(entry.lastmod) : undefined;
+        bump(listingLoc(locale, section), lastmod);
+        bump(homeLoc(locale), lastmod);
+      }
+    }
+    const listingEntries: SitemapUrlInput[] = [...newestByLoc].map(
+      ([loc, lastmod]) => ({ loc, lastmod }),
+    );
+
     return [
       ...blogEntries,
       ...portfolioEntries,
       ...serviceEntries,
+      ...listingEntries,
     ];
   },
 );

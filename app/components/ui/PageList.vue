@@ -29,6 +29,13 @@ defineProps({
         :level="level"
       />
 
+      <!-- Optional intro copy between the header and the grid. Listing pages
+           pass it via the `intro` slot; empty by default, so other callers
+           are unaffected. -->
+      <div v-if="$slots.intro" class="page__intro">
+        <slot name="intro" />
+      </div>
+
       <p v-if="error" class="page__error">{{ errorText }}</p>
 
       <div v-else-if="pending" class="page__grid"
@@ -71,6 +78,35 @@ defineProps({
 .page__error {
   text-align: center;
   color: #ffb4b4;
+}
+
+/* Intro copy sits under the section header, mirroring its left alignment
+   and muted tone. */
+.page__intro {
+  max-width: 62ch;
+  margin: -2.5rem 0 4rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #c3cad8;
+}
+
+.page__intro p {
+  margin: 0;
+}
+
+.page__intro p + p {
+  margin-top: 0.75rem;
+}
+
+.page__intro :deep(a) {
+  color: #a9d6e5;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.page__intro :deep(a):hover {
+  color: #eef1f7;
 }
 
 .page__grid {

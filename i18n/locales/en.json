@@ -1,8 +1,8 @@
 {
   "home": {
     "seo": {
-      "title": "Digital agency in Tashkent: websites, apps, CRM",
-      "description": "Evolution Systems - we build websites, mobile apps, CRM and branding. Modern design, fast development and ongoing support. Tashkent, Uzbekistan."
+      "title": "Web studio in Tashkent - website development",
+      "description": "Web studio in Tashkent: website development, landing pages and online stores. Turnkey business card or corporate websites - from brief to launch."
     }
   },
   "errorPage": {
@@ -12,10 +12,82 @@
     "home": "Back home"
   },
   "hero": {
-    "title": "Websites, mobile apps, CRM and branding - all in one place",
-    "subtitle": "We craft solutions that set you apart from competitors through modern design, usability and effective management.",
+    "title": "Web studio in Tashkent: websites, apps and CRM development",
+    "subtitle": "We build business card websites, landing pages, corporate sites and online stores, as well as mobile apps and CRM systems. Modern design, well-thought structure and support after launch.",
     "cta_projects": "Our projects",
     "cta_contact": "Contact us"
+  },
+  "homeServices": {
+    "eyebrow": "Services",
+    "title": "Web studio services in Tashkent",
+    "subtitle": "Five directions - from a business card website to a CRM system. We build the solution around your task instead of selling a template.",
+    "all_link": "All services",
+    "error": "Failed to load services. Please refresh the page."
+  },
+  "homeAbout": {
+    "eyebrow": "About the studio",
+    "title": "Turnkey website development in Tashkent",
+    "p1a": "Evolution Systems is a web studio in Tashkent that develops websites end to end: from the idea and prototype to launch and support. We build ",
+    "link_websites": "business card websites",
+    "p1b": ", landing pages, corporate sites and online stores, as well as ",
+    "link_webapps": "web applications",
+    "p1c": " and ",
+    "link_crm": "CRM systems",
+    "p1d": ".",
+    "p2": "Every project starts with a brief and a free estimate. Then come structure, design, development and an SEO foundation, so the site not only looks modern but also brings clients from search. We work across Uzbekistan and remotely with clients from any country.",
+    "p3a": "Take a look at ",
+    "link_portfolio": "our projects",
+    "p3b": " to see the websites we create - or tell us about your task and we'll suggest the format that fits it best.",
+    "stats_title": "At a glance",
+    "stats": {
+      "s1": { "value": "5", "label": "service directions" },
+      "s2": { "value": "RU · UZ · EN", "label": "websites in three languages" },
+      "s3": { "value": "Laravel · Vue · Nuxt · Inertia", "label": "technology stack" },
+      "s4": { "value": "Support", "label": "after the launch" }
+    },
+    "stack_title": "Our stack",
+    "stack": {
+      "s1": "Laravel",
+      "s2": "Vue 3",
+      "s3": "Nuxt",
+      "s4": "Inertia.js"
+    }
+  },
+  "homeProcess": {
+    "eyebrow": "Process",
+    "title": "How we work and timelines",
+    "subtitle": "Transparent stages and clear timelines - you always know what is happening with your project and when it will be ready.",
+    "steps": {
+      "s1": {
+        "title": "Brief and estimate",
+        "text": "We discuss your task, goals and wishes. After the brief we prepare a free estimate - the price is fixed before work starts."
+      },
+      "s2": {
+        "title": "Prototype and design",
+        "text": "We map out the page structure, then agree on a prototype and a design shaped around your brand and audience."
+      },
+      "s3": {
+        "title": "Development",
+        "text": "We build and code the product, showing progress on a demo stand - you see the site long before launch."
+      },
+      "s4": {
+        "title": "Launch and SEO foundation",
+        "text": "We publish the project, connect analytics and cover the basic SEO setup for growth in search."
+      },
+      "s5": {
+        "title": "Support",
+        "text": "After launch we stay in touch: updates, improvements and help with growing the project."
+      }
+    },
+    "timeline_title": "Timelines by project type",
+    "timeline": {
+      "t1": { "label": "Business card website or landing page", "value": "from 2 weeks" },
+      "t2": { "label": "Corporate website", "value": "from 4-6 weeks" },
+      "t3": { "label": "Online store", "value": "from 6-8 weeks" },
+      "t4": { "label": "Mobile app or CRM", "value": "from 2-3 months" }
+    },
+    "price_note": "The price is set by estimate: the calculation is free after a short brief, with no hidden extras.",
+    "cta": "Discuss the project"
   },
   "portfolio": {
     "eyebrow": "Portfolio",
@@ -23,7 +95,19 @@
     "subtitle": "Projects we're proud of - from investment platforms to corporate websites.",
     "error": "Failed to load portfolio. Please try again later.",
     "empty": "New projects are on the way - check back soon.",
-    "all": "All projects"
+    "all": "All projects",
+    "seo": {
+      "title": "Web development portfolio in Tashkent: sites, apps, CRM",
+      "description": "Portfolio of Evolution Systems: corporate websites, online stores, CRM systems and apps for businesses in Tashkent, Uzbekistan. Explore our cases."
+    },
+    "intro": {
+      "p1": "Evolution Systems is a web agency in Tashkent. We build digital products for businesses across Uzbekistan: corporate websites, online stores, food ordering services, clinic sites, investment platforms and CRM tools. Every project in this portfolio solved a real business problem - more leads, smoother operations, better customer experience.",
+      "p2": "We pick the technology to fit the task: from {websites} and {webApps} to {crm} and {mobile}. In each case study we explain the business goal, the stack we chose and the results it delivered.",
+      "websites": "corporate websites",
+      "webApps": "web applications",
+      "crm": "CRM systems",
+      "mobile": "mobile apps"
+    }
   },
   "footer": {
     "prompt": "Let's build something great",
@@ -64,7 +148,20 @@
     "back": "Back to blog",
     "published": "Published",
     "tags": "Tags",
-    "similar": "More articles"
+    "similar": "More articles",
+    "seo": {
+      "title": "Blog on web development, CRM and apps in Tashkent",
+      "description": "Articles on website development and web apps: project costs, business CRM, mobile development and design. Hands-on notes from a Tashkent web agency."
+    },
+    "intro": {
+      "p1": "We design and build websites and digital products in Tashkent. The Evolution Systems blog is a practical read for businesses: what drives the cost of {webCost}, how {crm} keeps leads from slipping away, and when you actually need {webApps} and SaaS platforms instead of a simple site.",
+      "p2": "We also break down {mobileDev} and {branding}, share what we've learned launching products in Tashkent and answer the questions our clients ask most often.",
+      "webCost": "website development",
+      "crm": "a business CRM",
+      "webApps": "custom web applications",
+      "mobileDev": "mobile development",
+      "branding": "design and branding"
+    }
   },
   "portfolioDetail": {
     "back": "Back to portfolio",
@@ -265,6 +362,14 @@
     "q6": {
       "question": "Can you improve an existing website or app?",
       "answer": "Yes. We'll audit your current solution and propose a plan - from targeted improvements to a full redesign."
+    },
+    "q7": {
+      "question": "How much does a business card website cost in Tashkent?",
+      "answer": "It depends on the scope: the number of pages, the design and any integrations. After a short brief we prepare a free estimate and fix the exact price before work starts - no hidden extras."
+    },
+    "q8": {
+      "question": "Why choose a web studio over a freelancer?",
+      "answer": "A studio is a team: an analyst, a designer and developers all work on your project, deadlines and results are backed by a contract, and support doesn't depend on one person's vacation or workload."
     }
   }
 }
