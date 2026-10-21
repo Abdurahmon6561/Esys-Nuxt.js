@@ -6,6 +6,9 @@ const { locale, locales } = useI18n();
 const switchLocalePath = useSwitchLocalePath();
 const localePath = useLocalePath();
 const { open: openContact } = useContactModal();
+const track = useTrackEvent();
+
+const phone = "+998 71 200 11 33";
 
 const SCROLL_THRESHOLD = 24;
 const scrolled = ref(false);
@@ -107,6 +110,28 @@ onBeforeUnmount(() => {
             {{ $t(link.label) }}
           </NuxtLink>
         </nav>
+
+        <!-- Phone - always reachable, icon-only on narrow screens -->
+        <a
+          :href="`tel:${phone.replace(/\s/g, '')}`"
+          class="navbar__phone"
+          :aria-label="`${$t('footer.phone')}: ${phone}`"
+          @click="track('phone_click')"
+        >
+          <svg
+            class="navbar__phone-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          <span class="navbar__phone-label">{{ phone }}</span>
+        </a>
 
         <button ref="cta" type="button" class="navbar__cta" @click="openContact">
           {{ $t("hero.cta_contact") }}
@@ -453,6 +478,46 @@ onBeforeUnmount(() => {
   transform: translateY(-6px);
 }
 
+/* Phone link - pill matching the language toggle */
+.navbar__phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.navbar__phone:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.navbar__phone-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Compact pill: icon only, so the slim scrolled pill keeps its width */
+.navbar__inner.is-compact .navbar__phone {
+  padding: 8px;
+}
+
+.navbar__inner.is-compact .navbar__phone-label {
+  display: none;
+}
+
 /* Contact us CTA */
 .navbar__cta {
   position: relative;
@@ -650,6 +715,16 @@ onBeforeUnmount(() => {
   }
   .navbar__burger {
     display: flex;
+  }
+  /* Icon-only phone button with a 44x44 tap target */
+  .navbar__phone {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+  .navbar__phone-label {
+    display: none;
   }
 }
 

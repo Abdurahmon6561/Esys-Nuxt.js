@@ -29,12 +29,14 @@ const localeLinks = computed(() => {
 // Self-canonical for every page (listing, about, contact, home). Detail
 // pages (portfolio/[alias], blog/[alias], services/[slug]) override it with
 // the same 'i18n-canonical' key, so CMS-resolved canonicals keep winning.
+// On the home page route.path is "/", but the hreflang links and og:url use
+// siteUrl without a trailing slash - match them to avoid a self-redirect.
 const headLinks = computed(() => [
   ...localeLinks.value,
   {
     rel: "canonical",
     key: "i18n-canonical",
-    href: `${siteUrl}${route.path}`,
+    href: route.path === "/" ? siteUrl.replace(/\/$/, "") : `${siteUrl}${route.path}`,
   },
 ]);
 

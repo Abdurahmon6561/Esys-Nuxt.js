@@ -135,6 +135,7 @@
   },
   "cookie": {
     "text": "This site uses cookies to enhance your experience. By continuing, you agree to our use of cookies as outlined in our {privacy} and {terms}.",
+    "textShort": "We use cookies to improve this site. See our {privacy} and {terms}.",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "acceptAll": "Accept all",

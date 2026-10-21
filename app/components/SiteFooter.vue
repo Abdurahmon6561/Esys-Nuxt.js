@@ -12,6 +12,7 @@ const onSocialClick = (name) => track(`${name.toLowerCase()}_click`);
 const brand = "Evolution Systems";
 const watermark = "ESYS";
 const email = "hi@esys.pro";
+const phone = "+998 71 200 11 33";
 
 // Social links - update handles to the real accounts.
 const socials = [
@@ -136,6 +137,13 @@ onBeforeUnmount(() => {
             @click="track('email_click')"
           >
             {{ $t("footer.email") }}
+          </a>
+          <a
+            :href="`tel:${phone.replace(/\s/g, '')}`"
+            class="footer__btn footer__btn--ghost"
+            @click="track('phone_click')"
+          >
+            {{ phone }}
           </a>
         </div>
       </div>

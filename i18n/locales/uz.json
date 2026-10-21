@@ -135,6 +135,7 @@
   },
   "cookie": {
     "text": "Ushbu sayt tajribangizni yaxshilash uchun cookie'lardan foydalanadi. Davom etib, {privacy} va {terms} shartlariga muvofiq ulardan foydalanishga rozilik bildirasiz.",
+    "textShort": "Sayt cookie'lardan foydalanadi. Batafsil - {privacy} va {terms}da.",
     "privacy": "Maxfiylik siyosati",
     "terms": "Foydalanish shartlari",
     "acceptAll": "Hammasini qabul qilish",

@@ -27,8 +27,11 @@ const isExcludedPath = (pathname: string) =>
  *  - the www host (www.esys.pro → esys.pro),
  *  - a trailing slash on any path except the root,
  *  - an explicit default-locale prefix (/ru, /ru/... → unprefixed),
- *  - duplicate slashes.
- * Path and query string are preserved. Returns null when no redirect is
+ *  - duplicate slashes,
+ *  - uppercase ASCII letters in the path (/About → /about); paths
+ *    containing a %XX escape are never lowercased.
+ * Path and query string are preserved (the query is never changed).
+ * Returns null when no redirect is
  * needed. The target origin is always `siteOrigin` or, for non-www hosts,
  * a same-origin relative path starting with exactly one "/", so the result
  * can never be an open redirect.
@@ -45,6 +48,12 @@ export function canonicalRedirect(
   const isWww = host === `www.${siteHost}`;
 
   let path = input.pathname.replace(/\/{2,}/g, "/");
+
+  // Lowercase ASCII letters only. %XX escapes use uppercase hex, so a path
+  // containing '%' is left untouched rather than parsed escape-by-escape.
+  if (!path.includes("%")) {
+    path = path.replace(/[A-Z]/g, (c) => c.toLowerCase());
+  }
 
   if (path === "/ru" || path.startsWith("/ru/")) {
     path = path.slice(3) || "/";

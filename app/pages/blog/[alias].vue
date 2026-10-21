@@ -80,16 +80,25 @@ usePageAlternates(() =>
     : null
 );
 
+// `published_at`/`updated_at` arrive as PHP 'F j, Y' English strings; JSON-LD
+// needs ISO 8601, so they go through toIsoDate before reaching the markup.
+const datePublished = computed(() => toIsoDate(blog.value?.published_at) || undefined);
+const dateModified = computed(() => {
+  const updated = toIsoDate(blog.value?.updated_at);
+  return updated || datePublished.value;
+});
+
 const articleJsonLd = computed(() => {
   if (!blog.value) return "";
   return JSON.stringify([
     {
       "@context": "https://schema.org",
-      "@type": "Article",
+      "@type": "BlogPosting",
       headline: blog.value.title,
       description: summary.value || undefined,
       image: blog.value.image || undefined,
-      datePublished: blog.value.published_at || undefined,
+      datePublished: datePublished.value,
+      dateModified: dateModified.value,
       inLanguage: locale.value,
       mainEntityOfPage: `${siteUrl}${route.path}`,
       author: { "@type": "Organization", name: "Evolution Systems", url: siteUrl },
@@ -126,7 +135,7 @@ useHead(() => ({
         :eyebrow="$t('blog.eyebrow')"
         :title="resolved?.h1 || blog.title"
         :meta="[
-          { label: $t('blog.published'), value: blog.published_at },
+          { label: $t('blog.published'), value: formatBlogDate(blog.published_at, locale) },
           ...(tagsText ? [{ label: $t('blog.tags'), value: tagsText }] : []),
         ]"
       >

@@ -15,6 +15,7 @@ const props = defineProps({
 });
 
 const localePath = useLocalePath();
+const { locale } = useI18n();
 
 const target = computed(() => localePath(props.to));
 const tags = computed(() => props.item.tags?.length ? props.item.tags : props.item.services ?? []);
@@ -55,7 +56,7 @@ const tags = computed(() => props.item.tags?.length ? props.item.tags : props.it
         {{ item.short_text }}
       </p>
       <p v-if="showDate && item.published_at" class="ucard__date">
-        {{ item.published_at }}
+        {{ formatBlogDate(item.published_at, locale) }}
       </p>
 
       <ul v-if="tags.length" class="ucard__tags">

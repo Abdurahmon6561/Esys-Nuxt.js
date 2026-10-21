@@ -49,7 +49,22 @@ const acceptAll = () => {
     >
       <span class="cookie__icon" aria-hidden="true">🍪</span>
 
-      <i18n-t keypath="cookie.text" tag="p" class="cookie__text" scope="global">
+      <i18n-t keypath="cookie.text" tag="p" class="cookie__text cookie__text--full" scope="global">
+        <template #privacy>
+          <NuxtLink :to="localePath('/privacy')" class="cookie__link">
+            {{ t("cookie.privacy") }}
+          </NuxtLink>
+        </template>
+        <template #terms>
+          <NuxtLink :to="localePath('/privacy')" class="cookie__link">
+            {{ t("cookie.terms") }}
+          </NuxtLink>
+        </template>
+      </i18n-t>
+
+      <!-- Mobile variant: same links, shorter copy, so the slim bar stays
+           ~2 lines tall while the privacy link stays visible and tappable. -->
+      <i18n-t keypath="cookie.textShort" tag="p" class="cookie__text cookie__text--short" scope="global">
         <template #privacy>
           <NuxtLink :to="localePath('/privacy')" class="cookie__link">
             {{ t("cookie.privacy") }}
@@ -168,6 +183,53 @@ const acceptAll = () => {
   }
   .cookie__btn {
     transition: none;
+  }
+}
+
+/* ── Mobile: slim bar pinned to the bottom edge ──
+   On small screens the floating card covered both hero CTA buttons, so
+   below 640px it becomes a full-width bar of at most ~96px (a shorter
+   cookie copy keeps the privacy/terms links inside the visible text
+   instead of clamping them away). Desktop styling is untouched. */
+@media (max-width: 639px) {
+  .cookie {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: none;
+    padding: 10px 16px env(safe-area-inset-bottom);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .cookie__icon {
+    display: none;
+  }
+
+  .cookie__text {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .cookie__text--full {
+    display: none;
+  }
+
+  .cookie__actions {
+    justify-content: flex-end;
+  }
+
+  .cookie__btn {
+    padding: 7px 16px;
+  }
+}
+
+@media (min-width: 640px) {
+  .cookie__text--short {
+    display: none;
   }
 }
 </style>

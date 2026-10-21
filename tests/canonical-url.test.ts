@@ -63,6 +63,35 @@ test("API, framework, sitemap and static files are never touched", () => {
   }
 });
 
+test("uppercase path is lowercased in a single redirect", () => {
+  assert.equal(canonicalRedirect(req("esys.pro", "/About"), opts), "/about");
+  assert.equal(
+    canonicalRedirect(req("esys.pro", "/en/Services/Websites"), opts),
+    "/en/services/websites",
+  );
+});
+
+test("uppercase + /ru prefix + trailing slash collapse into one redirect", () => {
+  assert.equal(canonicalRedirect(req("esys.pro", "/RU/About/", "?a=1"), opts), "/about?a=1");
+  assert.equal(canonicalRedirect(req("www.esys.pro", "/RU/About/"), opts), "https://esys.pro/about");
+});
+
+test("the query string is preserved as-is, never lowercased", () => {
+  assert.equal(canonicalRedirect(req("esys.pro", "/Services", "?Tag=Foo"), opts), "/services?Tag=Foo");
+});
+
+test("excluded paths keep their original casing", () => {
+  assert.equal(canonicalRedirect(req("www.esys.pro", "/_nuxt/ABC.js"), opts), null);
+});
+
+test("percent-encoded paths are left untouched", () => {
+  assert.equal(canonicalRedirect(req("esys.pro", "/%D0%B0%D0%B9"), opts), null);
+});
+
+test("an already-lowercase path returns null", () => {
+  assert.equal(canonicalRedirect(req("esys.pro", "/services/websites", "?a=1"), opts), null);
+});
+
 test("non-GET requests are never redirected", () => {
   assert.equal(canonicalRedirect(req("www.esys.pro", "/contact/", "", "POST"), opts), null);
   assert.equal(canonicalRedirect(req("esys.pro", "/services/", "", "HEAD"), opts), "/services");
