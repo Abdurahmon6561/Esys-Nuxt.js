@@ -1,5 +1,7 @@
 // User-Agent names of AI crawlers, model trainers and AI-assistant fetchers.
-// Keep in sync with public/robots.txt and admin.esys config/crawlers.php.
+// Keep in sync with public/robots.txt and admin.esys config/crawlers.php
+// (except YandexAdditional: allowed here so esys.pro stays eligible for
+// Yandex Neuro answers; still blocked on the admin panel and demos).
 // Classic search engines (Googlebot, bingbot, YandexBot) are intentionally absent.
 export const AI_CRAWLERS = [
   "GPTBot",
@@ -34,7 +36,6 @@ export const AI_CRAWLERS = [
   "Omgilibot",
   "Timpibot",
   "PanguBot",
-  "YandexAdditional",
   "Kangaroo Bot",
   "Webzio-Extended",
   "img2dataset",

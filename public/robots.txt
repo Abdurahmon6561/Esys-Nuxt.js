@@ -32,8 +32,6 @@ User-agent: ImagesiftBot
 User-agent: Omgilibot
 User-agent: Timpibot
 User-agent: PanguBot
-User-agent: YandexAdditional
-User-agent: YandexAdditionalBot
 User-agent: Kangaroo Bot
 User-agent: Webzio-Extended
 User-agent: img2dataset
