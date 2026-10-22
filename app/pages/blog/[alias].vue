@@ -96,20 +96,24 @@ const articleJsonLd = computed(() => {
       "@type": "BlogPosting",
       headline: blog.value.title,
       description: summary.value || undefined,
-      image: blog.value.image || undefined,
+      image: schemaImage(
+        absoluteOgImage(blog.value.image),
+        `${siteUrl}/og-image.png`
+      ),
       datePublished: datePublished.value,
       dateModified: dateModified.value,
       inLanguage: locale.value,
       mainEntityOfPage: `${siteUrl}${route.path}`,
-      author: { "@type": "Organization", name: "Evolution Systems", url: siteUrl },
-      publisher: { "@type": "Organization", name: "Evolution Systems", url: siteUrl },
+      author: { "@id": orgId(siteUrl) },
+      publisher: { "@id": orgId(siteUrl) },
+      isPartOf: { "@id": websiteId(siteUrl) },
     },
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Evolution Systems", item: siteUrl },
-        { "@type": "ListItem", position: 2, name: t("blog.title"), item: `${siteUrl}${localePath("/blog")}` },
+        { "@type": "ListItem", position: 2, name: t("nav.blog"), item: `${siteUrl}${localePath("/blog")}` },
         { "@type": "ListItem", position: 3, name: blog.value.title, item: `${siteUrl}${route.path}` },
       ],
     },
@@ -121,7 +125,13 @@ useHead(() => ({
     ? [{ rel: "canonical", key: "i18n-canonical", href: resolved.value.canonical }]
     : [],
   script: articleJsonLd.value
-    ? [{ type: "application/ld+json", innerHTML: articleJsonLd.value }]
+    ? [
+        {
+          key: "article-schema",
+          type: "application/ld+json",
+          innerHTML: articleJsonLd.value,
+        },
+      ]
     : [],
 }));
 </script>

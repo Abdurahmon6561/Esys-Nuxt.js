@@ -6,7 +6,6 @@ const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 const metrikaId = config.public.metrikaId;
 const route = useRoute();
-const localePath = useLocalePath();
 const pageAlternates = usePageAlternatesState();
 
 // Keep only hreflang links for locales the current page really has (see
@@ -41,25 +40,52 @@ const headLinks = computed(() => [
 ]);
 
 // Organization schema - emitted once, site-wide
-const organizationJsonLd = computed(() => {
-  const localizedHome = localePath("/");
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "Evolution Systems",
-    url: `${siteUrl}${localizedHome === "/" ? "" : localizedHome}`,
-    logo: `${siteUrl}/images/logo.webp`,
-    email: "hi@esys.pro",
-    telephone: "+998712001133",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Tashkent",
-      addressCountry: "UZ",
+const organizationJsonLd = computed(() => ({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": orgId(siteUrl),
+      name: "Evolution Systems",
+      alternateName: ["ESYS"],
+      url: siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/images/logo.webp`,
+      },
+      description:
+        "Веб-студия в Ташкенте: разработка сайтов, мобильных приложений, CRM-систем, веб-приложений и брендинг.",
+      email: "hi@esys.pro",
+      telephone: "+998712001133",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Tashkent",
+        addressCountry: "UZ",
+      },
+      areaServed: [
+        { "@type": "City", name: "Tashkent" },
+        { "@type": "Country", name: "Uzbekistan" },
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+998712001133",
+        email: "hi@esys.pro",
+        contactType: "sales",
+        availableLanguage: ["ru", "uz", "en"],
+      },
+      sameAs: ["https://t.me/esys_pro", "https://www.instagram.com/esysuz"],
     },
-    sameAs: ["https://t.me/esys_pro", "https://www.instagram.com/esysuz"],
-  };
-});
+    {
+      "@type": "WebSite",
+      "@id": websiteId(siteUrl),
+      url: siteUrl,
+      name: "Evolution Systems",
+      alternateName: "ESYS",
+      inLanguage: ["ru", "uz", "en"],
+      publisher: { "@id": orgId(siteUrl) },
+    },
+  ],
+}));
 
 useHead(() => ({
   htmlAttrs: localeHead.value.htmlAttrs,
@@ -69,6 +95,7 @@ useHead(() => ({
     chunk ? `${chunk} - Evolution Systems` : "Evolution Systems",
   script: [
     {
+      key: "site-schema",
       type: "application/ld+json",
       innerHTML: JSON.stringify(organizationJsonLd.value),
     },

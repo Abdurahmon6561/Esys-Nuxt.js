@@ -2,6 +2,9 @@
 const { portfolioApi } = useApiService();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const route = useRoute();
+const config = useRuntimeConfig();
+const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 // getPortfolios() → portfolio/all. Envelope: { data: [...] }.
 const { data, pending, error } = await useAsyncData(
@@ -18,6 +21,29 @@ useSeoMeta({
   ogTitle: () => t("portfolio.seo.title"),
   ogDescription: () => t("portfolio.seo.description"),
 });
+
+const breadcrumbsJsonLd = computed(() => {
+  const homePath = localePath("/");
+  return JSON.stringify(
+    breadcrumbList([
+      {
+        name: "Evolution Systems",
+        url: `${siteUrl}${homePath === "/" ? "" : homePath}`,
+      },
+      { name: t("nav.portfolio"), url: `${siteUrl}${route.path}` },
+    ])
+  );
+});
+
+useHead(() => ({
+  script: [
+    {
+      key: "portfolio-breadcrumb-schema",
+      type: "application/ld+json",
+      innerHTML: breadcrumbsJsonLd.value,
+    },
+  ],
+}));
 </script>
 
 <template>

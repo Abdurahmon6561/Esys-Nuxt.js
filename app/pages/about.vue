@@ -1,5 +1,9 @@
 <script setup>
 const { t } = useI18n();
+const localePath = useLocalePath();
+const route = useRoute();
+const config = useRuntimeConfig();
+const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 const PROCESS_STEPS = 5;
 const VALUE_COUNT = 3;
@@ -13,6 +17,38 @@ useSeoMeta({
   ogTitle: () => t("about.seo.title"),
   ogDescription: () => t("about.seo.description"),
 });
+
+const aboutJsonLd = computed(() => {
+  const homePath = localePath("/");
+  const pageUrl = `${siteUrl}${route.path}`;
+  return JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "AboutPage",
+      url: pageUrl,
+      name: t("about.title"),
+      about: { "@id": orgId(siteUrl) },
+      isPartOf: { "@id": websiteId(siteUrl) },
+    },
+    breadcrumbList([
+      {
+        name: "Evolution Systems",
+        url: `${siteUrl}${homePath === "/" ? "" : homePath}`,
+      },
+      { name: t("nav.about"), url: pageUrl },
+    ]),
+  ]);
+});
+
+useHead(() => ({
+  script: [
+    {
+      key: "about-schema",
+      type: "application/ld+json",
+      innerHTML: aboutJsonLd.value,
+    },
+  ],
+}));
 </script>
 
 <template>

@@ -2,7 +2,10 @@
 const { servicesApi } = useApiService();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const route = useRoute();
 const { open: openContact } = useContactModal();
+const config = useRuntimeConfig();
+const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 // getServices() → services. Envelope: { data: [{ title, short_text, text, image }] }.
 const { data, pending, error } = await useAsyncData(
@@ -25,6 +28,29 @@ useSeoMeta({
   ogTitle: () => t("services.seo.title"),
   ogDescription: () => t("services.seo.description"),
 });
+
+const breadcrumbsJsonLd = computed(() => {
+  const homePath = localePath("/");
+  return JSON.stringify(
+    breadcrumbList([
+      {
+        name: "Evolution Systems",
+        url: `${siteUrl}${homePath === "/" ? "" : homePath}`,
+      },
+      { name: t("nav.services"), url: `${siteUrl}${route.path}` },
+    ])
+  );
+});
+
+useHead(() => ({
+  script: [
+    {
+      key: "services-breadcrumb-schema",
+      type: "application/ld+json",
+      innerHTML: breadcrumbsJsonLd.value,
+    },
+  ],
+}));
 </script>
 
 <template>

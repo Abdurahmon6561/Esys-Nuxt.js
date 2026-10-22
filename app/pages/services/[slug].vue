@@ -118,19 +118,20 @@ const serviceJsonLd = computed(() => {
     {
       "@context": "https://schema.org",
       "@type": "Service",
+      "@id": `${siteUrl}${route.path}#service`,
       name: service.value.title,
+      serviceType: service.value.title,
       description:
         seo.value?.meta_description ||
         leadText.value ||
         undefined,
-      image: service.value.image ? absoluteOgImage(service.value.image) : undefined,
+      image: schemaImage(
+        absoluteOgImage(service.value.image),
+        `${siteUrl}/og-image.png`
+      ),
       url: `${siteUrl}${route.path}`,
-      provider: {
-        "@type": "Organization",
-        name: "Evolution Systems",
-        url: siteUrl,
-      },
-      areaServed: "UZ",
+      provider: { "@id": orgId(siteUrl) },
+      areaServed: { "@type": "City", name: "Tashkent" },
     },
     {
       "@context": "https://schema.org",
@@ -140,7 +141,7 @@ const serviceJsonLd = computed(() => {
         {
           "@type": "ListItem",
           position: 2,
-          name: t("services.title"),
+          name: t("nav.services"),
           item: `${siteUrl}${localePath("/services")}`,
         },
         {
@@ -187,7 +188,13 @@ useHead(() => ({
     },
   ],
   script: serviceJsonLd.value
-    ? [{ type: "application/ld+json", innerHTML: serviceJsonLd.value }]
+    ? [
+        {
+          key: "service-schema",
+          type: "application/ld+json",
+          innerHTML: serviceJsonLd.value,
+        },
+      ]
     : [],
 }));
 

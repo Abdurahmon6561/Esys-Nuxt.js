@@ -1,6 +1,10 @@
 <script setup>
 const { t } = useI18n();
+const localePath = useLocalePath();
+const route = useRoute();
 const track = useTrackEvent();
+const config = useRuntimeConfig();
+const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 const email = "hi@esys.pro";
 const phone = "+998 71 200 11 33";
@@ -11,6 +15,38 @@ useSeoMeta({
   ogTitle: () => t("contact.title"),
   ogDescription: () => t("contact.subtitle"),
 });
+
+const contactJsonLd = computed(() => {
+  const homePath = localePath("/");
+  const pageUrl = `${siteUrl}${route.path}`;
+  return JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      url: pageUrl,
+      name: t("contact.title"),
+      about: { "@id": orgId(siteUrl) },
+      isPartOf: { "@id": websiteId(siteUrl) },
+    },
+    breadcrumbList([
+      {
+        name: "Evolution Systems",
+        url: `${siteUrl}${homePath === "/" ? "" : homePath}`,
+      },
+      { name: t("footer.links.contact"), url: pageUrl },
+    ]),
+  ]);
+});
+
+useHead(() => ({
+  script: [
+    {
+      key: "contact-schema",
+      type: "application/ld+json",
+      innerHTML: contactJsonLd.value,
+    },
+  ],
+}));
 </script>
 
 <template>

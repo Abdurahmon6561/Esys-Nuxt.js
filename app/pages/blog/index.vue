@@ -2,6 +2,9 @@
 const { blogApi } = useApiService();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
+const route = useRoute();
+const config = useRuntimeConfig();
+const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 // getBlogs() → blog/all (paginated 10). Envelope: { data: [...], links, meta }.
 const { data, pending, error } = await useAsyncData(
@@ -18,6 +21,29 @@ useSeoMeta({
   ogTitle: () => t("blog.seo.title"),
   ogDescription: () => t("blog.seo.description"),
 });
+
+const breadcrumbsJsonLd = computed(() => {
+  const homePath = localePath("/");
+  return JSON.stringify(
+    breadcrumbList([
+      {
+        name: "Evolution Systems",
+        url: `${siteUrl}${homePath === "/" ? "" : homePath}`,
+      },
+      { name: t("nav.blog"), url: `${siteUrl}${route.path}` },
+    ])
+  );
+});
+
+useHead(() => ({
+  script: [
+    {
+      key: "blog-breadcrumb-schema",
+      type: "application/ld+json",
+      innerHTML: breadcrumbsJsonLd.value,
+    },
+  ],
+}));
 </script>
 
 <template>

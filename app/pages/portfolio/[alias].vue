@@ -44,6 +44,7 @@ const servicesText = computed(() =>
   ).join(" · ")
 );
 const techText = computed(() => portfolio.value?.technologies?.join(" · ") || "");
+const summary = computed(() => plainText(portfolio.value?.short_text));
 
 const meta = computed(() => {
   const m = [];
@@ -76,7 +77,7 @@ const lightboxLabels = computed(() => ({
   counter: (current, total) => t("portfolioDetail.lightbox.counter", { current, total }),
 }));
 
-// BreadcrumbList structured data for search engines
+// CreativeWork + BreadcrumbList structured data for search engines
 const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 const apiOrigin = config.public.apiUrl ? new URL(config.public.apiUrl).origin : "";
@@ -113,25 +114,58 @@ usePageAlternates(() =>
     : null
 );
 
-const breadcrumbJsonLd = computed(() => {
+const portfolioJsonLd = computed(() => {
   if (!portfolio.value) return "";
-  return JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Evolution Systems", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: t("portfolio.title"), item: `${siteUrl}${localePath("/portfolio")}` },
-      { "@type": "ListItem", position: 3, name: portfolio.value.title, item: `${siteUrl}${route.path}` },
-    ],
-  });
+  return JSON.stringify([
+    {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "@id": `${siteUrl}${route.path}#work`,
+      name: portfolio.value.title,
+      description: summary.value || undefined,
+      url: `${siteUrl}${route.path}`,
+      image: schemaImage(
+        absoluteOgImage(portfolio.value.image),
+        `${siteUrl}/og-image.png`
+      ),
+      creator: { "@id": orgId(siteUrl) },
+      inLanguage: locale.value,
+      ...(portfolio.value.client
+        ? {
+            about: {
+              "@type": "Organization",
+              name: portfolio.value.client,
+            },
+          }
+        : {}),
+      keywords: portfolio.value.tags?.length
+        ? portfolio.value.tags.join(", ")
+        : undefined,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Evolution Systems", item: siteUrl },
+        { "@type": "ListItem", position: 2, name: t("nav.portfolio"), item: `${siteUrl}${localePath("/portfolio")}` },
+        { "@type": "ListItem", position: 3, name: portfolio.value.title, item: `${siteUrl}${route.path}` },
+      ],
+    },
+  ]);
 });
 
 useHead(() => ({
   link: resolved.value?.canonical
     ? [{ rel: "canonical", key: "i18n-canonical", href: resolved.value.canonical }]
     : [],
-  script: breadcrumbJsonLd.value
-    ? [{ type: "application/ld+json", innerHTML: breadcrumbJsonLd.value }]
+  script: portfolioJsonLd.value
+    ? [
+        {
+          key: "portfolio-schema",
+          type: "application/ld+json",
+          innerHTML: portfolioJsonLd.value,
+        },
+      ]
     : [],
 }));
 </script>
