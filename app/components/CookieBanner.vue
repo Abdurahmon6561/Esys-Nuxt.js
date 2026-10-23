@@ -1,18 +1,44 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onBeforeUnmount, onMounted, nextTick, watch } from "vue";
 
 const { t } = useI18n();
 const localePath = useLocalePath();
 
 const STORAGE_KEY = "cookie_consent";
-const visible = ref(false);
+const visible = useState("cookie-banner-visible", () => false);
+const bannerHeight = useState("cookie-banner-height", () => 0);
+const bannerEl = ref(null);
+let resizeObserver;
 
-onMounted(() => {
+const measureBanner = () => {
+  bannerHeight.value = bannerEl.value?.getBoundingClientRect().height ?? 0;
+};
+
+onMounted(async () => {
   try {
     if (!localStorage.getItem(STORAGE_KEY)) visible.value = true;
   } catch {
     visible.value = true;
   }
+
+  if (!visible.value) return;
+
+  await nextTick();
+  measureBanner();
+
+  if (typeof ResizeObserver !== "undefined" && bannerEl.value) {
+    resizeObserver = new ResizeObserver(measureBanner);
+    resizeObserver.observe(bannerEl.value);
+  }
+});
+
+watch(visible, (isVisible) => {
+  if (!isVisible) bannerHeight.value = 0;
+});
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+  bannerHeight.value = 0;
 });
 
 const persist = (value) => {
@@ -42,6 +68,7 @@ const acceptAll = () => {
   <Transition name="cookie">
     <div
       v-if="visible"
+      ref="bannerEl"
       class="cookie"
       role="dialog"
       :aria-label="t('cookie.ariaLabel')"

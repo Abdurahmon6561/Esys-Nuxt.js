@@ -3,6 +3,8 @@ import { ref, nextTick, watch } from "vue";
 
 const { t } = useI18n();
 const config = useRuntimeConfig();
+const cookieBannerVisible = useState("cookie-banner-visible", () => false);
+const cookieBannerHeight = useState("cookie-banner-height", () => 0);
 
 const apiUrl = `${config.public.apiUrl}consultant/chat`;
 const widgetKey = config.public.consultantKey;
@@ -143,7 +145,14 @@ const newSession = () => {
 </script>
 
 <template>
-  <div class="consultant">
+  <div
+    class="consultant"
+    :class="{
+      'cookie-banner-visible':
+        cookieBannerVisible && cookieBannerHeight > 0 && !isOpen,
+    }"
+    :style="{ '--cookie-banner-h': `${cookieBannerHeight}px` }"
+  >
     <Transition name="consultant-panel">
       <div
         v-if="isOpen"
@@ -687,6 +696,16 @@ const newSession = () => {
   }
 }
 
+@media (max-width: 639px) {
+  .consultant {
+    transition: bottom 0.2s ease;
+  }
+
+  .consultant.cookie-banner-visible {
+    bottom: calc(var(--cookie-banner-h) + 12px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .consultant__dot,
   .consultant__msg,
@@ -694,6 +713,7 @@ const newSession = () => {
   .consultant__badge {
     animation: none;
   }
+  .consultant,
   .consultant__toggle,
   .consultant-panel-enter-active,
   .consultant-panel-leave-active {
