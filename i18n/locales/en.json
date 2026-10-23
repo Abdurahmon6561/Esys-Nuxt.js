@@ -153,6 +153,10 @@
     "tags": "Tags",
     "similar": "More articles",
     "services_title": "Related services",
+    "share": "Share",
+    "shareOn": "Share on {network}",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied",
     "seo": {
       "title": "Blog on web development, CRM and apps in Tashkent",
       "description": "Articles on website development and web apps: project costs, business CRM, mobile development and design. Hands-on notes from a Tashkent web agency."

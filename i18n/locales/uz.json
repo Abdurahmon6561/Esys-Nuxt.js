@@ -153,6 +153,10 @@
     "tags": "Teglar",
     "similar": "Yana maqolalar",
     "services_title": "Mavzuga oid xizmatlar",
+    "share": "Ulashish",
+    "shareOn": "{network} orqali ulashish",
+    "copyLink": "Havolani nusxalash",
+    "linkCopied": "Havola nusxalandi",
     "seo": {
       "title": "Toshkent veb-studiyasi blogi: saytlar, CRM, ilovalar",
       "description": "Sayt yaratish va veb-ilovalar haqida maqolalar: loyiha narxi, biznes uchun CRM, mobil ilovalar va dizayn. Toshkent veb-studiyasidan amaliy maslahatlar."

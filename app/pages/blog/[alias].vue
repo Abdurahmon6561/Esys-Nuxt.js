@@ -46,6 +46,7 @@ const tagsText = computed(() => blog.value?.tags?.join(" · ") || "");
 // Article + BreadcrumbList structured data for search engines
 const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
+const shareUrl = computed(() => `${siteUrl}${route.path}`);
 const apiOrigin = config.public.apiUrl ? new URL(config.public.apiUrl).origin : "";
 
 // Backend may return a relative storage path - social crawlers need an absolute URL.
@@ -195,6 +196,12 @@ useHead(() => ({
               sizes="100vw lg:1200px"
             />
           </figure>
+
+          <UiShareButtons
+            :url="shareUrl"
+            :title="blog.title"
+            class="article__share"
+          />
 
           <button
             v-if="blog.has_contact"
@@ -365,6 +372,10 @@ useHead(() => ({
   width: 100%;
   border-radius: 1rem;
   background: #0a0a2e;
+}
+
+.article__share {
+  margin-top: 1rem;
 }
 
 .article__cta {
