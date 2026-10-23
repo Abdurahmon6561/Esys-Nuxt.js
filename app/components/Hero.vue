@@ -111,10 +111,10 @@ onBeforeUnmount(() => {
 /* ---------- Film grain (procedural SVG noise, high density) ---------- */
 .hero__grain {
   position: absolute;
-  inset: -50%;
+  inset: -10%;
   z-index: 1;
-  width: 200%;
-  height: 200%;
+  width: 120%;
+  height: 120%;
   pointer-events: none;
   opacity: 0.38;
   mix-blend-mode: overlay;
@@ -169,13 +169,13 @@ onBeforeUnmount(() => {
   50% { opacity: 1; }
 }
 
-/* ---------- Top darkening - fades into near-black at the top (multiply) ---------- */
+/* ---------- Top darkening - fades into near-black at the top ---------- */
 .hero__scrim {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  mix-blend-mode: multiply;
+  /* Black multiply is identical to normal alpha blending. */
   background: linear-gradient(
     to bottom,
     #000000 0%,

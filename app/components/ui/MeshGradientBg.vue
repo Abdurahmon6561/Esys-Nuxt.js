@@ -16,6 +16,7 @@ const props = defineProps({
 
 const host = ref(null);
 let mount = null;
+let observer = null;
 
 onMounted(async () => {
   // Footer background — below the fold. Load the shader lib only when the
@@ -31,9 +32,13 @@ onMounted(async () => {
     defaultObjectSizing,
     ShaderFitOptions,
   } = await import("@paper-design/shaders");
+  if (!host.value) return; // unmounted while the chunk loaded
 
   const colors = props.colors.map((c) => getShaderColorFromString(c));
   const s = defaultObjectSizing;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   const uniforms = {
     u_colors: colors,
@@ -58,11 +63,26 @@ onMounted(async () => {
     meshGradientFragmentShader,
     uniforms,
     undefined,
-    props.speed,
+    0,
+    0,
+    1,
+    1280 * 720,
   );
+
+  // Render one static frame, then animate only while the footer is visible.
+  mount.setFrame(0);
+  observer = new IntersectionObserver(([entry]) => {
+    mount?.setSpeed(entry.isIntersecting && !reducedMotion ? props.speed : 0);
+  });
+  observer.observe(host.value);
 });
 
-onBeforeUnmount(() => mount?.dispose());
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  observer = null;
+  mount?.dispose();
+  mount = null;
+});
 </script>
 
 <template>

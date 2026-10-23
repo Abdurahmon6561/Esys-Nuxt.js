@@ -15,8 +15,18 @@ const STATION_PAUSE = 6;
 const STATION_START_OFFSET = STATION_DURATION * 0.18; // begin mid-crossing so visible at load
 const TRAIL_COUNT = 90;
 const CAMERA_Z = 120;
+const MAX_PIXELS = 1920 * 1080;
+const FRAME_INTERVAL = 1000 / 60 - 2;
 
 let cleanup = null;
+
+function getPixelRatio(width, height) {
+  const pixelBudgetRatio = Math.sqrt(MAX_PIXELS / Math.max(width * height, 1));
+  return Math.max(
+    0.75,
+    Math.min(window.devicePixelRatio || 1, 2, pixelBudgetRatio),
+  );
+}
 
 const STAR_VERTEX = `
   attribute float aSize;
@@ -558,15 +568,17 @@ async function initScene(container) {
   ).matches;
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
-  const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  const initialWidth = container.clientWidth;
+  const initialHeight = container.clientHeight;
+  const pixelRatio = getPixelRatio(initialWidth, initialHeight);
   renderer.setPixelRatio(pixelRatio);
-  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setSize(initialWidth, initialHeight);
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     55,
-    container.clientWidth / container.clientHeight,
+    initialWidth / initialHeight,
     0.1,
     400
   );
@@ -941,9 +953,12 @@ async function initScene(container) {
   // the Timer kept accumulating wall-clock time, so a page left open for hours
   // paid for frames nobody watched.
   let running = false;
+  let lastRenderedAt = 0;
 
-  const animate = () => {
+  const animate = (timestamp) => {
     rafId = requestAnimationFrame(animate);
+    if (lastRenderedAt && timestamp - lastRenderedAt < FRAME_INTERVAL) return;
+    lastRenderedAt = timestamp;
     renderFrame();
   };
 
@@ -953,6 +968,7 @@ async function initScene(container) {
     // Re-baseline the clock so the first frame after a pause gets a normal
     // delta instead of the whole idle gap.
     timer.update();
+    lastRenderedAt = 0;
     rafId = requestAnimationFrame(animate);
   };
 
@@ -997,7 +1013,11 @@ async function initScene(container) {
     if (!w || !h) return;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    const nextPixelRatio = getPixelRatio(w, h);
+    renderer.setPixelRatio(nextPixelRatio);
     renderer.setSize(w, h);
+    starUniforms.uPixelRatio.value = nextPixelRatio;
+    trailMat.uniforms.uPixelRatio.value = nextPixelRatio;
     updateView();
     updatePaths();
     if (reducedMotion) renderStatic();
