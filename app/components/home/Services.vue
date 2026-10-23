@@ -34,7 +34,10 @@ const cardText = (item) => plainText(item.short_text);
         {{ $t("homeServices.error") }}
       </p>
 
-      <div v-else-if="pending" class="hservices__grid">
+      <div
+        v-else-if="pending"
+        class="hservices__grid hservices__grid--five"
+      >
         <div
           v-for="n in SKELETON_COUNT"
           :key="n"
@@ -43,31 +46,37 @@ const cardText = (item) => plainText(item.short_text);
       </div>
 
       <template v-else>
-        <UiReveal tag="div" class="hservices__grid">
+        <UiReveal
+          tag="div"
+          class="hservices__grid"
+          :class="{ 'hservices__grid--five': items.length === 5 }"
+        >
           <NuxtLink
             v-for="(item, index) in items"
             :key="item.alias"
             :to="localePath(`/services/${item.alias}`)"
             class="hservices__card"
           >
-            <span class="hservices__num">
-              {{ String(index + 1).padStart(2, "0") }}
+            <span class="hservices__top">
+              <span class="hservices__num">
+                {{ String(index + 1).padStart(2, "0") }}
+              </span>
+              <span class="hservices__more" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
             </span>
             <h3 class="hservices__title">{{ item.title }}</h3>
             <p class="hservices__text">{{ cardText(item) }}</p>
-            <span class="hservices__more" aria-hidden="true">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M5 12h14" />
-                <path d="m12 5 7 7-7 7" />
-              </svg>
-            </span>
           </NuxtLink>
         </UiReveal>
 
@@ -110,28 +119,57 @@ const cardText = (item) => plainText(item.short_text);
   color: #ffb4b4;
 }
 
-/* Five services: one row on desktop, 3 + 2 on tablets - auto-fill left a
-   lone fifth card on a second row. */
+/* Mobile-first. Placement rules live only inside their own range: a span
+   leaking into a narrower grid creates implicit columns. Five services get
+   3+3 / 2+2+2 on desktop and 2 / 1+1 / 1+1 on tablets - no lone last card. */
 .hservices__grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
-}
-
-@media (max-width: 1100px) {
-  .hservices__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 860px) {
-  .hservices__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 .hservices__grid > * {
   min-width: 0;
+}
+
+@media (min-width: 641px) and (max-width: 1100px) {
+  .hservices__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hservices__grid--five > :first-child {
+    grid-column: span 2;
+  }
+
+  .hservices__grid--five > .hservices__card:first-child .hservices__title {
+    font-size: clamp(1.375rem, 1.2rem + 0.5vw, 1.5rem);
+  }
+
+  .hservices__grid--five > .hservices__card:first-child .hservices__text {
+    max-width: 46ch;
+  }
+}
+
+@media (min-width: 1101px) {
+  .hservices__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .hservices__grid > * {
+    grid-column: span 2;
+  }
+
+  .hservices__grid--five > :nth-child(-n + 2) {
+    grid-column: span 3;
+  }
+
+  .hservices__grid--five > .hservices__card:nth-child(-n + 2) .hservices__title {
+    font-size: clamp(1.375rem, 1.2rem + 0.5vw, 1.5rem);
+  }
+
+  .hservices__grid--five > .hservices__card:nth-child(-n + 2) .hservices__text {
+    max-width: 46ch;
+  }
 }
 
 .hservices__card {
@@ -139,8 +177,7 @@ const cardText = (item) => plainText(item.short_text);
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
-  min-height: 210px;
-  padding: 2rem 1.75rem;
+  padding: 1.75rem;
   border-radius: 1.25rem;
   background: rgba(20, 28, 48, 0.38);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -179,6 +216,13 @@ const cardText = (item) => plainText(item.short_text);
   outline-offset: 3px;
 }
 
+.hservices__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .hservices__num {
   font-size: 0.8125rem;
   font-weight: 600;
@@ -188,36 +232,56 @@ const cardText = (item) => plainText(item.short_text);
 
 .hservices__title {
   margin: 0;
-  font-size: 1.1875rem;
+  font-size: clamp(1.1875rem, 1rem + 0.5vw, 1.375rem);
   font-weight: 600;
   letter-spacing: -0.01em;
   color: #ffffff;
+  text-wrap: balance;
+  hyphens: manual;
+  overflow-wrap: normal;
 }
 
 .hservices__text {
-  flex: 1;
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.65;
   color: #aab2c4;
+  text-wrap: pretty;
 }
 
 .hservices__more {
   display: inline-flex;
-  align-self: flex-start;
-  width: 1.125rem;
-  height: 1.125rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(169, 214, 229, 0.25);
+  border-radius: 50%;
   color: #a9d6e5;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.hservices__more svg {
+  width: 1rem;
+  height: 1rem;
   transition: transform 0.25s ease;
 }
 
 .hservices__card:hover .hservices__more {
-  transform: translateX(4px);
+  border-color: #46e6e1;
+  background: rgba(70, 230, 225, 0.1);
+}
+
+.hservices__card:hover .hservices__more svg {
+  transform: translateX(2px);
 }
 
 .hservices__footer {
+  display: flex;
+  justify-content: flex-start;
   margin-top: 2.5rem;
-  text-align: center;
+  text-align: left;
 }
 
 .hservices__all {
@@ -273,8 +337,18 @@ const cardText = (item) => plainText(item.short_text);
   .hservices__inner {
     padding: 4.5rem 1.5rem;
   }
-  .hservices__grid {
-    grid-template-columns: 1fr;
+
+  .hservices__card {
+    padding: 1.5rem;
+  }
+
+  .hservices__footer {
+    width: 100%;
+  }
+
+  .hservices__all {
+    justify-content: center;
+    width: 100%;
   }
 }
 
@@ -282,11 +356,12 @@ const cardText = (item) => plainText(item.short_text);
   .hservices__card,
   .hservices__card::before,
   .hservices__more,
+  .hservices__more svg,
   .hservices__all {
     transition: none;
   }
   .hservices__card:hover,
-  .hservices__card:hover .hservices__more {
+  .hservices__card:hover .hservices__more svg {
     transform: none;
   }
   .hservices__skeleton {
