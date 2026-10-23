@@ -28,6 +28,7 @@ if (error.value?.statusCode === 404 || (!error.value && !data.value?.blog)) {
 
 const blog = computed(() => data.value?.blog ?? null);
 const similar = computed(() => data.value?.similar ?? []);
+const article = computed(() => buildArticleToc(blog.value?.text));
 const readingTime = computed(() =>
   typeof blog.value?.reading_time === "number" && blog.value.reading_time > 0
     ? blog.value.reading_time
@@ -141,14 +142,74 @@ useHead(() => ({
       ]
     : [],
 }));
+
+const articleText = ref(null);
+const readingProgress = ref(0);
+let progressFrame;
+let articleStart = 0;
+let articleEnd = 1;
+let articleResizeObserver;
+
+function measureArticle() {
+  if (!import.meta.client || !articleText.value) return;
+
+  const bounds = articleText.value.getBoundingClientRect();
+  articleStart = bounds.top + window.scrollY;
+  articleEnd = Math.max(
+    articleStart + articleText.value.offsetHeight - window.innerHeight,
+    articleStart + 1
+  );
+  updateReadingProgress();
+}
+
+function updateReadingProgress() {
+  if (!import.meta.client || progressFrame) return;
+
+  progressFrame = window.requestAnimationFrame(() => {
+    const progress = (window.scrollY - articleStart) / (articleEnd - articleStart);
+    readingProgress.value = Math.min(1, Math.max(0, progress));
+    progressFrame = undefined;
+  });
+}
+
+onMounted(() => {
+  measureArticle();
+  window.addEventListener("scroll", updateReadingProgress, { passive: true });
+  window.addEventListener("resize", measureArticle, { passive: true });
+
+  articleResizeObserver = new ResizeObserver(measureArticle);
+  if (articleText.value) articleResizeObserver.observe(articleText.value);
+});
+
+watch(
+  () => article.value.html,
+  async () => {
+    await nextTick();
+    measureArticle();
+  }
+);
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", updateReadingProgress);
+  window.removeEventListener("resize", measureArticle);
+  articleResizeObserver?.disconnect();
+  if (progressFrame) window.cancelAnimationFrame(progressFrame);
+});
 </script>
 
 <template>
   <main class="article page--dark">
+    <div
+      class="article__progress"
+      :style="{ transform: `scaleX(${readingProgress})` }"
+      aria-hidden="true"
+    />
+
     <p v-if="error && !pending" class="article__error">{{ $t("blog.error") }}</p>
 
     <template v-else-if="blog">
       <UiPageHeader
+        class="article__header"
         :eyebrow="$t('blog.eyebrow')"
         :title="resolved?.h1 || blog.title"
         :meta="[
@@ -179,39 +240,43 @@ useHead(() => ({
           />
         </UiReveal>
 
-        <UiReveal tag="div" class="article__body">
-          <p v-if="summary" class="article__lead">
-            {{ summary }}
-          </p>
+        <div class="article__reading-layout">
+          <UiArticleToc :items="article.toc" class="article__toc" />
 
-          <!-- Rich text from the CMS - render as-is. -->
-          <div class="article__text" v-html="blog.text" />
+          <UiReveal tag="div" class="article__body">
+            <p v-if="summary" class="article__lead">
+              {{ summary }}
+            </p>
 
-          <figure v-if="blog.inner_image" class="article__inner-media">
-            <NuxtImg
-              :src="blog.inner_image"
-              :alt="blog.title"
-              loading="lazy"
-              format="webp"
-              sizes="100vw lg:1200px"
+            <!-- Rich text from the CMS, enhanced with SSR-safe heading anchors. -->
+            <div ref="articleText" class="article__text" v-html="article.html" />
+
+            <figure v-if="blog.inner_image" class="article__inner-media">
+              <NuxtImg
+                :src="blog.inner_image"
+                :alt="blog.title"
+                loading="lazy"
+                format="webp"
+                sizes="100vw lg:1200px"
+              />
+            </figure>
+
+            <UiShareButtons
+              :url="shareUrl"
+              :title="blog.title"
+              class="article__share"
             />
-          </figure>
 
-          <UiShareButtons
-            :url="shareUrl"
-            :title="blog.title"
-            class="article__share"
-          />
-
-          <button
-            v-if="blog.has_contact"
-            type="button"
-            class="article__cta"
-            @click="openContact"
-          >
-            {{ $t("contact.eyebrow") }}
-          </button>
-        </UiReveal>
+            <button
+              v-if="blog.has_contact"
+              type="button"
+              class="article__cta"
+              @click="openContact"
+            >
+              {{ $t("contact.eyebrow") }}
+            </button>
+          </UiReveal>
+        </div>
 
         <!-- Related services linked to this blog post -->
         <section v-if="serviceLinks.length" class="article__services">
@@ -263,15 +328,40 @@ useHead(() => ({
 
 <style scoped>
 .page--dark {
+  --article-font-size: 1.125rem;
+  --article-measure: 64ch;
   background: #05051a;
   color: #eef1f7;
   min-height: 100vh;
 }
 
 .article__inner {
-  max-width: 820px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 1.5rem 6rem;
+}
+
+.article__progress {
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  pointer-events: none;
+  background: #46e6e1;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.article > :deep(.phead.article__header) {
+  box-sizing: border-box;
+  width: min(calc(100% - 3rem), var(--article-measure));
+  max-width: none;
+  padding-right: 0;
+  padding-left: 0;
+  font-size: var(--article-font-size);
 }
 
 .article__error {
@@ -283,7 +373,9 @@ useHead(() => ({
 }
 
 .article__media {
-  margin: 0 0 3rem;
+  width: min(100%, var(--article-measure));
+  margin: 0 auto 3rem;
+  font-size: var(--article-font-size);
 }
 
 .article__hero-img {
@@ -294,44 +386,65 @@ useHead(() => ({
   background: #0a0a2e;
 }
 
+.article__reading-layout {
+  font-size: var(--article-font-size);
+}
+
+.article__toc {
+  margin: 0 auto 2rem;
+}
+
 .article__body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  width: min(100%, var(--article-measure));
+  min-width: 0;
+  margin: 0 auto;
 }
 
 .article__lead {
+  max-width: var(--article-measure);
   margin: 0;
-  font-size: clamp(1.125rem, 2vw, 1.375rem);
-  line-height: 1.55;
+  font-size: clamp(1.125rem, 2vw, 1.3125rem);
+  line-height: 1.65;
   font-weight: 500;
   color: #eef1f7;
+  text-wrap: pretty;
 }
 
 .article__text {
-  font-size: 1.0625rem;
-  line-height: 1.75;
+  max-width: var(--article-measure);
+  min-width: 0;
+  font-size: 1em;
+  line-height: 1.7;
   color: #c3cad8;
+  overflow-wrap: break-word;
 }
 
 .article__text :deep(h2),
 .article__text :deep(h3) {
-  margin: 2rem 0 1rem;
+  scroll-margin-top: 92px;
   color: #eef1f7;
-  font-weight: 600;
-  line-height: 1.3;
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
 }
 
 .article__text :deep(h2) {
-  font-size: 1.5rem;
+  margin: 3rem 0 1rem;
+  font-size: 1.75rem;
+  letter-spacing: -0.015em;
 }
 
 .article__text :deep(h3) {
+  margin: 2rem 0 0.625rem;
   font-size: 1.25rem;
 }
 
 .article__text :deep(p) {
   margin: 0 0 1.25rem;
+  text-wrap: pretty;
 }
 
 .article__text :deep(ul),
@@ -341,7 +454,13 @@ useHead(() => ({
 }
 
 .article__text :deep(li) {
-  margin: 0.5rem 0;
+  margin: 0.625rem 0;
+  padding-left: 0.25rem;
+}
+
+.article__text :deep(li::marker) {
+  color: #46e6e1;
+  font-weight: 700;
 }
 
 .article__text :deep(img) {
@@ -354,14 +473,99 @@ useHead(() => ({
 .article__text :deep(a) {
   color: #46e6e1;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.article__text :deep(a:hover) {
+  color: #8ff4f1;
+}
+
+.article__text :deep(a:focus-visible) {
+  outline: 2px solid #46e6e1;
+  outline-offset: 3px;
+  border-radius: 0.125rem;
 }
 
 .article__text :deep(blockquote) {
-  margin: 1.5rem 0;
-  padding: 0.5rem 0 0.5rem 1.5rem;
-  border-left: 2px solid rgba(70, 230, 225, 0.5);
+  margin: 2rem 0;
+  padding: 1.125rem 1.25rem;
+  border-left: 3px solid #46e6e1;
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgba(70, 230, 225, 0.06);
   color: #eef1f7;
+  font-size: 1.0625em;
+  font-style: normal;
+  line-height: 1.65;
+}
+
+.article__text :deep(blockquote p:last-child) {
+  margin-bottom: 0;
+}
+
+.article__text :deep(table) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 2rem 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.article__text :deep(th),
+.article__text :deep(td) {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: 1px solid rgba(169, 214, 229, 0.18);
+}
+
+.article__text :deep(th) {
+  color: #eef1f7;
+  background: rgba(169, 214, 229, 0.08);
+}
+
+.article__text :deep(pre) {
+  max-width: 100%;
+  margin: 2rem 0;
+  padding: 1.125rem;
+  overflow-x: auto;
+  border: 1px solid rgba(169, 214, 229, 0.14);
+  border-radius: 0.75rem;
+  background: #090925;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.article__text :deep(code) {
+  padding: 0.1em 0.3em;
+  border-radius: 0.25rem;
+  background: rgba(169, 214, 229, 0.1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.article__text :deep(pre code) {
+  padding: 0;
+  background: transparent;
+  font-size: inherit;
+}
+
+.article__text :deep(hr) {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 1px solid rgba(169, 214, 229, 0.2);
+}
+
+.article__text :deep(figure) {
+  margin: 2rem 0;
+}
+
+.article__text :deep(figcaption) {
+  margin-top: 0.625rem;
+  color: rgba(195, 202, 216, 0.72);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
 .article__inner-media {
@@ -402,6 +606,9 @@ useHead(() => ({
 .article__related,
 .article__services,
 .article__similar {
+  max-width: 1100px;
+  margin-right: auto;
+  margin-left: auto;
   margin-top: 4rem;
   border-top: 1px solid rgba(169, 214, 229, 0.14);
   padding-top: 3rem;
@@ -414,6 +621,7 @@ useHead(() => ({
 }
 
 .services__pill {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -426,6 +634,7 @@ useHead(() => ({
   text-decoration: none;
   border: 1px solid rgba(169, 214, 229, 0.3);
   border-radius: 999px;
+  overflow-wrap: anywhere;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -449,13 +658,57 @@ useHead(() => ({
 .related__grid,
 .similar__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 2rem;
 }
 
+@media (min-width: 1200px) {
+  .article__reading-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--article-measure)) minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .article__body {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .article__toc {
+    box-sizing: border-box;
+    grid-column: 3;
+    grid-row: 1;
+    width: 100%;
+    max-width: 18rem;
+    margin: 0;
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+  }
+}
+
 @media (max-width: 640px) {
+  .page--dark {
+    --article-font-size: 1.0625rem;
+  }
+
   .article__inner {
     padding-bottom: 4rem;
+  }
+
+  .article__text :deep(p) {
+    hyphens: auto;
+  }
+
+  .article__text :deep(h2) {
+    font-size: 1.625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article__text :deep(a),
+  .article__cta,
+  .services__pill {
+    transition: none;
   }
 }
 </style>
