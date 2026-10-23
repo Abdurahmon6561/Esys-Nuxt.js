@@ -1,5 +1,5 @@
 # AI crawlers, model trainers and AI-assistant fetchers are not allowed.
-# Enforced server-side too (server/middleware/block-ai-crawlers.ts).
+# Blog is open to AI crawlers. Enforced server-side too (server/middleware/block-ai-crawlers.ts).
 User-agent: GPTBot
 User-agent: ChatGPT-User
 User-agent: OAI-SearchBot
@@ -38,6 +38,9 @@ User-agent: img2dataset
 User-agent: FirecrawlAgent
 User-agent: Crawl4AI
 User-agent: Scrapy
+Allow: /blog
+Allow: /en/blog
+Allow: /uz/blog
 Disallow: /
 
 User-agent: *

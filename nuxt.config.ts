@@ -122,6 +122,10 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    // Blog is open to AI crawlers: drop the global noai opt-out here.
+    "/blog/**": { headers: { "X-Robots-Tag": "all" } },
+    "/en/blog/**": { headers: { "X-Robots-Tag": "all" } },
+    "/uz/blog/**": { headers: { "X-Robots-Tag": "all" } },
     "/**": {
       headers: {
         "X-Content-Type-Options": "nosniff",
