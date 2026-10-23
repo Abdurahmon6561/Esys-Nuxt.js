@@ -81,27 +81,11 @@ const resultSegments = computed(() => {
     }));
   }
 
-  const warningRanges: Array<{ start: number; end: number; index: number }> = [];
-  warningItems.value.forEach((warning, index) => {
-    const convertedSnippet = convert(warning.snippet, {
-      mode: converted.value.mode,
-      keepLinks: false,
-      keepEnglishWords: keepEnglishWords.value,
-    }).result;
-    const candidates = [...new Set([convertedSnippet, warning.snippet])].filter(Boolean);
-
-    for (const candidate of candidates) {
-      let start = converted.value.result.indexOf(candidate);
-      while (start !== -1) {
-        warningRanges.push({
-          start,
-          end: start + candidate.length,
-          index,
-        });
-        start = converted.value.result.indexOf(candidate, start + candidate.length);
-      }
-    }
-  });
+  const warningRanges = warningItems.value.map((warning, index) => ({
+    start: warning.resultStart,
+    end: warning.resultEnd,
+    index,
+  }));
 
   return converted.value.segments.flatMap((segment) => {
     const ranges = warningRanges.filter(
@@ -109,18 +93,18 @@ const resultSegments = computed(() => {
     );
     if (!ranges.length) return [{ ...segment, warningIndexes: [] as number[] }];
 
-    const boundaries = [
+    const points = [...new Set([
       segment.start,
       segment.end,
       ...ranges.flatMap((range) => [
         Math.max(segment.start, range.start),
         Math.min(segment.end, range.end),
       ]),
-    ].sort((a, b) => a - b);
+    ])].sort((a, b) => a - b);
 
-    const points = [...new Set(boundaries)];
-    return points.slice(0, -1).map((start, boundaryIndex) => {
-      const end = points[boundaryIndex + 1];
+    return Array.from({ length: points.length - 1 }, (_, boundaryIndex) => {
+      const start = points[boundaryIndex]!;
+      const end = points[boundaryIndex + 1]!;
       return {
         text: converted.value.result.slice(start, end),
         changed: segment.changed,

@@ -89,12 +89,77 @@ test("returns changed output segments for highlighting", () => {
 test("warns for split digraph Is'hoq", () => {
   const converted = convert("Is'hoq", { mode: "old-to-new" });
   assert.equal(converted.result, "Isʼhoq");
-  assert.ok(converted.warnings.some((warning) => warning.code === "split-digraph"));
+  const warning = converted.warnings.find(
+    (item) => item.code === "split-digraph",
+  );
+  assert.ok(warning);
+  assert.equal(
+    converted.result.slice(warning.resultStart, warning.resultEnd),
+    "sʼh",
+  );
 });
 
 test("warns for ambiguous quoted 'bog'", () => {
   const converted = convert("'bog'", { mode: "old-to-new" });
   assert.ok(converted.warnings.some((warning) => warning.code === "ambiguous-quote"));
+});
+
+test("maps double-apostrophe warnings to converted result offsets", () => {
+  const converted = convert("mo''jiza", { mode: "old-to-new" });
+  const warning = converted.warnings.find(
+    (item) => item.code === "double-apostrophe",
+  );
+  assert.ok(warning);
+  assert.equal(
+    converted.result.slice(warning.resultStart, warning.resultEnd),
+    "öʼ",
+  );
+});
+
+test("maps mixed-script warnings to converted result offsets", () => {
+  const converted = convert("O'zбекистон", { mode: "old-to-new" });
+  const warning = converted.warnings.find(
+    (item) => item.code === "mixed-script",
+  );
+  assert.ok(warning);
+  assert.equal(
+    converted.result.slice(warning.resultStart, warning.resultEnd),
+    "Özбекистон",
+  );
+});
+
+test("maps warnings after protected links to converted result offsets", () => {
+  const converted = convert("https://site.uz/shahar mo''jiza", {
+    mode: "old-to-new",
+    keepLinks: true,
+  });
+  const warning = converted.warnings.find(
+    (item) => item.code === "double-apostrophe",
+  );
+  assert.ok(warning);
+  assert.equal(
+    converted.result.slice(warning.resultStart, warning.resultEnd),
+    "öʼ",
+  );
+});
+
+test("all warning result ranges stay within the converted result", () => {
+  const inputs: Array<[ConvertMode, string]> = [
+    ["old-to-new", "mo''jiza va Is'hoq"],
+    ["old-to-new", "'bog' O'zбекистон"],
+    ["old-to-new", "https://site.uz/shahar moʻʼjiza"],
+    ["cyrillic-to-new", "O'zбекистон"],
+    ["new-to-old", "Özbekiston şahri"],
+  ];
+
+  for (const [mode, input] of inputs) {
+    const converted = convert(input, { mode, keepLinks: true });
+    for (const warning of converted.warnings) {
+      assert.ok(warning.resultStart >= 0);
+      assert.ok(warning.resultEnd >= warning.resultStart);
+      assert.ok(warning.resultEnd <= converted.result.length);
+    }
+  }
 });
 
 // Guards against quadratic blow-ups (seconds on 100k chars), not a micro-benchmark:

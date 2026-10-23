@@ -22,6 +22,8 @@ export type ConversionWarning = {
   code: ConversionWarningCode;
   start: number;
   end: number;
+  resultStart: number;
+  resultEnd: number;
 };
 
 export type ConversionSegment = {
@@ -45,8 +47,19 @@ export type ConversionResult = {
   mode: Exclude<ConvertMode, "auto">;
 };
 
-type Part = { text: string; changed: boolean; replacements: number };
+type Part = {
+  chunks: string[];
+  changed: boolean;
+  replacements: number;
+  length: number;
+};
 type Range = { start: number; end: number };
+type SourceWarning = Pick<ConversionWarning, "code" | "start" | "end">;
+type ConversionBuilder = {
+  parts: Part[];
+  sourceMap: Int32Array;
+  resultLength: number;
+};
 
 const OLD_APOSTROPHES = new Set<string>(OLD_LETTER_APOSTROPHES);
 const LATIN_LETTER = /\p{Script=Latin}/u;
@@ -70,11 +83,42 @@ function appendPart(parts: Part[], text: string, changed: boolean, replacements 
   if (!text) return;
   const previous = parts.at(-1);
   if (previous && previous.changed === changed) {
-    previous.text += text;
+    previous.chunks.push(text);
     previous.replacements += replacements;
+    previous.length += text.length;
   } else {
-    parts.push({ text, changed, replacements });
+    parts.push({
+      chunks: [text],
+      changed,
+      replacements,
+      length: text.length,
+    });
   }
+}
+
+function appendOutput(
+  builder: ConversionBuilder,
+  sourceStart: number,
+  sourceEnd: number,
+  text: string,
+  changed: boolean,
+  replacements = 0,
+  verbatim = false,
+) {
+  const resultStart = builder.resultLength;
+  if (verbatim) {
+    for (let index = sourceStart; index <= sourceEnd; index += 1) {
+      builder.sourceMap[index] = resultStart + index - sourceStart;
+    }
+  } else {
+    for (let index = sourceStart; index < sourceEnd; index += 1) {
+      builder.sourceMap[index] = resultStart;
+    }
+    builder.sourceMap[sourceEnd] = resultStart + text.length;
+  }
+
+  appendPart(builder.parts, text, changed, replacements);
+  builder.resultLength += text.length;
 }
 
 function mergeRanges(ranges: Range[]): Range[] {
@@ -126,8 +170,8 @@ function collectWarnings(
   text: string,
   offset: number,
   keepEnglishWords: boolean,
-): ConversionWarning[] {
-  const warnings: ConversionWarning[] = [];
+): SourceWarning[] {
+  const warnings: SourceWarning[] = [];
   const apostrophes = "['‘’`ʻ´]";
 
   for (const match of text.matchAll(
@@ -193,9 +237,11 @@ function collectWarnings(
   return warnings;
 }
 
-function convertOldChunk(text: string): Part[] {
-  const parts: Part[] = [];
-
+function convertOldChunk(
+  text: string,
+  offset: number,
+  builder: ConversionBuilder,
+) {
   for (let index = 0; index < text.length; index += 1) {
     const char = text[index];
     const lower = char.toLowerCase();
@@ -211,7 +257,7 @@ function convertOldChunk(text: string): Part[] {
           : char === char.toUpperCase()
             ? "Ğ"
             : "ğ";
-      appendPart(parts, replacement, true, 1);
+      appendOutput(builder, offset + index, offset + index + 2, replacement, true, 1);
       index += 1;
 
       const second = text[index + 1];
@@ -220,7 +266,14 @@ function convertOldChunk(text: string): Part[] {
         (OLD_APOSTROPHES.has(second) || second === NEW_APOSTROPHE) &&
         isLetter(text[index + 2])
       ) {
-        appendPart(parts, NEW_APOSTROPHE, second !== NEW_APOSTROPHE, second === NEW_APOSTROPHE ? 0 : 1);
+        appendOutput(
+          builder,
+          offset + index + 1,
+          offset + index + 2,
+          NEW_APOSTROPHE,
+          second !== NEW_APOSTROPHE,
+          second === NEW_APOSTROPHE ? 0 : 1,
+        );
         index += 1;
       }
       continue;
@@ -231,7 +284,14 @@ function convertOldChunk(text: string): Part[] {
       (lower === "c" && nextLower === "h")
     ) {
       const base = lower === "s" ? "ş" : "ç";
-      appendPart(parts, char === char.toUpperCase() ? base.toUpperCase() : base, true, 1);
+      appendOutput(
+        builder,
+        offset + index,
+        offset + index + 2,
+        char === char.toUpperCase() ? base.toUpperCase() : base,
+        true,
+        1,
+      );
       index += 1;
       continue;
     }
@@ -241,14 +301,25 @@ function convertOldChunk(text: string): Part[] {
       isLetter(text[index - 1]) &&
       isLetter(next)
     ) {
-      appendPart(parts, NEW_APOSTROPHE, char !== NEW_APOSTROPHE, 1);
+      appendOutput(
+        builder,
+        offset + index,
+        offset + index + 1,
+        NEW_APOSTROPHE,
+        char !== NEW_APOSTROPHE,
+        1,
+      );
       continue;
     }
 
-    appendPart(parts, char, false);
+    appendOutput(
+      builder,
+      offset + index,
+      offset + index + 1,
+      char,
+      false,
+    );
   }
-
-  return parts;
 }
 
 function applyCase(value: string, source: string, allCaps: boolean): string {
@@ -267,11 +338,16 @@ function isCyrillicAllCaps(word: string): boolean {
   );
 }
 
-function convertCyrillicWord(word: string, uppercaseSingleLetter = false): Part[] {
-  const parts: Part[] = [];
+function convertCyrillicWord(
+  word: string,
+  offset: number,
+  builder: ConversionBuilder,
+  uppercaseSingleLetter = false,
+) {
   const letters = [...word];
   const allCaps =
     (letters.length > 1 && isCyrillicAllCaps(word)) || uppercaseSingleLetter;
+  let sourceIndex = 0;
 
   for (let index = 0; index < letters.length; index += 1) {
     const source = letters[index];
@@ -295,14 +371,23 @@ function convertCyrillicWord(word: string, uppercaseSingleLetter = false): Part[
       value = CYRILLIC_MAP[lower] ?? source;
     }
 
-    appendPart(parts, applyCase(value, source, allCaps), value !== source, value === source ? 0 : 1);
+    appendOutput(
+      builder,
+      offset + sourceIndex,
+      offset + sourceIndex + source.length,
+      applyCase(value, source, allCaps),
+      value !== source,
+      value === source ? 0 : 1,
+    );
+    sourceIndex += source.length;
   }
-
-  return parts;
 }
 
-function convertCyrillicChunk(text: string): Part[] {
-  const parts: Part[] = [];
+function convertCyrillicChunk(
+  text: string,
+  offset: number,
+  builder: ConversionBuilder,
+) {
   const matches = [...text.matchAll(/[\p{Script=Cyrillic}]+/gu)];
   let lastIndex = 0;
   for (let matchIndex = 0; matchIndex < matches.length; matchIndex += 1) {
@@ -322,18 +407,39 @@ function convertCyrillicChunk(text: string): Part[] {
           /^\s*$/u.test(text.slice(index + match[0].length, next.index ?? 0)) &&
           isCyrillicAllCaps(next[0]) &&
           [...next[0]].length > 1));
-    appendPart(parts, text.slice(lastIndex, index), false);
-    for (const part of convertCyrillicWord(match[0], Boolean(uppercaseSingleLetter))) {
-      appendPart(parts, part.text, part.changed, part.replacements);
-    }
+    appendOutput(
+      builder,
+      offset + lastIndex,
+      offset + index,
+      text.slice(lastIndex, index),
+      false,
+      0,
+      true,
+    );
+    convertCyrillicWord(
+      match[0],
+      offset + index,
+      builder,
+      Boolean(uppercaseSingleLetter),
+    );
     lastIndex = index + match[0].length;
   }
-  appendPart(parts, text.slice(lastIndex), false);
-  return parts;
+  appendOutput(
+    builder,
+    offset + lastIndex,
+    offset + text.length,
+    text.slice(lastIndex),
+    false,
+    0,
+    true,
+  );
 }
 
-function convertNewChunk(text: string): Part[] {
-  const parts: Part[] = [];
+function convertNewChunk(
+  text: string,
+  offset: number,
+  builder: ConversionBuilder,
+) {
   const allCapsWordAt = (index: number) => {
     const before = text.slice(0, index).match(/[\p{Script=Latin}]+$/u)?.[0] ?? "";
     const after = text.slice(index + 1).match(/^[\p{Script=Latin}]+/u)?.[0] ?? "";
@@ -358,13 +464,24 @@ function convertNewChunk(text: string): Part[] {
             ? replacement.toLocaleUpperCase("en")
             : replacement[0].toLocaleUpperCase("en") + replacement.slice(1)
           : replacement;
-      appendPart(parts, value, true, 1);
+      appendOutput(
+        builder,
+        offset + index,
+        offset + index + 1,
+        value,
+        true,
+        1,
+      );
     } else {
-      appendPart(parts, char, false);
+      appendOutput(
+        builder,
+        offset + index,
+        offset + index + 1,
+        char,
+        false,
+      );
     }
   }
-
-  return parts;
 }
 
 export function detectMode(text: string): Exclude<ConvertMode, "auto" | "new-to-old"> {
@@ -388,50 +505,82 @@ export function convert(text: string, options: ConvertOptions = {}): ConversionR
       : keepLinks
         ? protectedRanges(text, true, false)
         : [];
-  const warnings: ConversionWarning[] = [];
-  const parts: Part[] = [];
+  const sourceWarnings: SourceWarning[] = [];
+  const builder: ConversionBuilder = {
+    parts: [],
+    sourceMap: new Int32Array(text.length + 1),
+    resultLength: 0,
+  };
   let lastIndex = 0;
 
   const convertChunk = (chunk: string, offset: number) => {
     if (mode === "old-to-new") {
-      warnings.push(...collectWarnings(chunk, offset, keepEnglishWords));
-      return convertOldChunk(chunk);
+      sourceWarnings.push(...collectWarnings(chunk, offset, keepEnglishWords));
+      convertOldChunk(chunk, offset, builder);
+      return;
     }
     if (mode === "cyrillic-to-new") {
-      warnings.push(...collectWarnings(chunk, offset, false));
-      return convertCyrillicChunk(chunk);
+      sourceWarnings.push(...collectWarnings(chunk, offset, false));
+      convertCyrillicChunk(chunk, offset, builder);
+      return;
     }
-    return convertNewChunk(chunk);
+    convertNewChunk(chunk, offset, builder);
   };
 
   for (const range of ranges) {
     const chunk = text.slice(lastIndex, range.start);
-    for (const part of convertChunk(chunk, lastIndex)) {
-      appendPart(parts, part.text, part.changed, part.replacements);
-    }
-    appendPart(parts, text.slice(range.start, range.end), false);
+    convertChunk(chunk, lastIndex);
+    appendOutput(
+      builder,
+      range.start,
+      range.end,
+      text.slice(range.start, range.end),
+      false,
+      0,
+      true,
+    );
     lastIndex = range.end;
   }
-  for (const part of convertChunk(text.slice(lastIndex), lastIndex)) {
-    appendPart(parts, part.text, part.changed, part.replacements);
-  }
+  convertChunk(text.slice(lastIndex), lastIndex);
 
   const segments: ConversionSegment[] = [];
   let resultIndex = 0;
   let replacements = 0;
-  for (const part of parts) {
+  const resultParts: string[] = [];
+  for (const part of builder.parts) {
+    const partText = part.chunks.join("");
+    resultParts.push(partText);
     segments.push({
-      text: part.text,
+      text: partText,
       changed: part.changed,
       start: resultIndex,
-      end: resultIndex + part.text.length,
+      end: resultIndex + part.length,
     });
-    resultIndex += part.text.length;
+    resultIndex += part.length;
     replacements += part.replacements;
   }
+  const result = resultParts.join("");
+  const warnings = sourceWarnings.map((warning): ConversionWarning => {
+    let resultStart = builder.sourceMap[warning.start];
+    let resultEnd = Math.max(resultStart, builder.sourceMap[warning.end]);
+
+    if (resultStart === resultEnd && result.length > 0) {
+      if (resultStart < result.length) {
+        resultEnd = resultStart + 1;
+      } else {
+        resultStart -= 1;
+      }
+    }
+
+    return {
+      ...warning,
+      resultStart,
+      resultEnd,
+    };
+  });
 
   return {
-    result: parts.map((part) => part.text).join(""),
+    result,
     warnings,
     replacements,
     segments,
