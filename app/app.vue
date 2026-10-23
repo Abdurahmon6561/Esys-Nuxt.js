@@ -52,6 +52,9 @@ const organizationJsonLd = computed(() => ({
       logo: {
         "@type": "ImageObject",
         url: `${siteUrl}/images/logo.webp`,
+        contentUrl: `${siteUrl}/images/logo.webp`,
+        width: 294,
+        height: 94,
       },
       description:
         "Веб-студия в Ташкенте: разработка сайтов, мобильных приложений, CRM-систем, веб-приложений и брендинг.",
