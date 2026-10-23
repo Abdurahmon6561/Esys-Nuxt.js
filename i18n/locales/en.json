@@ -148,6 +148,8 @@
     "error": "Failed to load blog. Please try again later.",
     "back": "Back to blog",
     "published": "Published",
+    "readingTime": "{n} min read",
+    "readingTimeLabel": "Reading time",
     "tags": "Tags",
     "similar": "More articles",
     "services_title": "Related services",

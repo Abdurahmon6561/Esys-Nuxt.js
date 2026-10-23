@@ -28,6 +28,11 @@ if (error.value?.statusCode === 404 || (!error.value && !data.value?.blog)) {
 
 const blog = computed(() => data.value?.blog ?? null);
 const similar = computed(() => data.value?.similar ?? []);
+const readingTime = computed(() =>
+  typeof blog.value?.reading_time === "number" && blog.value.reading_time > 0
+    ? blog.value.reading_time
+    : null
+);
 
 // Additive API field: locale-aware {title, alias} pairs. May be missing on
 // old cached responses - treated as an empty list.
@@ -102,6 +107,7 @@ const articleJsonLd = computed(() => {
       ),
       datePublished: datePublished.value,
       dateModified: dateModified.value,
+      timeRequired: readingTime.value ? `PT${readingTime.value}M` : undefined,
       inLanguage: locale.value,
       mainEntityOfPage: `${siteUrl}${route.path}`,
       author: { "@id": orgId(siteUrl) },
@@ -146,6 +152,12 @@ useHead(() => ({
         :title="resolved?.h1 || blog.title"
         :meta="[
           { label: $t('blog.published'), value: formatBlogDate(blog.published_at, locale) },
+          ...(readingTime
+            ? [{
+                label: $t('blog.readingTimeLabel'),
+                value: $t('blog.readingTime', { n: readingTime }),
+              }]
+            : []),
           ...(tagsText ? [{ label: $t('blog.tags'), value: tagsText }] : []),
         ]"
       >

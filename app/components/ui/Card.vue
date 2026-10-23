@@ -15,10 +15,23 @@ const props = defineProps({
 });
 
 const localePath = useLocalePath();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const target = computed(() => localePath(props.to));
 const tags = computed(() => props.item.tags?.length ? props.item.tags : props.item.services ?? []);
+const readingTime = computed(() =>
+  typeof props.item.reading_time === "number" && props.item.reading_time > 0
+    ? t("blog.readingTime", { n: props.item.reading_time })
+    : ""
+);
+const dateLine = computed(() =>
+  [
+    props.item.published_at ? formatBlogDate(props.item.published_at, locale.value) : "",
+    readingTime.value,
+  ]
+    .filter(Boolean)
+    .join(" · ")
+);
 </script>
 
 <template>
@@ -55,8 +68,8 @@ const tags = computed(() => props.item.tags?.length ? props.item.tags : props.it
       <p v-if="showText && item.short_text" class="ucard__text">
         {{ item.short_text }}
       </p>
-      <p v-if="showDate && item.published_at" class="ucard__date">
-        {{ formatBlogDate(item.published_at, locale) }}
+      <p v-if="showDate && dateLine" class="ucard__date">
+        {{ dateLine }}
       </p>
 
       <ul v-if="tags.length" class="ucard__tags">

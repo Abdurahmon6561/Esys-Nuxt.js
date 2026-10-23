@@ -148,6 +148,8 @@
     "error": "Blogni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
     "back": "Blogga qaytish",
     "published": "Chop etilgan",
+    "readingTime": "{n} daqiqa o'qish",
+    "readingTimeLabel": "O'qish vaqti",
     "tags": "Teglar",
     "similar": "Yana maqolalar",
     "services_title": "Mavzuga oid xizmatlar",
