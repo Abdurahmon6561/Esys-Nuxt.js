@@ -346,6 +346,99 @@
       "button": "Contact us"
     }
   },
+  "tools": {
+    "alphabet": {
+      "seo": {
+        "title": "New Uzbek alphabet converter online",
+        "description": "Free Uzbek text converter from old Latin or Cyrillic to the yangi alifbo, and from the new o'zbek alifbosi back to old Latin."
+      },
+      "eyebrow": "Free online tool",
+      "title": "New Uzbek alphabet converter",
+      "intro": "Convert old Latin or Cyrillic text to the yangi alifbo and back. The tool supports o'zbek alifbosi, lotin alifbosi and kirill lotin oʻgirish directly in your browser.",
+      "breadcrumb": "New Uzbek alphabet converter",
+      "converterLabel": "Uzbek alphabet converter",
+      "sourceLabel": "Source text",
+      "sourcePlaceholder": "Type or paste text",
+      "resultLabel": "Result",
+      "resultPlaceholder": "Converted text will appear here",
+      "replacements": "Replacements: {count}",
+      "highlightLimited": "Highlighting is automatically disabled for text longer than 20,000 characters.",
+      "symbolsLabel": "Insert symbol",
+      "privacy": "Your text is processed only in your browser and is never sent to the server.",
+      "articleLink": "Read more about the new Uzbek alphabet",
+      "mode": {
+        "label": "Direction",
+        "auto": "Detect automatically",
+        "old-to-new": "Old Latin → new",
+        "cyrillic-to-new": "Cyrillic → new Latin",
+        "new-to-old": "New → old Latin"
+      },
+      "options": {
+        "keepLinks": "Keep links and code unchanged",
+        "keepEnglish": "Keep English words unchanged",
+        "highlight": "Highlight replacements"
+      },
+      "actions": {
+        "swap": "Swap direction",
+        "copy": "Copy result",
+        "copied": "Copied",
+        "clear": "Clear",
+        "download": "Download .txt",
+        "upload": "Upload .txt"
+      },
+      "warnings": {
+        "title": "Check the spelling",
+        "double-apostrophe": "Two marks follow o or g.",
+        "split-digraph": "An apostrophe separates s and h.",
+        "ambiguous-quote": "An apostrophe inside quotes may have another meaning.",
+        "mixed-script": "Latin and Cyrillic letters are mixed in one word.",
+        "possible-english": "This resembles an English word and may need checking."
+      },
+      "changes": {
+        "eyebrow": "New alphabet",
+        "title": "What changed in the alphabet",
+        "subtitle": "Four former letter combinations now have dedicated characters. Ng and the tutuq mark remain.",
+        "old": "Before",
+        "new": "Now",
+        "unchanged": "Unchanged",
+        "apostrophe": "Tutuq mark remains"
+      },
+      "business": {
+        "eyebrow": "For business",
+        "title": "We will move your website to the new alphabet without losing search rankings",
+        "text": "We update copy, metadata, search and language versions while preserving page addresses and SEO signals.",
+        "cta": "Discuss a website update"
+      },
+      "faq": {
+        "eyebrow": "FAQ",
+        "title": "Questions about the new Uzbek alphabet",
+        "q1": {
+          "question": "When does the new alphabet take effect?",
+          "answer": "The law dated October 21, 2026 provides for entry into force six months after official publication. Check the current official text before relying on it."
+        },
+        "q2": {
+          "question": "Do older documents need to be replaced?",
+          "answer": "Documents, money and securities prepared with the previous alphabet remain valid. Check official guidance for a specific legal situation."
+        },
+        "q3": {
+          "question": "How can I type Ö, Ğ, Ş and Ç?",
+          "answer": "Use an extended Latin keyboard layout, your system character picker, or the quick symbol buttons in this converter."
+        },
+        "q4": {
+          "question": "Is entered text stored?",
+          "answer": "No. Conversion happens locally in your browser. The tool does not send the text to a server or store it."
+        },
+        "q5": {
+          "question": "How does the new alphabet differ from old Latin?",
+          "answer": "The combinations oʻ, gʻ, sh and ch become ö, ğ, ş and ç. The ng combination and the separate tutuq mark remain."
+        },
+        "q6": {
+          "question": "What should I do with website content?",
+          "answer": "Update metadata, search, dictionaries and content workflows as well as visible copy. Change URLs only with a careful redirect plan to protect search traffic."
+        }
+      }
+    }
+  },
   "faq": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",

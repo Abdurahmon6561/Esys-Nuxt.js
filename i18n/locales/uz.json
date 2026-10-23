@@ -346,6 +346,99 @@
       "button": "Biz bilan bog'lanish"
     }
   },
+  "tools": {
+    "alphabet": {
+      "seo": {
+        "title": "Yangi o‘zbek alifbosi konvertori onlayn",
+        "description": "Bepul o‘zbek matni konvertori: eski lotin va kirill yozuvidan yangi alifboga, yangi o'zbek alifbosidan eski lotin yozuviga o‘girish."
+      },
+      "eyebrow": "Bepul onlayn vosita",
+      "title": "Yangi o‘zbek alifbosi konvertori",
+      "intro": "Eski lotin yoki kirill yozuvidagi matnni yangi alifboga va aksincha o‘giring. Konvertor o'zbek alifbosi, lotin alifbosi va kirill lotin oʻgirish uchun brauzerning o‘zida ishlaydi.",
+      "breadcrumb": "Yangi alifbo konvertori",
+      "converterLabel": "O‘zbek alifbosi konvertori",
+      "sourceLabel": "Boshlang‘ich matn",
+      "sourcePlaceholder": "Matnni yozing yoki joylang",
+      "resultLabel": "Natija",
+      "resultPlaceholder": "O‘girilgan matn shu yerda paydo bo‘ladi",
+      "replacements": "Almashtirishlar: {count}",
+      "highlightLimited": "20 000 belgidan uzun matnda ajratib ko‘rsatish avtomatik o‘chirildi.",
+      "symbolsLabel": "Belgi kiritish",
+      "privacy": "Matn faqat brauzeringizda qayta ishlanadi va serverga yuborilmaydi.",
+      "articleLink": "Yangi o‘zbek alifbosi haqida batafsil",
+      "mode": {
+        "label": "Yo‘nalish",
+        "auto": "Avtomatik aniqlash",
+        "old-to-new": "Eski lotin → yangi",
+        "cyrillic-to-new": "Kirill → yangi lotin",
+        "new-to-old": "Yangi → eski lotin"
+      },
+      "options": {
+        "keepLinks": "Havolalar va kodni o‘zgartirmaslik",
+        "keepEnglish": "Inglizcha so‘zlarni o‘zgartirmaslik",
+        "highlight": "Almashtirishlarni ajratish"
+      },
+      "actions": {
+        "swap": "Yo‘nalishni almashtirish",
+        "copy": "Natijani nusxalash",
+        "copied": "Nusxalandi",
+        "clear": "Tozalash",
+        "download": ".txt yuklab olish",
+        "upload": ".txt yuklash"
+      },
+      "warnings": {
+        "title": "Yozilishini tekshiring",
+        "double-apostrophe": "O yoki g harfidan keyin ikkita belgi kelgan.",
+        "split-digraph": "Apostrof s va h harflarini ajratmoqda.",
+        "ambiguous-quote": "Qo‘shtirnoq ichidagi apostrof boshqa ma’noga ega bo‘lishi mumkin.",
+        "mixed-script": "Bitta so‘zda lotin va kirill harflari aralashgan.",
+        "possible-english": "So‘z inglizcha so‘zga o‘xshaydi va tekshirish talab qilishi mumkin."
+      },
+      "changes": {
+        "eyebrow": "Yangi alifbo",
+        "title": "Alifboda nima o‘zgardi",
+        "subtitle": "To‘rtta avvalgi harf birikmasi alohida belgiga aylandi. Ng va tutuq belgisi saqlanadi.",
+        "old": "Avval",
+        "new": "Endi",
+        "unchanged": "O‘zgarishsiz",
+        "apostrophe": "Tutuq belgisi saqlanadi"
+      },
+      "business": {
+        "eyebrow": "Biznes uchun",
+        "title": "Saytingizni qidiruvdagi o‘rnini yo‘qotmasdan yangi alifboga o‘tkazamiz",
+        "text": "Sahifa manzillari va SEO signallarini saqlagan holda matn, metama’lumot, qidiruv va til versiyalarini yangilaymiz.",
+        "cta": "Saytni yangilashni muhokama qilish"
+      },
+      "faq": {
+        "eyebrow": "FAQ",
+        "title": "Yangi o‘zbek alifbosi haqida savollar",
+        "q1": {
+          "question": "Yangi alifbo qachon kuchga kiradi?",
+          "answer": "2026-yil 21-oktabrdagi qonun rasmiy e’lon qilinganidan olti oy o‘tib kuchga kirishini nazarda tutadi. Rasmiy qo‘llash uchun qonunning amaldagi tahririni tekshiring."
+        },
+        "q2": {
+          "question": "Oldin rasmiylashtirilgan hujjatlarni almashtirish kerakmi?",
+          "answer": "Avvalgi alifboda rasmiylashtirilgan hujjatlar, pullar va qimmatli qog‘ozlar o‘z kuchini saqlaydi. Muayyan huquqiy holat bo‘yicha rasmiy tushuntirishlarni tekshirish ma’qul."
+        },
+        "q3": {
+          "question": "Ö, Ğ, Ş va Ç harflarini klaviaturada qanday yozish mumkin?",
+          "answer": "Kengaytirilgan lotin klaviaturasidan, tizimdagi belgilar jadvalidan yoki konvertordagi tezkor belgi tugmalaridan foydalaning."
+        },
+        "q4": {
+          "question": "Kiritilgan matn saqlanadimi?",
+          "answer": "Yo‘q. O‘girish brauzerda mahalliy bajariladi, matn serverga yuborilmaydi va vosita tomonidan saqlanmaydi."
+        },
+        "q5": {
+          "question": "Yangi alifboning eski lotin yozuvidan farqi nima?",
+          "answer": "Oʻ, gʻ, sh va ch birikmalari ö, ğ, ş va ç harflariga almashtirilgan. Ng birikmasi va alohida tutuq belgisi saqlanadi."
+        },
+        "q6": {
+          "question": "Saytdagi matnlar bilan nima qilish kerak?",
+          "answer": "Ko‘rinadigan matn bilan birga metama’lumot, qidiruv, lug‘atlar va kontent jarayonlarini ham yangilash kerak. Qidiruv trafikini saqlash uchun URL manzillarini faqat puxta yo‘naltirish rejasi bilan o‘zgartiring."
+        }
+      }
+    }
+  },
   "faq": {
     "eyebrow": "FAQ",
     "title": "Ko'p beriladigan savollar",

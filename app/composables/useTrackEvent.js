@@ -8,6 +8,10 @@
 //   phone_click    - tel: link clicked
 //   email_click    - mailto: link clicked
 //   telegram_click - Telegram social link clicked
+//   converter_convert   - converter used (mode + text length bucket only)
+//   converter_copy      - converter result copied
+//   converter_download  - converter result downloaded
+//   converter_cta_click - converter business CTA clicked
 export const useTrackEvent = () => {
   const { gtagId, metrikaId } = useRuntimeConfig().public;
 
