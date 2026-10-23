@@ -46,8 +46,11 @@ const converted = ref<ConversionResult>(
   convert("", { mode: "old-to-new" }),
 );
 const copied = ref(false);
+const copyFallback = ref(false);
 const openFaq = ref<number | null>(null);
+const activeWarning = ref<number | null>(null);
 const sourceField = ref<HTMLTextAreaElement | null>(null);
+const resultField = ref<HTMLElement | null>(null);
 const uploadField = ref<HTMLInputElement | null>(null);
 let convertTimer: ReturnType<typeof setTimeout> | undefined;
 let copyTimer: ReturnType<typeof setTimeout> | undefined;
@@ -70,6 +73,66 @@ const warningItems = computed(() =>
     snippet: source.value.slice(warning.start, warning.end),
   })),
 );
+const resultSegments = computed(() => {
+  if (!showHighlights.value || !warningItems.value.length) {
+    return converted.value.segments.map((segment) => ({
+      ...segment,
+      warningIndexes: [] as number[],
+    }));
+  }
+
+  const warningRanges: Array<{ start: number; end: number; index: number }> = [];
+  warningItems.value.forEach((warning, index) => {
+    const convertedSnippet = convert(warning.snippet, {
+      mode: converted.value.mode,
+      keepLinks: false,
+      keepEnglishWords: keepEnglishWords.value,
+    }).result;
+    const candidates = [...new Set([convertedSnippet, warning.snippet])].filter(Boolean);
+
+    for (const candidate of candidates) {
+      let start = converted.value.result.indexOf(candidate);
+      while (start !== -1) {
+        warningRanges.push({
+          start,
+          end: start + candidate.length,
+          index,
+        });
+        start = converted.value.result.indexOf(candidate, start + candidate.length);
+      }
+    }
+  });
+
+  return converted.value.segments.flatMap((segment) => {
+    const ranges = warningRanges.filter(
+      (range) => range.start < segment.end && range.end > segment.start,
+    );
+    if (!ranges.length) return [{ ...segment, warningIndexes: [] as number[] }];
+
+    const boundaries = [
+      segment.start,
+      segment.end,
+      ...ranges.flatMap((range) => [
+        Math.max(segment.start, range.start),
+        Math.min(segment.end, range.end),
+      ]),
+    ].sort((a, b) => a - b);
+
+    const points = [...new Set(boundaries)];
+    return points.slice(0, -1).map((start, boundaryIndex) => {
+      const end = points[boundaryIndex + 1];
+      return {
+        text: converted.value.result.slice(start, end),
+        changed: segment.changed,
+        start,
+        end,
+        warningIndexes: ranges
+          .filter((range) => range.start < end && range.end > start)
+          .map((range) => range.index),
+      };
+    });
+  });
+});
 
 function lengthBucket(length: number) {
   if (length < 100) return "<100";
@@ -112,6 +175,7 @@ onBeforeUnmount(() => {
 function clearText() {
   source.value = "";
   copied.value = false;
+  copyFallback.value = false;
   sourceField.value?.focus();
 }
 
@@ -125,16 +189,34 @@ function swapDirection() {
 
 async function copyResult() {
   if (!converted.value.result) return;
-  await navigator.clipboard.writeText(converted.value.result);
-  copied.value = true;
-  track("converter_copy", {
-    mode: converted.value.mode,
-    length_bucket: lengthBucket(converted.value.result.length),
-  });
+  copied.value = false;
+  copyFallback.value = false;
+
+  try {
+    await navigator.clipboard.writeText(converted.value.result);
+    copied.value = true;
+    track("converter_copy", {
+      mode: converted.value.mode,
+      length_bucket: lengthBucket(converted.value.result.length),
+    });
+  } catch {
+    const field = resultField.value;
+    if (field) {
+      const range = document.createRange();
+      range.selectNodeContents(field);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      field.focus();
+    }
+    copyFallback.value = true;
+  }
+
   if (copyTimer) clearTimeout(copyTimer);
   copyTimer = setTimeout(() => {
     copied.value = false;
-  }, 2_000);
+    copyFallback.value = false;
+  }, 3_000);
 }
 
 function downloadResult() {
@@ -257,46 +339,76 @@ useHead(() => ({
 
 <template>
   <main class="alphabet page--dark">
-    <UiPageHeader
-      :eyebrow="$t('tools.alphabet.eyebrow')"
-      :title="$t('tools.alphabet.title')"
-    />
+    <header class="tool-header">
+      <p class="tool-header__eyebrow">{{ $t("tools.alphabet.eyebrow") }}</p>
+      <h1 class="tool-header__title">{{ $t("tools.alphabet.title") }}</h1>
+    </header>
 
     <div class="alphabet__inner">
       <p class="alphabet__intro">{{ $t("tools.alphabet.intro") }}</p>
 
       <section class="converter" :aria-label="$t('tools.alphabet.converterLabel')">
         <div class="converter__toolbar">
-          <label class="control control--mode">
-            <span>{{ $t("tools.alphabet.mode.label") }}</span>
-            <select v-model="mode">
-              <option v-for="item in modes" :key="item" :value="item">
-                {{ $t(`tools.alphabet.mode.${item}`) }}
-              </option>
-            </select>
-          </label>
-          <button
-            type="button"
-            class="button button--icon"
-            :disabled="!converted.result"
-            :aria-label="$t('tools.alphabet.actions.swap')"
-            :title="$t('tools.alphabet.actions.swap')"
-            @click="swapDirection"
-          >
-            ⇄
-          </button>
-          <label class="check">
-            <input v-model="keepLinks" type="checkbox">
-            <span>{{ $t("tools.alphabet.options.keepLinks") }}</span>
-          </label>
-          <label class="check">
-            <input v-model="keepEnglishWords" type="checkbox">
-            <span>{{ $t("tools.alphabet.options.keepEnglish") }}</span>
-          </label>
-          <label class="check">
-            <input v-model="highlightChanges" type="checkbox">
-            <span>{{ $t("tools.alphabet.options.highlight") }}</span>
-          </label>
+          <div class="converter__direction">
+            <label class="control control--mode">
+              <span>{{ $t("tools.alphabet.mode.label") }}</span>
+              <span class="select-wrap">
+                <select v-model="mode">
+                  <option v-for="item in modes" :key="item" :value="item">
+                    {{ $t(`tools.alphabet.mode.${item}`) }}
+                  </option>
+                </select>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </label>
+            <button
+              type="button"
+              class="button button--icon"
+              :disabled="!converted.result"
+              :aria-label="$t('tools.alphabet.actions.swap')"
+              :title="$t('tools.alphabet.actions.swap')"
+              @click="swapDirection"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m7 7-3 3 3 3" />
+                <path d="M4 10h13" />
+                <path d="m17 17 3-3-3-3" />
+                <path d="M20 14H7" />
+              </svg>
+            </button>
+          </div>
+          <div class="converter__options">
+            <label class="check">
+              <input v-model="keepLinks" type="checkbox">
+              <span>{{ $t("tools.alphabet.options.keepLinks") }}</span>
+            </label>
+            <label class="check">
+              <input v-model="keepEnglishWords" type="checkbox">
+              <span>{{ $t("tools.alphabet.options.keepEnglish") }}</span>
+            </label>
+            <label class="check">
+              <input v-model="highlightChanges" type="checkbox">
+              <span>{{ $t("tools.alphabet.options.highlight") }}</span>
+            </label>
+          </div>
         </div>
 
         <div class="converter__panels">
@@ -323,6 +435,7 @@ useHead(() => ({
               </span>
             </div>
             <div
+              ref="resultField"
               class="result"
               role="textbox"
               aria-readonly="true"
@@ -331,8 +444,17 @@ useHead(() => ({
             >
               <template v-if="converted.result">
                 <template v-if="showHighlights">
-                  <template v-for="(segment, index) in converted.segments" :key="index">
-                    <mark v-if="segment.changed">{{ segment.text }}</mark>
+                  <template v-for="(segment, index) in resultSegments" :key="index">
+                    <mark
+                      v-if="segment.warningIndexes.length"
+                      class="result__warning"
+                      :class="{
+                        'is-active':
+                          activeWarning !== null &&
+                          segment.warningIndexes.includes(activeWarning),
+                      }"
+                    >{{ segment.text }}</mark>
+                    <mark v-else-if="segment.changed">{{ segment.text }}</mark>
                     <template v-else>{{ segment.text }}</template>
                   </template>
                 </template>
@@ -394,14 +516,31 @@ useHead(() => ({
         </div>
 
         <p class="privacy-note">{{ $t("tools.alphabet.privacy") }}</p>
+        <p v-if="copyFallback" class="converter__status">
+          {{ $t("tools.alphabet.actions.copyFallback") }}
+        </p>
         <p class="visually-hidden" aria-live="polite">
-          {{ copied ? $t("tools.alphabet.actions.copied") : "" }}
+          {{
+            copied
+              ? $t("tools.alphabet.actions.copied")
+              : copyFallback
+                ? $t("tools.alphabet.actions.copyFallback")
+                : ""
+          }}
         </p>
 
         <div v-if="warningItems.length" class="warnings" role="status">
           <strong>{{ $t("tools.alphabet.warnings.title") }}</strong>
           <ul>
-            <li v-for="(warning, index) in warningItems" :key="`${warning.start}-${index}`">
+            <li
+              v-for="(warning, index) in warningItems"
+              :key="`${warning.start}-${index}`"
+              tabindex="0"
+              @mouseenter="activeWarning = index"
+              @mouseleave="activeWarning = null"
+              @focus="activeWarning = index"
+              @blur="activeWarning = null"
+            >
               {{ $t(`tools.alphabet.warnings.${warning.code}`) }}
               <code v-if="warning.snippet">{{ warning.snippet }}</code>
             </li>
@@ -415,29 +554,37 @@ useHead(() => ({
           :title="$t('tools.alphabet.changes.title')"
           :subtitle="$t('tools.alphabet.changes.subtitle')"
         />
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">{{ $t("tools.alphabet.changes.old") }}</th>
-                <th scope="col">{{ $t("tools.alphabet.changes.new") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in ALPHABET_CHANGES" :key="row.old">
-                <td>{{ row.old }}</td>
-                <td>{{ row.new }}</td>
-              </tr>
-              <tr>
-                <td>Ng ng</td>
-                <td>{{ $t("tools.alphabet.changes.unchanged") }}</td>
-              </tr>
-              <tr>
-                <td>{{ NEW_APOSTROPHE }}</td>
-                <td>{{ $t("tools.alphabet.changes.apostrophe") }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="changes-card">
+          <ul class="changes-grid">
+            <li v-for="row in ALPHABET_CHANGES" :key="row.old">
+              <span class="visually-hidden">{{ $t("tools.alphabet.changes.old") }}:</span>
+              <strong>{{ row.old }}</strong>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14" />
+                <path d="m15 8 4 4-4 4" />
+              </svg>
+              <span class="visually-hidden">{{ $t("tools.alphabet.changes.new") }}:</span>
+              <strong>{{ row.new }}</strong>
+            </li>
+          </ul>
+          <dl class="change-notes">
+            <div>
+              <dt>Ng ng</dt>
+              <dd>{{ $t("tools.alphabet.changes.unchanged") }}</dd>
+            </div>
+            <div>
+              <dt>{{ NEW_APOSTROPHE }}</dt>
+              <dd>{{ $t("tools.alphabet.changes.apostrophe") }}</dd>
+            </div>
+          </dl>
         </div>
       </section>
 
@@ -473,7 +620,18 @@ useHead(() => ({
               @click="toggleFaq(index)"
             >
               <span>{{ $t(`tools.alphabet.faq.q${index}.question`) }}</span>
-              <span aria-hidden="true">⌄</span>
+              <svg
+                class="faq__chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
             </button>
             <div
               v-show="openFaq === index"
@@ -498,8 +656,33 @@ useHead(() => ({
 <style scoped>
 .page--dark {
   min-height: 100vh;
-  background: #05051a;
-  color: #eef1f7;
+  background: var(--color-ground, #05051a);
+  color: var(--color-text-primary, #eef1f7);
+}
+
+.tool-header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6.75rem 1.5rem 0.85rem;
+}
+
+.tool-header__eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--color-sky, #a9d6e5);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.tool-header__title {
+  max-width: 100%;
+  margin: 0;
+  color: var(--color-text-primary, #eef1f7);
+  font-size: clamp(1.85rem, 3.25vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .alphabet__inner {
@@ -509,21 +692,20 @@ useHead(() => ({
 }
 
 .alphabet__intro {
-  max-width: 760px;
-  margin: 0 0 2.5rem;
+  max-width: 920px;
+  margin: 0 0 1.25rem;
   color: #c3cad8;
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  line-height: 1.7;
+  font-size: 0.9375rem;
+  line-height: 1.55;
 }
 
 .converter {
-  padding: 1.5rem;
+  padding: 1.25rem;
   border: 1px solid rgba(169, 214, 229, 0.16);
   border-radius: 24px;
-  background: rgba(20, 28, 48, 0.48);
+  background: var(--color-surface-card, rgba(20, 28, 48, 0.45));
 }
 
-.converter__toolbar,
 .converter__actions,
 .symbols {
   display: flex;
@@ -533,48 +715,124 @@ useHead(() => ({
 }
 
 .converter__toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+  align-items: end;
+  gap: 0.75rem;
   margin-bottom: 1.25rem;
+}
+
+.converter__direction {
+  display: flex;
+  align-items: end;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.converter__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
 }
 
 .control {
   display: grid;
   gap: 0.4rem;
-  color: #aab2c4;
+  color: var(--color-text-secondary, #aab2c4);
   font-size: 0.75rem;
   font-weight: 600;
 }
 
 .control--mode {
-  min-width: min(100%, 280px);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 select,
 textarea,
 .result {
   font: inherit;
-  color: #eef1f7;
-  background: #090d1d;
+  color: var(--color-text-primary, #eef1f7);
+  background: var(--color-surface, #0b0b10);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.select-wrap {
+  position: relative;
+  display: block;
+}
+
 select {
-  min-height: 42px;
-  padding: 0 2.25rem 0 0.75rem;
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 2.75rem 0 0.85rem;
   border-radius: 10px;
+  appearance: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.select-wrap svg {
+  position: absolute;
+  top: 50%;
+  right: 0.85rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--color-sky, #a9d6e5);
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 
 .check {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.45rem;
+  min-height: 44px;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 10px;
   color: #c3cad8;
+  background: rgba(255, 255, 255, 0.025);
   font-size: 0.8125rem;
+  line-height: 1.25;
+  cursor: pointer;
 }
 
 .check input {
-  width: 1rem;
-  height: 1rem;
-  accent-color: #1aab9a;
+  display: grid;
+  flex: 0 0 auto;
+  place-content: center;
+  width: 2.25rem;
+  height: 1.25rem;
+  margin: 0;
+  border: 1px solid rgba(169, 214, 229, 0.35);
+  border-radius: 999px;
+  appearance: none;
+  background: rgba(169, 214, 229, 0.12);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.check input::before {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  background: var(--color-text-secondary, #aab2c4);
+  content: "";
+  transform: translateX(-0.45rem);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.check input:checked {
+  border-color: var(--color-teal, #1aab9a);
+  background: var(--color-teal, #1aab9a);
+}
+
+.check input:checked::before {
+  background: var(--color-text-primary, #eef1f7);
+  transform: translateX(0.45rem);
 }
 
 .converter__panels {
@@ -588,7 +846,7 @@ select {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.6rem;
-  color: #aab2c4;
+  color: var(--color-text-secondary, #aab2c4);
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -596,7 +854,7 @@ select {
 textarea,
 .result {
   width: 100%;
-  min-height: 330px;
+  min-height: 280px;
   padding: 1rem;
   border-radius: 14px;
   line-height: 1.65;
@@ -614,45 +872,68 @@ textarea {
 }
 
 .result__placeholder {
-  color: #687084;
+  color: var(--color-text-secondary, #aab2c4);
 }
 
 mark {
-  padding: 0.05em 0.08em;
-  border-radius: 3px;
-  color: #eafffb;
+  padding: 0;
+  color: var(--color-text-primary, #eef1f7);
   background: rgba(26, 171, 154, 0.42);
+  text-decoration: underline;
+  text-decoration-color: var(--color-teal-soft, #9ae2d6);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.12em;
+}
+
+.result__warning {
+  color: #fff2d8;
+  background: rgba(255, 190, 92, 0.28);
+  text-decoration-color: #ffbe5c;
+}
+
+.result__warning.is-active {
+  background: rgba(255, 190, 92, 0.52);
 }
 
 select:focus-visible,
 textarea:focus-visible,
 .result:focus-visible,
-button:focus-visible {
+button:focus-visible,
+.check input:focus-visible,
+.warnings li:focus-visible {
   outline: 2px solid #46e6e1;
   outline-offset: 2px;
 }
 
 .converter__notice,
-.privacy-note {
+.privacy-note,
+.converter__status {
   margin: 0.8rem 0 0;
   color: #9ca6ba;
   font-size: 0.8rem;
   line-height: 1.5;
 }
 
+.converter__status {
+  color: #f1d6a2;
+}
+
 .symbols {
   margin-top: 1rem;
-  color: #aab2c4;
+  color: var(--color-text-secondary, #aab2c4);
   font-size: 0.8125rem;
 }
 
 .symbols button {
-  min-width: 2.25rem;
-  min-height: 2.25rem;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   border: 1px solid rgba(169, 214, 229, 0.2);
   border-radius: 8px;
-  color: #eef1f7;
+  color: var(--color-text-primary, #eef1f7);
   background: rgba(169, 214, 229, 0.08);
+  font: inherit;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -661,11 +942,11 @@ button:focus-visible {
 }
 
 .button {
-  min-height: 42px;
+  min-height: 44px;
   padding: 0.65rem 1rem;
   border: 1px solid rgba(169, 214, 229, 0.24);
   border-radius: 10px;
-  color: #eef1f7;
+  color: var(--color-text-primary, #eef1f7);
   background: rgba(169, 214, 229, 0.08);
   font-family: inherit;
   font-weight: 600;
@@ -673,15 +954,21 @@ button:focus-visible {
 }
 
 .button--primary {
-  border-color: #1aab9a;
+  border-color: var(--color-teal, #1aab9a);
   color: #031310;
   background: #6ad9c9;
 }
 
 .button--icon {
-  min-width: 42px;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
   padding: 0;
-  font-size: 1.3rem;
+}
+
+.button--icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .button:disabled {
@@ -697,6 +984,7 @@ button:focus-visible {
   color: #f1d6a2;
   background: rgba(102, 66, 12, 0.16);
   font-size: 0.875rem;
+  overflow-wrap: anywhere;
 }
 
 .warnings ul {
@@ -709,36 +997,87 @@ button:focus-visible {
   color: #fff2d8;
 }
 
+.warnings li {
+  border-radius: 4px;
+}
+
 .content-section {
   margin-top: 6rem;
 }
 
-.table-wrap {
-  overflow-x: auto;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.changes-card {
+  padding: 1rem;
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
   border-radius: 16px;
+  background: var(--color-surface-card, rgba(20, 28, 48, 0.45));
 }
 
-table {
-  width: 100%;
-  min-width: 420px;
-  border-collapse: collapse;
+.changes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-th,
-td {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  text-align: left;
+.changes-grid li {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 1.1rem 0.75rem;
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+  background: rgba(169, 214, 229, 0.05);
+  text-align: center;
 }
 
-th {
-  color: #a9d6e5;
-  background: rgba(169, 214, 229, 0.06);
+.changes-grid strong {
+  min-width: 0;
+  color: var(--color-text-primary, #eef1f7);
+  font-size: clamp(1rem, 2vw, 1.25rem);
 }
 
-tbody tr:last-child td {
-  border-bottom: 0;
+.changes-grid svg {
+  width: 1rem;
+  color: var(--color-teal-soft, #9ae2d6);
+}
+
+.change-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 1rem 0 0;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.change-notes div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.8rem 1rem 0;
+}
+
+.change-notes div + div {
+  border-left: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
+}
+
+.change-notes dt {
+  flex: 0 0 auto;
+  color: var(--color-sky, #a9d6e5);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.change-notes dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-secondary, #aab2c4);
+  font-size: 0.8125rem;
 }
 
 .business {
@@ -755,7 +1094,7 @@ tbody tr:last-child td {
 
 .business__eyebrow {
   margin: 0 0 0.75rem;
-  color: #9ae2d6;
+  color: var(--color-teal-soft, #9ae2d6);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -782,9 +1121,9 @@ tbody tr:last-child td {
 
 .faq__item {
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
   border-radius: 14px;
-  background: rgba(20, 28, 48, 0.4);
+  background: var(--color-surface-card, rgba(20, 28, 48, 0.45));
 }
 
 .faq__item.is-open {
@@ -797,9 +1136,10 @@ tbody tr:last-child td {
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
+  min-height: 44px;
   padding: 1.2rem 1.25rem;
   border: 0;
-  color: #eef1f7;
+  color: var(--color-text-primary, #eef1f7);
   background: transparent;
   font: inherit;
   font-weight: 600;
@@ -807,9 +1147,21 @@ tbody tr:last-child td {
   cursor: pointer;
 }
 
+.faq__chevron {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-sky, #a9d6e5);
+  transition: transform 0.25s ease;
+}
+
+.faq__item.is-open .faq__chevron {
+  transform: rotate(180deg);
+}
+
 .faq__answer {
   padding: 0 1.25rem 1.25rem;
-  color: #aab2c4;
+  color: var(--color-text-secondary, #aab2c4);
   line-height: 1.7;
 }
 
@@ -826,6 +1178,10 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 760px) {
+  .converter__toolbar {
+    grid-template-columns: 1fr;
+  }
+
   .converter__panels {
     grid-template-columns: 1fr;
   }
@@ -835,16 +1191,37 @@ tbody tr:last-child td {
     min-height: 240px;
   }
 
+  .changes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .business {
     align-items: flex-start;
     flex-direction: column;
   }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 560px) {
+  .symbols {
+    gap: 0.5rem;
+  }
+
+  .symbols > span {
+    flex-basis: 100%;
+  }
+
+  .tool-header {
+    padding: 6.5rem 1rem 0.65rem;
+  }
+
   .alphabet__inner {
     padding-right: 1rem;
     padding-left: 1rem;
+  }
+
+  .alphabet__intro {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
   }
 
   .converter {
@@ -852,20 +1229,67 @@ tbody tr:last-child td {
     border-radius: 18px;
   }
 
-  .control--mode,
-  .control--mode select,
-  .converter__actions .button {
-    width: 100%;
+  .converter__options {
+    grid-template-columns: 1fr;
   }
 
-  .button--icon {
-    width: 42px;
+  .control--mode {
+    min-width: 0;
+  }
+
+  .converter__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .converter__actions .button {
+    width: 100%;
+    min-width: 0;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    white-space: normal;
+  }
+
+  .changes-card {
+    padding: 0.75rem;
+  }
+
+  .changes-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .changes-grid li {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .change-notes {
+    grid-template-columns: 1fr;
+  }
+
+  .change-notes div {
+    padding: 0.75rem 0.5rem 0;
+  }
+
+  .change-notes div + div {
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--color-border-subtle, rgba(255, 255, 255, 0.08));
+    border-left: 0;
   }
 
   .text-panel__head {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .check input,
+  .check input::before,
+  .faq__chevron {
+    transition: none;
   }
 }
 </style>

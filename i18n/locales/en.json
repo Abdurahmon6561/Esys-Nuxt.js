@@ -382,6 +382,7 @@
         "swap": "Swap direction",
         "copy": "Copy result",
         "copied": "Copied",
+        "copyFallback": "Clipboard access is unavailable. The result is selected for you.",
         "clear": "Clear",
         "download": "Download .txt",
         "upload": "Upload .txt"

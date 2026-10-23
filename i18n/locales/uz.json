@@ -382,6 +382,7 @@
         "swap": "Yo‘nalishni almashtirish",
         "copy": "Natijani nusxalash",
         "copied": "Nusxalandi",
+        "copyFallback": "Buferga kirib bo‘lmadi. Natija matni belgilandi.",
         "clear": "Tozalash",
         "download": ".txt yuklab olish",
         "upload": ".txt yuklash"
