@@ -7,13 +7,44 @@ const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 // getBlogs() → blog/all (paginated 10). Envelope: { data: [...], links, meta }.
+// The first page comes from useAsyncData (SSR + locale watch); "show more"
+// appends further pages client-side via the same endpoint.
 const { data, pending, error } = await useAsyncData(
   "blogs",
   () => blogApi.getBlogs(),
   { watch: [locale] }
 );
 
-const items = computed(() => data.value?.data ?? []);
+const items = ref([]);
+const page = ref(1);
+const lastPage = computed(() => data.value?.meta?.last_page ?? 1);
+const loadingMore = ref(false);
+const hasMore = computed(() => page.value < lastPage.value);
+
+// useAsyncData refetches on locale change — reset the appended pages with it.
+watch(
+  data,
+  (firstPage) => {
+    items.value = firstPage?.data ?? [];
+    page.value = 1;
+  },
+  { immediate: true }
+);
+
+async function loadMore() {
+  if (loadingMore.value || !hasMore.value) return;
+  loadingMore.value = true;
+  try {
+    const next = page.value + 1;
+    const res = await blogApi.getBlogs({ page: next });
+    items.value = items.value.concat(res?.data ?? []);
+    page.value = next;
+  } catch (e) {
+    console.error("Failed to load more blogs:", e);
+  } finally {
+    loadingMore.value = false;
+  }
+}
 
 useSeoMeta({
   title: () => t("blog.seo.title"),
@@ -104,5 +135,40 @@ useHead(() => ({
         :show-text="false"
       />
     </template>
+    <template #after>
+      <button
+        v-if="hasMore"
+        class="blog__more"
+        type="button"
+        :disabled="loadingMore"
+        @click="loadMore"
+      >
+        {{ loadingMore ? $t("blog.loading") : $t("blog.load_more") }}
+      </button>
+    </template>
   </UiPageList>
 </template>
+
+<style scoped>
+.blog__more {
+  padding: 0.85rem 2.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #eef1f7;
+  background: transparent;
+  border: 1px solid rgba(169, 214, 229, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.blog__more:hover:not(:disabled) {
+  border-color: #46e6e1;
+  transform: translateY(-2px);
+}
+
+.blog__more:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+</style>

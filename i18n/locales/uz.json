@@ -146,6 +146,8 @@
     "title": "G'oyalar va hikoyalar",
     "subtitle": "Dizayn, muhandislik va raqamli mahsulotni rivojlantirish haqida yozuvlar.",
     "error": "Blogni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
+    "load_more": "Yana ko'rsatish",
+    "loading": "Yuklanmoqda…",
     "back": "Blogga qaytish",
     "published": "Chop etilgan",
     "readingTime": "{n} daqiqa o'qish",

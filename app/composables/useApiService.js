@@ -20,7 +20,8 @@ export function useApiService() {
   };
 
   const blogApi = {
-    getBlogs: () => makeRequest("blog/all"),
+    // Query params pass through to the API paginator (?page=N).
+    getBlogs: (query = {}) => makeRequest("blog/all", { query }),
 
     getBlog: (id) => makeRequest(`blog/${id}`),
 

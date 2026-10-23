@@ -146,6 +146,8 @@
     "title": "Insights & stories",
     "subtitle": "Notes on design, engineering and growing a digital product.",
     "error": "Failed to load blog. Please try again later.",
+    "load_more": "Show more",
+    "loading": "Loading…",
     "back": "Back to blog",
     "published": "Published",
     "readingTime": "{n} min read",

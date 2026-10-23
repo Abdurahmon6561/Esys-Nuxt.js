@@ -58,6 +58,12 @@ defineProps({
           :index="index"
         />
       </UiReveal>
+
+      <!-- Optional content under the grid (e.g. a load-more button); the
+           caller opts in by providing the slot. -->
+      <div v-if="$slots.after" class="page__after">
+        <slot name="after" />
+      </div>
     </div>
   </main>
 </template>
@@ -113,6 +119,12 @@ defineProps({
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 2rem;
+}
+
+.page__after {
+  display: flex;
+  justify-content: center;
+  margin-top: 4rem;
 }
 
 @media (min-width: 900px) {
