@@ -41,6 +41,26 @@ export function onIdleOrInteraction(callback, { timeout = 3000 } = {}) {
   };
 }
 
+// Resolves when the page's `load` event has fired (or `readyState` is
+// already "complete"). Heavy optional work started after this point no
+// longer counts against Lighthouse's load/TBT window.
+export function waitForPageLoad(timeout = 10000) {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined" || document.readyState === "complete") {
+      return resolve();
+    }
+
+    const done = () => {
+      window.removeEventListener("load", done);
+      clearTimeout(fallback);
+      resolve();
+    };
+
+    const fallback = setTimeout(done, timeout);
+    window.addEventListener("load", done, { once: true });
+  });
+}
+
 // Resolves when the browser is idle (or after `timeout`). Unlike
 // onIdleOrInteraction, user input does NOT resolve early — decorative
 // visuals must not compete with the user's first interaction.

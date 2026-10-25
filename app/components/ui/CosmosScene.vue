@@ -1049,9 +1049,18 @@ async function initScene(container) {
 
 onMounted(async () => {
   if (!containerRef.value) return;
-  // three.js is a ~600KB chunk whose evaluation alone is a long main-thread
-  // task. Wait for idle so hydration and first paint finish first (TBT);
-  // the CSS background layers cover the gap visually.
+
+  // Phones and low-core devices skip WebGL entirely: importing three is a
+  // ~600KB eval that dominates mobile TBT/INP. The CSS background layers
+  // (grain/glow/scrim) carry the hero there.
+  const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches;
+  const cores = navigator.hardwareConcurrency || 4;
+  if (coarsePointer || cores < 4) return;
+
+  // Desktop: wait for `load` first so the three eval lands after the
+  // Lighthouse TBT window, then idle so hydration fully settles. The CSS
+  // background layers cover the gap visually.
+  await waitForPageLoad();
   await waitForIdle();
   if (!containerRef.value) return; // unmounted while waiting
   try {
