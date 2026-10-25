@@ -97,10 +97,18 @@ const dateModified = computed(() => {
 
 const articleJsonLd = computed(() => {
   if (!blog.value) return "";
-  return JSON.stringify([
+  const homePath = localePath("/");
+  const homeUrl = `${siteUrl}${homePath === "/" ? "" : homePath}`;
+
+  // Visible FAQ blocks carry Q/A pairs; expose them as FAQPage too (no
+  // Google rich result since May 2026, but adds structure for AI answers).
+  const faq = buildFaq(blog.value.text);
+
+  const blocks = [
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
+      "@id": `${siteUrl}${route.path}#article`,
       headline: blog.value.title,
       description: summary.value || undefined,
       image: schemaImage(
@@ -120,12 +128,26 @@ const articleJsonLd = computed(() => {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
       itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Evolution Systems", item: siteUrl },
+        { "@type": "ListItem", position: 1, name: "Evolution Systems", item: homeUrl },
         { "@type": "ListItem", position: 2, name: t("nav.blog"), item: `${siteUrl}${localePath("/blog")}` },
         { "@type": "ListItem", position: 3, name: blog.value.title, item: `${siteUrl}${route.path}` },
       ],
     },
-  ]);
+  ];
+
+  if (faq.length >= 2) {
+    blocks.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faq.map(({ question, answer }) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: { "@type": "Answer", text: answer },
+      })),
+    });
+  }
+
+  return JSON.stringify(blocks);
 });
 
 useHead(() => ({

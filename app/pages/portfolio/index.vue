@@ -35,12 +35,33 @@ const breadcrumbsJsonLd = computed(() => {
   );
 });
 
+// ItemList enumerating every case URL for crawlers.
+const itemListJsonLd = computed(() => {
+  const entries = items.value.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: `${siteUrl}${localePath(`/portfolio/${item.alias}`)}`,
+    name: item.title,
+  }));
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    numberOfItems: entries.length,
+    itemListElement: entries,
+  });
+});
+
 useHead(() => ({
   script: [
     {
       key: "portfolio-breadcrumb-schema",
       type: "application/ld+json",
       innerHTML: breadcrumbsJsonLd.value,
+    },
+    {
+      key: "portfolio-itemlist-schema",
+      type: "application/ld+json",
+      innerHTML: itemListJsonLd.value,
     },
   ],
 }));
