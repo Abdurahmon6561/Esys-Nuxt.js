@@ -7,44 +7,40 @@ const config = useRuntimeConfig();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 // getBlogs() → blog/all (paginated 10). Envelope: { data: [...], links, meta }.
-// The first page comes from useAsyncData (SSR + locale watch); "show more"
-// appends further pages client-side via the same endpoint.
+// ALL pages are fetched during SSR so every post link ships in the HTML —
+// crawlers never followed the old client-side "show more" fetch, leaving
+// posts 11+ as sitemap-only orphans. The button is now a pure reveal.
+const PAGE_SIZE = 10;
+
 const { data, pending, error } = await useAsyncData(
   "blogs",
-  () => blogApi.getBlogs(),
+  async () => {
+    const first = await blogApi.getBlogs();
+    const lastPage = first?.meta?.last_page ?? 1;
+    if (lastPage <= 1) return first;
+
+    const rest = await Promise.all(
+      Array.from({ length: lastPage - 1 }, (_, i) =>
+        blogApi.getBlogs({ page: i + 2 })
+      )
+    );
+    return {
+      ...first,
+      data: [
+        ...(first?.data ?? []),
+        ...rest.flatMap((page) => page?.data ?? []),
+      ],
+    };
+  },
   { watch: [locale] }
 );
 
-const items = ref([]);
-const page = ref(1);
-const lastPage = computed(() => data.value?.meta?.last_page ?? 1);
-const loadingMore = ref(false);
-const hasMore = computed(() => page.value < lastPage.value);
-
-// useAsyncData refetches on locale change — reset the appended pages with it.
-watch(
-  data,
-  (firstPage) => {
-    items.value = firstPage?.data ?? [];
-    page.value = 1;
-  },
-  { immediate: true }
-);
-
-async function loadMore() {
-  if (loadingMore.value || !hasMore.value) return;
-  loadingMore.value = true;
-  try {
-    const next = page.value + 1;
-    const res = await blogApi.getBlogs({ page: next });
-    items.value = items.value.concat(res?.data ?? []);
-    page.value = next;
-  } catch (e) {
-    console.error("Failed to load more blogs:", e);
-  } finally {
-    loadingMore.value = false;
-  }
-}
+const items = computed(() => data.value?.data ?? []);
+const expanded = ref(false);
+// All post links must ship in the SSR HTML (crawlers don't click), so extra
+// cards are hidden with CSS instead of left out of the render.
+const isHidden = (index) => !expanded.value && index >= PAGE_SIZE;
+const hasMore = computed(() => items.value.length > PAGE_SIZE);
 
 useSeoMeta({
   title: () => t("blog.seo.title"),
@@ -66,12 +62,33 @@ const breadcrumbsJsonLd = computed(() => {
   );
 });
 
+// ItemList so the listing itself enumerates every post URL for crawlers.
+const itemListJsonLd = computed(() => {
+  const entries = items.value.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    url: `${siteUrl}${localePath(`/blog/${item.alias}`)}`,
+    name: item.title,
+  }));
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    numberOfItems: entries.length,
+    itemListElement: entries,
+  });
+});
+
 useHead(() => ({
   script: [
     {
       key: "blog-breadcrumb-schema",
       type: "application/ld+json",
       innerHTML: breadcrumbsJsonLd.value,
+    },
+    {
+      key: "blog-itemlist-schema",
+      type: "application/ld+json",
+      innerHTML: itemListJsonLd.value,
     },
   ],
 }));
@@ -127,8 +144,9 @@ useHead(() => ({
         </template>
       </i18n-t>
     </template>
-    <template #item="{ item }">
+    <template #item="{ item, index }">
       <UiCard
+        :class="{ 'blog__card--hidden': isHidden(index) }"
         :item="item"
         :to="`/blog/${item.alias}`"
         show-date
@@ -137,19 +155,23 @@ useHead(() => ({
     </template>
     <template #after>
       <button
-        v-if="hasMore"
+        v-if="hasMore && !expanded"
         class="blog__more"
         type="button"
-        :disabled="loadingMore"
-        @click="loadMore"
+        @click="expanded = true"
       >
-        {{ loadingMore ? $t("blog.loading") : $t("blog.load_more") }}
+        {{ $t("blog.load_more") }}
       </button>
     </template>
   </UiPageList>
 </template>
 
 <style scoped>
+/* Extra posts stay in the DOM (SSR links for crawlers) but not in layout. */
+.blog__card--hidden {
+  display: none;
+}
+
 .blog__more {
   padding: 0.85rem 2.5rem;
   font-size: 0.9375rem;
