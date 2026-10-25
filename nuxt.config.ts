@@ -56,6 +56,12 @@ export default defineNuxtConfig({
         subsets: ["cyrillic-ext", "cyrillic", "latin-ext", "latin"],
       },
     ],
+    defaults: {
+      // @nuxt/fonts v1 derives real metrics from the font files and emits a
+      // metric-override fallback face (size-adjust/ascent-override), which
+      // removes the FOUT layout shift on desktop (CLS 0.204 → <0.1).
+      fallbacks: { "sans-serif": ["Arial"] },
+    },
   },
 
   site: {
@@ -82,11 +88,12 @@ export default defineNuxtConfig({
       { code: "ru", iso: "ru", name: "Ру", file: "ru.json" },
     ],
     defaultLocale: "ru",
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: "i18n_redirected",
-      redirectOn: "root",
-    },
+    // detectBrowserLanguage defaults to ON in @nuxtjs/i18n v10, so it must be
+    // disabled explicitly. The server-side root redirect (/ → /en for non-ru
+    // Accept-Language) doubled TTFB and sent Googlebot (US crawls) to /en on
+    // every visit. `/` now always serves the ru default; visitors switch via
+    // the navbar, which keeps the locale in the URL prefix.
+    detectBrowserLanguage: false,
     // Bundle all locale messages into the build. @nuxtjs/i18n v10 lazy-loads
     // each locale from a /_i18n/{code}/messages.json Nitro endpoint by default;
     // prerendering /about and /privacy fetches that endpoint before the i18n
