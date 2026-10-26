@@ -122,7 +122,8 @@
       "contact": "Contact",
       "privacy": "Privacy",
       "services": "Services",
-      "about": "About us"
+      "about": "About us",
+      "tools": "Tools"
     },
     "serviceLinks": {
       "websites": "Website development",
@@ -130,6 +131,10 @@
       "webApplications": "Web applications",
       "crmSystems": "CRM systems",
       "mobileApplications": "Mobile applications"
+    },
+    "toolLinks": {
+      "alphabet": "New Uzbek alphabet converter",
+      "all": "All tools"
     },
     "rights": "Evolution Systems. All rights reserved."
   },
@@ -347,6 +352,30 @@
     }
   },
   "tools": {
+    "hub": {
+      "seo": {
+        "title": "Free online tools",
+        "description": "Free tools by Evolution Systems: an Uzbek Cyrillic and Latin to new alphabet converter and other services for text and websites."
+      },
+      "eyebrow": "Tools",
+      "title": "Free tools",
+      "subtitle": "Services we built for ourselves and our clients. They run in the browser, no sign-up.",
+      "specimenLabel": "Letters that change",
+      "alphabet": {
+        "text": "Converts text from old Latin and Cyrillic to the 2026 alphabet and back. Keeps links and code intact and shows every replacement.",
+        "points": [
+          "Cyrillic → new alphabet",
+          "Old Latin → new",
+          "New → old Latin"
+        ],
+        "open": "Open the converter"
+      },
+      "custom": {
+        "title": "Need a tool for your workflow?",
+        "text": "Calculators, converters, internal services — we build them and embed them in your site.",
+        "cta": "Discuss a task"
+      }
+    },
     "alphabet": {
       "seo": {
         "title": "New Uzbek alphabet converter online",
@@ -355,6 +384,8 @@
       "eyebrow": "Free online tool",
       "title": "New Uzbek alphabet converter",
       "intro": "Convert old Latin or Cyrillic text to the yangi alifbo and back. The tool supports o'zbek alifbosi, lotin alifbosi and kirill lotin oʻgirish directly in your browser.",
+      "updated": "Updated {date}",
+      "lawSource": "Law ZRU-1184 of 21.10.2026 on lex.uz",
       "breadcrumb": "New Uzbek alphabet converter",
       "converterLabel": "Uzbek alphabet converter",
       "sourceLabel": "Source text",

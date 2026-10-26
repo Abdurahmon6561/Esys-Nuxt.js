@@ -122,7 +122,8 @@
       "contact": "Aloqa",
       "privacy": "Maxfiylik",
       "services": "Xizmatlar",
-      "about": "Biz haqimizda"
+      "about": "Biz haqimizda",
+      "tools": "Vositalar"
     },
     "serviceLinks": {
       "websites": "Saytlar işlab çiqariş",
@@ -130,6 +131,10 @@
       "webApplications": "Veb-ilovalar",
       "crmSystems": "CRM tizimlari",
       "mobileApplications": "Mobil ilovalar"
+    },
+    "toolLinks": {
+      "alphabet": "Yangi alifbo konvertori",
+      "all": "Barça vositalar"
     },
     "rights": "Evolution Systems. Barça huquqlar himoyalangan."
   },
@@ -347,14 +352,40 @@
     }
   },
   "tools": {
+    "hub": {
+      "seo": {
+        "title": "Bepul onlayn vositalar",
+        "description": "Evolution Systems bepul vositalari: özbek kirill va lotin matnini yangi alifboga ögiruvçi konvertor va boşqa servislar."
+      },
+      "eyebrow": "Vositalar",
+      "title": "Bepul vositalar",
+      "subtitle": "Özimiz va mijozlarimiz uçun yaratgan servislar. Brauzerda, röyxatdan ötmasdan işlaydi.",
+      "specimenLabel": "Qaysi harflar özgaradi",
+      "alphabet": {
+        "text": "Matnni eski lotin va kirill yozuvidan 2026-yilgi yangi alifboga va aksinça ögiradi. Havolalar va kodni saqlaydi, har bir almaştirişni körsatadi.",
+        "points": [
+          "Kirill → yangi alifbo",
+          "Eski lotin → yangi",
+          "Yangi → eski lotin"
+        ],
+        "open": "Konvertorni oçiş"
+      },
+      "custom": {
+        "title": "Jarayoningizga mos vosita kerakmi?",
+        "text": "Kalkulyatorlar, konvertorlar, içki servislar — yaratib, saytingizga örnatamiz.",
+        "cta": "Vazifani muhokama qiliş"
+      }
+    },
     "alphabet": {
       "seo": {
-        "title": "Yangi özbek alifbosi konvertori onlayn",
-        "description": "Bepul özbek matni konvertori: eski lotin va kirill yozuvidan yangi alifboga, yangi özbek alifbosidan eski lotin yozuviga ögiriş."
+        "title": "Yangi alifbo konvertori: kirill va lotin o'zbek matni",
+        "description": "Bepul onlayn konvertor: kirill va eski lotin (o', g', sh, ch) o'zbek matnini yangi alifboga (ö, ğ, ş, ç) va aksinça ögiradi. Kirill lotin o'girish brauzerda."
       },
       "eyebrow": "Bepul onlayn vosita",
       "title": "Yangi özbek alifbosi konvertori",
       "intro": "Eski lotin yoki kirill yozuvidagi matnni yangi alifboga va aksinça ögiring. Konvertor özbek alifbosi, lotin alifbosi va kirill lotin ögiriş uçun brauzerning özida işlaydi.",
+      "updated": "Yangilangan: {date}",
+      "lawSource": "ÖRQ-1184 qonuni, 21.10.2026, lex.uz",
       "breadcrumb": "Yangi alifbo konvertori",
       "converterLabel": "Özbek alifbosi konvertori",
       "sourceLabel": "Boşlanğiç matn",

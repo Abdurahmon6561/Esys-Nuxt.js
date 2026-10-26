@@ -21,6 +21,8 @@ const ALTERNATE_PATHS = {
   en: "/en/tools/new-uzbek-alphabet-converter",
 };
 const BLOG_ARTICLE_PATH: string | null = null;
+// ZRU-1184 of 21.10.2026 - the law that introduces the new alphabet.
+const LAW_DOC_ID = 8549958;
 const FAQ_COUNT = 6;
 const MAX_LENGTH = 100_000;
 const HIGHLIGHT_LIMIT = 20_000;
@@ -36,6 +38,10 @@ const { open: openContact } = useContactModal();
 const siteUrl = config.public.siteUrl || "https://esys.pro";
 
 usePageAlternates(() => ALTERNATE_PATHS);
+
+const tool = findTool("alphabet");
+const updatedLabel = computed(() => formatBlogDate(tool.updatedAt, locale.value));
+const lawUrl = computed(() => `https://lex.uz/${locale.value}/docs/${LAW_DOC_ID}`);
 
 const source = ref("");
 const mode = ref<ConvertMode>("old-to-new");
@@ -279,12 +285,15 @@ const pageJsonLd = computed(() => {
       applicationCategory: "UtilitiesApplication",
       operatingSystem: "Any",
       inLanguage: locale.value,
+      dateModified: tool.updatedAt,
       isPartOf: { "@id": websiteId(siteUrl) },
       provider: { "@id": orgId(siteUrl) },
       offers: {
         "@type": "Offer",
         price: "0",
         priceCurrency: "UZS",
+        availability: "https://schema.org/InStock",
+        url: pageUrl,
       },
     },
     {
@@ -304,6 +313,10 @@ const pageJsonLd = computed(() => {
       {
         name: "Evolution Systems",
         url: `${siteUrl}${homePath === "/" ? "" : homePath}`,
+      },
+      {
+        name: t("footer.links.tools"),
+        url: `${siteUrl}${localePath("/tools")}`,
       },
       { name: t("tools.alphabet.breadcrumb"), url: pageUrl },
     ]),
@@ -326,6 +339,14 @@ useHead(() => ({
     <header class="tool-header">
       <p class="tool-header__eyebrow">{{ $t("tools.alphabet.eyebrow") }}</p>
       <h1 class="tool-header__title">{{ $t("tools.alphabet.title") }}</h1>
+      <p class="tool-header__meta">
+        <time :datetime="tool.updatedAt">
+          {{ $t("tools.alphabet.updated", { date: updatedLabel }) }}
+        </time>
+        <a :href="lawUrl" target="_blank" rel="noopener">
+          {{ $t("tools.alphabet.lawSource") }}
+        </a>
+      </p>
     </header>
 
     <div class="alphabet__inner">
@@ -667,6 +688,26 @@ useHead(() => ({
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.02em;
+}
+
+.tool-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  margin: 0.85rem 0 0;
+  font-size: 0.8125rem;
+  color: rgba(238, 241, 247, 0.55);
+}
+
+.tool-header__meta a {
+  color: var(--color-sky, #a9d6e5);
+  text-decoration: underline;
+  text-decoration-color: rgba(169, 214, 229, 0.4);
+  text-underline-offset: 3px;
+}
+
+.tool-header__meta a:hover {
+  color: #ffffff;
 }
 
 .alphabet__inner {

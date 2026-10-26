@@ -166,6 +166,27 @@ onBeforeUnmount(() => {
         </nav>
       </div>
 
+      <!-- Free tools -->
+      <div class="footer__services">
+        <h3 class="footer__services-title">{{ $t("footer.links.tools") }}</h3>
+        <nav
+          class="footer__services-nav"
+          :aria-label="$t('footer.links.tools')"
+        >
+          <NuxtLink
+            v-for="tool in TOOLS"
+            :key="tool.id"
+            :to="localePath({ name: tool.route })"
+            class="footer__link"
+          >
+            {{ $t(`footer.toolLinks.${tool.id}`) }}
+          </NuxtLink>
+          <NuxtLink :to="localePath('/tools')" class="footer__link">
+            {{ $t("footer.toolLinks.all") }}
+          </NuxtLink>
+        </nav>
+      </div>
+
       <!-- Compact link bar -->
       <div class="footer__bar">
         <img
@@ -368,9 +389,10 @@ onBeforeUnmount(() => {
 }
 
 /* ── Service links ── */
+/* Fixed title column so the services and tools rows line up. */
 .footer__services {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 10rem 1fr;
   align-items: baseline;
   gap: 1.5rem 3rem;
   padding: 2rem 0;

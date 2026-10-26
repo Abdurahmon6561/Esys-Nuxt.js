@@ -5,9 +5,9 @@ import {
   staticPageEntries,
 } from "../server/utils/static-page-lastmod.ts";
 
-test("covers all 9 static pages across the 3 locales", () => {
-  assert.equal(staticPageEntries().length, 9);
-  assert.equal(Object.keys(STATIC_PAGE_LASTMOD).length, 9);
+test("covers all 12 static pages across the 3 locales", () => {
+  assert.equal(staticPageEntries().length, 12);
+  assert.equal(Object.keys(STATIC_PAGE_LASTMOD).length, 12);
 });
 
 test("every loc starts with a slash and has no trailing slash", () => {

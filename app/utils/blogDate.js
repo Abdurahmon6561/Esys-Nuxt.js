@@ -52,6 +52,24 @@ export function toIsoDate(value) {
   return null;
 }
 
+// Chrome ships without uz-Latn data and formats it as "2026 M10 17" while
+// Node SSR renders "17-oktabr, 2026" - a hydration mismatch. uz is formatted
+// by hand in Node's format instead.
+const UZ_MONTHS = [
+  "yanvar",
+  "fevral",
+  "mart",
+  "aprel",
+  "may",
+  "iyun",
+  "iyul",
+  "avgust",
+  "sentabr",
+  "oktabr",
+  "noyabr",
+  "dekabr",
+];
+
 // Site locales -> Intl.DateTimeFormat locales. 'ru' is default and unprefixed.
 const LOCALES = { ru: "ru-RU", uz: "uz-Latn-UZ", en: "en-US" };
 
@@ -64,6 +82,7 @@ export function formatBlogDate(value, locale) {
   const iso = toIsoDate(value);
   if (!iso) return value ?? null;
   const [year, month, day] = iso.split("-").map(Number);
+  if (locale === "uz") return `${day}-${UZ_MONTHS[month - 1]}, ${year}`;
   return new Intl.DateTimeFormat(LOCALES[locale] ?? locale, {
     day: "numeric",
     month: "long",

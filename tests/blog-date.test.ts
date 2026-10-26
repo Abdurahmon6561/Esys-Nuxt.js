@@ -31,3 +31,9 @@ test("unparseable values fall back to the original string", () => {
   assert.equal(formatBlogDate("garbage", "ru"), "garbage");
   assert.equal(formatBlogDate("", "en"), "");
 });
+
+test("uz dates do not depend on the engine's ICU data", () => {
+  // Browsers without uz-Latn data render "2026 M10 17" - a hydration mismatch.
+  assert.equal(formatBlogDate("October 17, 2026", "uz"), "17-oktabr, 2026");
+  assert.equal(formatBlogDate("2026-01-05", "uz"), "5-yanvar, 2026");
+});
