@@ -1,49 +1,49 @@
 {
   "home": {
     "seo": {
-      "title": "Toshkentdagi veb-studiya - sayt yaratish",
-      "description": "Toshkentdagi veb-studiya: saytlar, landinglar va internet-do'konlar yaratish. Vizitka yoki korporativ sayt tayyor holda - brifdan ishga tushirishgacha."
+      "title": "Toşkentdagi veb-studiya - sayt yaratiş",
+      "description": "Toşkentdagi veb-studiya: saytlar, landinglar va internet-dökonlar yaratiş. Vizitka yoki korporativ sayt tayyor holda - brifdan işga tuşirişgaça."
     }
   },
   "errorPage": {
     "notFound": "Sahifa topilmadi",
     "serverError": "Nimadir xato ketdi",
-    "text": "Sahifa ko'chirilgan yoki o'chirilgan bo'lishi mumkin.",
-    "home": "Bosh sahifaga"
+    "text": "Sahifa köçirilgan yoki öçirilgan bölişi mumkin.",
+    "home": "Boş sahifaga"
   },
   "hero": {
-    "title": "Toshkentdagi veb-studiya: sayt, ilova va CRM ishlab chiqish",
-    "subtitle": "Vizitka saytlari, landinglar, korporativ saytlar va internet-do'konlar, shuningdek mobil ilovalar va CRM tizimlari yaratamiz. Zamonaviy dizayn, puxta tuzilma va ishga tushirilgandan keyingi qo'llab-quvvatlash.",
+    "title": "Toşkentdagi veb-studiya: sayt, ilova va CRM işlab çiqiş",
+    "subtitle": "Vizitka saytlari, landinglar, korporativ saytlar va internet-dökonlar, şuningdek mobil ilovalar va CRM tizimlari yaratamiz. Zamonaviy dizayn, puxta tuzilma va işga tuşirilgandan keyingi qöllab-quvvatlaş.",
     "cta_projects": "Bizning loyihalar",
-    "cta_contact": "Biz bilan bog'lanish"
+    "cta_contact": "Biz bilan boğlaniş"
   },
   "homeServices": {
     "eyebrow": "Xizmatlar",
-    "title": "Toshkentdagi veb-studiya xizmatlari",
-    "subtitle": "Besh yo'nalish - vizitka saytdan CRM tizimgacha. Yechimni shablon sotmasdan, sizning vazifangizga qarab quramiz.",
-    "all_link": "Barcha xizmatlar",
-    "error": "Xizmatlarni yuklashda xatolik. Sahifani yangilab ko'ring."
+    "title": "Toşkentdagi veb-studiya xizmatlari",
+    "subtitle": "Beş yönaliş - vizitka saytdan CRM tizimgaça. Yeçimni şablon sotmasdan, sizning vazifangizga qarab quramiz.",
+    "all_link": "Barça xizmatlar",
+    "error": "Xizmatlarni yuklaşda xatolik. Sahifani yangilab köring."
   },
   "homeAbout": {
     "eyebrow": "Studiya haqida",
-    "title": "Toshkentda saytlarni tayyor holda yaratish",
-    "p1a": "Evolution Systems - Toshkentdagi veb-studiya bo'lib, saytlarni g'oyadan prototipgacha, ishga tushirish va qo'llab-quvvatlashgacha to'liq sikl bilan yaratadi. Biz ",
+    "title": "Toşkentda saytlarni tayyor holda yaratiş",
+    "p1a": "Evolution Systems - Toşkentdagi veb-studiya bölib, saytlarni ğoyadan prototipgaça, işga tuşiriş va qöllab-quvvatlaşgaça töliq sikl bilan yaratadi. Biz ",
     "link_websites": "vizitka saytlari",
-    "p1b": ", landinglar, korporativ saytlar va internet-do'konlar, shuningdek ",
+    "p1b": ", landinglar, korporativ saytlar va internet-dökonlar, şuningdek ",
     "link_webapps": "veb-ilovalar",
     "p1c": " va ",
     "link_crm": "CRM tizimlari",
     "p1d": " yasaymiz.",
-    "p2": "Har bir loyiha brif va bepul smetadan boshlanadi. Keyin tuzilma, dizayn, ishlab chiqish va SEO-asos keladi - sayt nafaqat zamonaviy ko'rinsin, balki qidiruvdan mijozlar ham keltirsin. Butun O'zbekiston bo'ylab va istalgan davlatdagi mijozlar bilan masofadan ishlaymiz.",
-    "p3a": "Yaratgan saytlarimiz qanday ko'rinishini baholash uchun ",
-    "link_portfolio": "loyihalarimizni ko'ring",
+    "p2": "Har bir loyiha brif va bepul smetadan boşlanadi. Keyin tuzilma, dizayn, işlab çiqiş va SEO-asos keladi - sayt nafaqat zamonaviy körinsin, balki qidiruvdan mijozlar ham keltirsin. Butun Özbekiston böylab va istalgan davlatdagi mijozlar bilan masofadan işlaymiz.",
+    "p3a": "Yaratgan saytlarimiz qanday körinişini baholaş uçun ",
+    "link_portfolio": "loyihalarimizni köring",
     "p3b": " - yoki vazifangizni aytib bering: qaysi format sizga eng mos ekanini tavsiya qilamiz.",
-    "stats_title": "Qisqacha biz haqimizda",
+    "stats_title": "Qisqaça biz haqimizda",
     "stats": {
-      "s1": { "value": "5", "label": "xizmat yo'nalishi" },
-      "s2": { "value": "RU · UZ · EN", "label": "uch tilda saytlar" },
+      "s1": { "value": "5", "label": "xizmat yönalişi" },
+      "s2": { "value": "RU · UZ · EN", "label": "uç tilda saytlar" },
       "s3": { "value": "Laravel · Vue · Nuxt · Inertia", "label": "texnologik stek" },
-      "s4": { "value": "Qo'llab-quvvatlash", "label": "ishga tushirgandan keyin" }
+      "s4": { "value": "Qöllab-quvvatlaş", "label": "işga tuşirgandan keyin" }
     },
     "stack_title": "Bizning stek",
     "stack": {
@@ -55,54 +55,54 @@
   },
   "homeProcess": {
     "eyebrow": "Jarayon",
-    "title": "Qanday ishlaymiz va muddatlar",
-    "subtitle": "Shaffof bosqichlar va tushunarli muddatlar - loyihada nima bo'layotgani va u qachon tayyor bo'lishini doim bilib turasiz.",
+    "title": "Qanday işlaymiz va muddatlar",
+    "subtitle": "Şaffof bosqiçlar va tuşunarli muddatlar - loyihada nima bölayotgani va u qaçon tayyor bölişini doim bilib turasiz.",
     "steps": {
       "s1": {
         "title": "Brif va smeta",
-        "text": "Vazifa, maqsad va istaklarni muhokama qilamiz. Brif natijasida smetani bepul tayyorlaymiz - narx ish boshlanishidan oldin belgilanadi."
+        "text": "Vazifa, maqsad va istaklarni muhokama qilamiz. Brif natijasida smetani bepul tayyorlaymiz - narx iş boşlanişidan oldin belgilanadi."
       },
       "s2": {
         "title": "Prototip va dizayn",
-        "text": "Sahifalar tuzilmasini loyihalaymiz, prototip va brendingiz hamda auditoriyangizga mos dizaynni kelishamiz."
+        "text": "Sahifalar tuzilmasini loyihalaymiz, prototip va brendingiz hamda auditoriyangizga mos dizaynni kelişamiz."
       },
       "s3": {
-        "title": "Ishlab chiqish",
-        "text": "Dasturlaymiz va kodlaymiz, jarayonni demo-versiyada ko'rsatamiz - saytni ishga tushirishdan ancha oldin ko'rasiz."
+        "title": "Işlab çiqiş",
+        "text": "Dasturlaymiz va kodlaymiz, jarayonni demo-versiyada körsatamiz - saytni işga tuşirişdan ança oldin körasiz."
       },
       "s4": {
-        "title": "Ishga tushirish va SEO-asos",
-        "text": "Loyihani nashr qilamiz, analitikani ulaymiz va qidiruvdagi o'sish uchun asosiy SEO-sozlamalarni bajaramiz."
+        "title": "Işga tuşiriş va SEO-asos",
+        "text": "Loyihani naşr qilamiz, analitikani ulaymiz va qidiruvdagi ösiş uçun asosiy SEO-sozlamalarni bajaramiz."
       },
       "s5": {
-        "title": "Qo'llab-quvvatlash",
-        "text": "Ishga tushirgandan keyin ham aloqadamiz: yangilanishlar, yaxshilashlar va loyihani rivojlantirishda yordam."
+        "title": "Qöllab-quvvatlaş",
+        "text": "Işga tuşirgandan keyin ham aloqadamiz: yangilanişlar, yaxşilaşlar va loyihani rivojlantirişda yordam."
       }
     },
-    "timeline_title": "Loyiha turlari bo'yicha muddatlar",
+    "timeline_title": "Loyiha turlari böyiça muddatlar",
     "timeline": {
       "t1": { "label": "Vizitka sayt yoki landing", "value": "2 haftadan" },
       "t2": { "label": "Korporativ sayt", "value": "4-6 haftadan" },
-      "t3": { "label": "Internet-do'kon", "value": "6-8 haftadan" },
+      "t3": { "label": "Internet-dökon", "value": "6-8 haftadan" },
       "t4": { "label": "Mobil ilova yoki CRM", "value": "2-3 oydan" }
     },
-    "price_note": "Narx smeta bo'yicha: qisqa brifdan keyin hisob-kitob bepul, yashirin to'lovlarsiz.",
-    "cta": "Loyihani muhokama qilish"
+    "price_note": "Narx smeta böyiça: qisqa brifdan keyin hisob-kitob bepul, yaşirin tölovlarsiz.",
+    "cta": "Loyihani muhokama qiliş"
   },
   "portfolio": {
     "eyebrow": "Portfolio",
-    "title": "Bizning ishlarimiz",
-    "subtitle": "Biz faxrlanadigan loyihalar - investitsiya platformalaridan korporativ saytlargacha.",
-    "error": "Portfolioni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
-    "empty": "Yangi loyihalar tayyorlanmoqda - tez orada qaytib ko'ring.",
-    "all": "Barcha loyihalar",
+    "title": "Bizning işlarimiz",
+    "subtitle": "Biz faxrlanadigan loyihalar - investitsiya platformalaridan korporativ saytlargaça.",
+    "error": "Portfolioni yuklab bölmadi. Keyinroq urinib köring.",
+    "empty": "Yangi loyihalar tayyorlanmoqda - tez orada qaytib köring.",
+    "all": "Barça loyihalar",
     "seo": {
-      "title": "Toshkent veb-studiyasi portfoliosi: saytlar, ilovalar, CRM",
-      "description": "Evolution Systems portfoliosi: biznes uchun korporativ saytlar, internet do'konlar, CRM tizimlari va ilovalar. Toshkentdagi loyihalarimizni ko'ring."
+      "title": "Toşkent veb-studiyasi portfoliosi: saytlar, ilovalar, CRM",
+      "description": "Evolution Systems portfoliosi: biznes uçun korporativ saytlar, internet dökonlar, CRM tizimlari va ilovalar. Toşkentdagi loyihalarimizni köring."
     },
     "intro": {
-      "p1": "Evolution Systems - Toshkentdagi veb-studiya. Biz O'zbekistondagi biznes uchun raqamli mahsulotlar yaratamiz: korporativ saytlar, internet do'konlar, ovqat buyurtma servislar, klinikalar saytlari, investitsiya platformalari va CRM. Portfoliodagi har bir loyiha - hal etilgan biznes vazifasi: ko'proq murojaatlar, avtomatlashtirish va qulay mijoz tajribasi.",
-      "p2": "Yechimni mijoz vazifasiga moslab tanlaymiz: {websites} va {webApps}dan tortib {crm} va {mobile}gacha. Keyslarda qanday vazifa turgani, qanday texnologiyalarni tanlaganimiz va biznes qanday natijaga erishganini aytib beramiz.",
+      "p1": "Evolution Systems - Toşkentdagi veb-studiya. Biz Özbekistondagi biznes uçun raqamli mahsulotlar yaratamiz: korporativ saytlar, internet dökonlar, ovqat buyurtma servislar, klinikalar saytlari, investitsiya platformalari va CRM. Portfoliodagi har bir loyiha - hal etilgan biznes vazifasi: köproq murojaatlar, avtomatlaştiriş va qulay mijoz tajribasi.",
+      "p2": "Yeçimni mijoz vazifasiga moslab tanlaymiz: {websites} va {webApps}dan tortib {crm} va {mobile}gaça. Keyslarda qanday vazifa turgani, qanday texnologiyalarni tanlaganimiz va biznes qanday natijaga erişganini aytib beramiz.",
       "websites": "korporativ saytlar",
       "webApps": "veb-ilovalar",
       "crm": "CRM tizimlari",
@@ -112,10 +112,10 @@
   "footer": {
     "prompt": "Keling, ajoyib narsa yaratamiz",
     "email": "Bizga yozing",
-    "phone": "Qo'ng'iroq qiling",
-    "ctaEyebrow": "Boshlashga tayyormisiz?",
-    "cta": "Loyihani muhokama qilish",
-    "tagline": "Toshkentdagi dijital agentlik. Biznesni oldinga suradigan tez va zamonaviy saytlar hamda raqamli mahsulotlarni loyihalaymiz va yaratamiz.",
+    "phone": "Qöngiroq qiling",
+    "ctaEyebrow": "Boşlaşga tayyormisiz?",
+    "cta": "Loyihani muhokama qiliş",
+    "tagline": "Toşkentdagi dijital agentlik. Biznesni oldinga suradigan tez va zamonaviy saytlar hamda raqamli mahsulotlarni loyihalaymiz va yaratamiz.",
     "links": {
       "portfolio": "Portfolio",
       "blog": "Blog",
@@ -125,65 +125,65 @@
       "about": "Biz haqimizda"
     },
     "serviceLinks": {
-      "websites": "Saytlar ishlab chiqarish",
+      "websites": "Saytlar işlab çiqariş",
       "branding": "Brending",
       "webApplications": "Veb-ilovalar",
       "crmSystems": "CRM tizimlari",
       "mobileApplications": "Mobil ilovalar"
     },
-    "rights": "Evolution Systems. Barcha huquqlar himoyalangan."
+    "rights": "Evolution Systems. Barça huquqlar himoyalangan."
   },
   "cookie": {
-    "text": "Ushbu sayt tajribangizni yaxshilash uchun cookie'lardan foydalanadi. Davom etib, {privacy} va {terms} shartlariga muvofiq ulardan foydalanishga rozilik bildirasiz.",
-    "textShort": "Sayt cookie'lardan foydalanadi. Batafsil - {privacy} va {terms}da.",
+    "text": "Uşbu sayt tajribangizni yaxşilaş uçun cookieʼlardan foydalanadi. Davom etib, {privacy} va {terms} şartlariga muvofiq ulardan foydalanişga rozilik bildirasiz.",
+    "textShort": "Sayt cookieʼlardan foydalanadi. Batafsil - {privacy} va {terms}da.",
     "privacy": "Maxfiylik siyosati",
-    "terms": "Foydalanish shartlari",
-    "acceptAll": "Hammasini qabul qilish",
-    "ariaLabel": "Cookie fayllardan foydalanish haqida bildirishnoma"
+    "terms": "Foydalaniş şartlari",
+    "acceptAll": "Hammasini qabul qiliş",
+    "ariaLabel": "Cookie fayllardan foydalaniş haqida bildirişnoma"
   },
   "blog": {
     "eyebrow": "Blog",
-    "title": "G'oyalar va hikoyalar",
-    "subtitle": "Dizayn, muhandislik va raqamli mahsulotni rivojlantirish haqida yozuvlar.",
-    "error": "Blogni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
-    "load_more": "Yana ko'rsatish",
+    "title": "Ğoyalar va hikoyalar",
+    "subtitle": "Dizayn, muhandislik va raqamli mahsulotni rivojlantiriş haqida yozuvlar.",
+    "error": "Blogni yuklab bölmadi. Keyinroq urinib köring.",
+    "load_more": "Yana körsatiş",
     "loading": "Yuklanmoqda…",
-    "back": "Blogga qaytish",
-    "published": "Chop etilgan",
-    "readingTime": "{n} daqiqa o'qish",
-    "readingTimeLabel": "O'qish vaqti",
+    "back": "Blogga qaytiş",
+    "published": "Çop etilgan",
+    "readingTime": "{n} daqiqa öqiş",
+    "readingTimeLabel": "Öqiş vaqti",
     "toc": "Mundarija",
     "tags": "Teglar",
     "similar": "Yana maqolalar",
     "services_title": "Mavzuga oid xizmatlar",
-    "share": "Ulashish",
-    "shareOn": "{network} orqali ulashish",
-    "copyLink": "Havolani nusxalash",
+    "share": "Ulaşiş",
+    "shareOn": "{network} orqali ulaşiş",
+    "copyLink": "Havolani nusxalaş",
     "linkCopied": "Havola nusxalandi",
     "seo": {
-      "title": "Toshkent veb-studiyasi blogi: saytlar, CRM, ilovalar",
-      "description": "Sayt yaratish va veb-ilovalar haqida maqolalar: loyiha narxi, biznes uchun CRM, mobil ilovalar va dizayn. Toshkent veb-studiyasidan amaliy maslahatlar."
+      "title": "Toşkent veb-studiyasi blogi: saytlar, CRM, ilovalar",
+      "description": "Sayt yaratiş va veb-ilovalar haqida maqolalar: loyiha narxi, biznes uçun CRM, mobil ilovalar va dizayn. Toşkent veb-studiyasidan amaliy maslahatlar."
     },
     "intro": {
-      "p1": "Biz Toshkentda saytlar va raqamli mahsulotlar loyihalaymiz va yaratamiz. Evolution Systems blogida biznes uchun amaliy yozuvlar: {webCost} qancha turadi va narx nimalardan tashkil topadi, {crm} murojaatlarni yo'qotmaslikka qanday yordam beradi, kompaniyaga qachon {webApps} va SaaS platformalar kerak bo'ladi.",
-      "p2": "Shuningdek, {mobileDev} va {branding} mavzularini yoritamiz, Toshkentda mahsulotlarni ishga tushirish tajribamiz bilan bo'lishamiz va mijozlar eng ko'p beradigan savollarga javob beramiz.",
-      "webCost": "sayt yaratish",
-      "crm": "biznes uchun CRM",
+      "p1": "Biz Toşkentda saytlar va raqamli mahsulotlar loyihalaymiz va yaratamiz. Evolution Systems blogida biznes uçun amaliy yozuvlar: {webCost} qança turadi va narx nimalardan taşkil topadi, {crm} murojaatlarni yöqotmaslikka qanday yordam beradi, kompaniyaga qaçon {webApps} va SaaS platformalar kerak böladi.",
+      "p2": "Şuningdek, {mobileDev} va {branding} mavzularini yoritamiz, Toşkentda mahsulotlarni işga tuşiriş tajribamiz bilan bölişamiz va mijozlar eng köp beradigan savollarga javob beramiz.",
+      "webCost": "sayt yaratiş",
+      "crm": "biznes uçun CRM",
       "webApps": "veb-ilovalar",
-      "mobileDev": "mobil ilovalar yaratish",
+      "mobileDev": "mobil ilovalar yaratiş",
       "branding": "dizayn va brending"
     }
   },
   "portfolioDetail": {
-    "back": "Portfolioga qaytish",
+    "back": "Portfolioga qaytiş",
     "services": "Xizmatlar",
     "client": "Mijoz",
     "technologies": "Texnologiyalar",
     "gallery": "Galereya",
     "similar": "Yana loyihalar",
-    "visitSite": "Saytga o'tish",
+    "visitSite": "Saytga ötiş",
     "lightbox": {
-      "close": "Yopish",
+      "close": "Yopiş",
       "previous": "Oldingi rasm",
       "next": "Keyingi rasm",
       "counter": "{current} / {total}"
@@ -192,7 +192,7 @@
   "contact": {
     "eyebrow": "Aloqa",
     "title": "Keling, ajoyib narsa yaratamiz",
-    "subtitle": "Loyihangiz haqida so'zlab bering - bir ish kuni ichida javob beramiz.",
+    "subtitle": "Loyihangiz haqida sözlab bering - bir iş kuni içida javob beramiz.",
     "name": "Ism",
     "namePlaceholder": "Ismingiz",
     "email": "Email",
@@ -200,28 +200,28 @@
     "subject": "Mavzu",
     "subjectPlaceholder": "Qanday yordam bera olamiz?",
     "message": "Xabar",
-    "messagePlaceholder": "Loyiha haqida so'zlab bering",
-    "submit": "Yuborish",
+    "messagePlaceholder": "Loyiha haqida sözlab bering",
+    "submit": "Yuboriş",
     "sending": "Yuborilmoqda...",
-    "success": "Rahmat! Tez orada bog'lanamiz.",
-    "error": "Nimadir noto'g'ri ketdi. Qayta urinib ko'ring.",
-    "close": "Yopish",
+    "success": "Rahmat! Tez orada boğlanamiz.",
+    "error": "Nimadir notöğri ketdi. Qayta urinib köring.",
+    "close": "Yopiş",
     "infoEmail": "Bizga yozing",
-    "infoPhone": "Qo'ng'iroq qiling"
+    "infoPhone": "Qöngiroq qiling"
   },
   "reviews": {
     "eyebrow": "Fikrlar",
     "title": "Mijozlar nima deydi",
-    "subtitle": "Biz bilan ishlagan jamoalarning haqiqiy fikrlari."
+    "subtitle": "Biz bilan işlagan jamoalarning haqiqiy fikrlari."
   },
   "consultant": {
     "title": "AI Konsultant",
-    "empty": "Savol bering - yordam berishga tayyorman.",
+    "empty": "Savol bering - yordam berişga tayyorman.",
     "placeholder": "Xabar yozing...",
-    "error": "Serverga ulanib bo'lmadi.",
+    "error": "Serverga ulanib bölmadi.",
     "new_session": "Yangi suhbat",
-    "close": "Chatni yopish",
-    "send": "Xabar yuborish",
+    "close": "Çatni yopiş",
+    "send": "Xabar yuboriş",
     "typing": "Konsultant yozmoqda"
   },
   "privacy": {
@@ -229,34 +229,34 @@
     "title": "Maxfiylik siyosati",
     "updatedLabel": "Yangilangan",
     "updatedDate": "2026-yil 5-iyul",
-    "intro": "Ushbu siyosat esys.pro sayti (Evolution Systems) qanday ma'lumotlarni to'plashi, ular nima uchun kerakligi va biz ular bilan qanday ishlashimizni tushuntiradi. Saytdan foydalanish orqali siz ushbu siyosat shartlariga rozilik bildirasiz.",
+    "intro": "Uşbu siyosat esys.pro sayti (Evolution Systems) qanday maʼlumotlarni töplaşi, ular nima uçun kerakligi va biz ular bilan qanday işlaşimizni tuşuntiradi. Saytdan foydalaniş orqali siz uşbu siyosat şartlariga rozilik bildirasiz.",
     "s1": {
       "title": "1. Umumiy qoidalar",
-      "text": "esys.pro sayti Evolution Systems dijital agentligiga tegishli (Toshkent, O'zbekiston). Ma'lumotlarni qayta ishlash bo'yicha savollar uchun hi{'@'}esys.pro manziliga yozing."
+      "text": "esys.pro sayti Evolution Systems dijital agentligiga tegişli (Toşkent, Özbekiston). Maʼlumotlarni qayta işlaş böyiça savollar uçun hi{'@'}esys.pro manziliga yozing."
     },
     "s2": {
-      "title": "2. Qanday ma'lumotlarni to'playmiz",
-      "text": "Aloqa formasi ma'lumotlari: ism, email, mavzu va xabar matni - faqat siz o'zingiz kiritgan ma'lumotlar.\nTexnik ma'lumotlar: IP-manzil, brauzer va qurilma turi, tashrif buyurilgan sahifalar - analitika xizmati tomonidan anonim ko'rinishda avtomatik to'planadi.\nCookies: sayt ishlashi va statistika uchun zarur bo'lgan brauzeringizdagi kichik fayllar."
+      "title": "2. Qanday maʼlumotlarni töplaymiz",
+      "text": "Aloqa formasi maʼlumotlari: ism, email, mavzu va xabar matni - faqat siz özingiz kiritgan maʼlumotlar.\nTexnik maʼlumotlar: IP-manzil, brauzer va qurilma turi, taşrif buyurilgan sahifalar - analitika xizmati tomonidan anonim körinişda avtomatik töplanadi.\nCookies: sayt işlaşi va statistika uçun zarur bölgan brauzeringizdagi kiçik fayllar."
     },
     "s3": {
-      "title": "3. Qayta ishlash maqsadlari",
-      "text": "Ma'lumotlardan so'rovlaringizga javob berish, sayt ishi va mazmunini yaxshilash hamda anonim tashrif statistikasini yuritish uchun foydalanamiz. Alohida rozilishingizsiz ma'lumotlaringizdan xabarnomalar uchun foydalanmaymiz."
+      "title": "3. Qayta işlaş maqsadlari",
+      "text": "Maʼlumotlardan sörovlaringizga javob beriş, sayt işi va mazmunini yaxşilaş hamda anonim taşrif statistikasini yuritiş uçun foydalanamiz. Alohida rozilişingizsiz maʼlumotlaringizdan xabarnomalar uçun foydalanmaymiz."
     },
     "s4": {
       "title": "4. Cookies",
-      "text": "Cookies tanlangan tilni, rozilik banneridagi qaroringizni eslab qolish va statistika to'plash uchun ishlatiladi. Bannerda majburiy bo'lmagan cookies'ni rad etishingiz yoki brauzer sozlamalarida o'chirishingiz mumkin - sayt ishlashda davom etadi."
+      "text": "Cookies tanlangan tilni, rozilik banneridagi qaroringizni eslab qoliş va statistika töplaş uçun işlatiladi. Bannerda majburiy bölmagan cookiesʼni rad etişingiz yoki brauzer sozlamalarida öçirişingiz mumkin - sayt işlaşda davom etadi."
     },
     "s5": {
-      "title": "5. Uchinchi shaxslar",
-      "text": "Anonim tashrif statistikasi veb-analitika xizmati (Yandex Metrika) tomonidan qayta ishlanishi mumkin. Aloqa formasi ma'lumotlari serverimizga yuboriladi va qonunda nazarda tutilgan hollardan tashqari uchinchi shaxslarga sotilmaydi va berilmaydi."
+      "title": "5. Uçinçi şaxslar",
+      "text": "Anonim taşrif statistikasi veb-analitika xizmati (Yandex Metrika) tomonidan qayta işlanişi mumkin. Aloqa formasi maʼlumotlari serverimizga yuboriladi va qonunda nazarda tutilgan hollardan taşqari uçinçi şaxslarga sotilmaydi va berilmaydi."
     },
     "s6": {
-      "title": "6. Ma'lumotlarni saqlash va huquqlaringiz",
-      "text": "So'rov ma'lumotlari murojaatni ko'rib chiqish uchun zarur bo'lgan muddat davomida saqlanadi. Siz o'z ma'lumotlaringizga kirish, ularni tuzatish yoki o'chirishni so'rashingiz mumkin - hi{'@'}esys.pro manziliga yozing, biz o'z vaqtida javob beramiz."
+      "title": "6. Maʼlumotlarni saqlaş va huquqlaringiz",
+      "text": "Sörov maʼlumotlari murojaatni körib çiqiş uçun zarur bölgan muddat davomida saqlanadi. Siz öz maʼlumotlaringizga kiriş, ularni tuzatiş yoki öçirişni söraşingiz mumkin - hi{'@'}esys.pro manziliga yozing, biz öz vaqtida javob beramiz."
     },
     "s7": {
       "title": "7. Kontaktlar",
-      "text": "Evolution Systems, Toshkent, O'zbekiston.\nEmail: hi{'@'}esys.pro\nTelefon: +998 71 200 00 00"
+      "text": "Evolution Systems, Toşkent, Özbekiston.\nEmail: hi{'@'}esys.pro\nTelefon: +998 71 200 00 00"
     }
   },
   "nav": {
@@ -268,213 +268,213 @@
   "services": {
     "seo": {
       "title": "Xizmatlar: saytlar, ilovalar, CRM, brending",
-      "description": "Evolution Systems xizmatlari: Toshkentda saytlar, mobil ilovalar, CRM tizimlari va brendingni to'liq tayyor holda ishlab chiqish."
+      "description": "Evolution Systems xizmatlari: Toşkentda saytlar, mobil ilovalar, CRM tizimlari va brendingni töliq tayyor holda işlab çiqiş."
     },
     "eyebrow": "Xizmatlar",
     "title": "Biz nima qilamiz",
-    "subtitle": "Raqamli ishlab chiqishning to'liq sikli - g'oya va dizayndan tortib ishga tushirish va qo'llab-quvvatlashgacha.",
-    "error": "Xizmatlarni yuklab bo'lmadi. Keyinroq urinib ko'ring.",
-    "cta": "Loyihani muhokama qilish",
+    "subtitle": "Raqamli işlab çiqişning töliq sikli - ğoya va dizayndan tortib işga tuşiriş va qöllab-quvvatlaşgaça.",
+    "error": "Xizmatlarni yuklab bölmadi. Keyinroq urinib köring.",
+    "cta": "Loyihani muhokama qiliş",
     "blocks": {
       "hero": "Xizmat haqida",
       "problems": "Muammolar",
-      "audience": "Kimlar uchun",
+      "audience": "Kimlar uçun",
       "features": "Imkoniyatlar",
       "technologies": "Texnologiyalar",
-      "stages": "Ish bosqichlari",
+      "stages": "Iş bosqiçlari",
       "timeline": "Muddatlar",
       "pricing": "Tariflar",
       "benefits": "Afzalliklar",
       "cases": "Keyslar",
       "articles": "Maqolalar",
-      "faq": "Ko'p beriladigan savollar",
-      "cta": "Loyihani muhokama qilish"
+      "faq": "Köp beriladigan savollar",
+      "cta": "Loyihani muhokama qiliş"
     }
   },
   "about": {
     "seo": {
       "title": "Biz haqimizda",
-      "description": "Evolution Systems - Toshkentlik dasturchilar va dizaynerlar jamoasi. Biznesingiz o'sishiga yordam beradigan saytlar, ilovalar va CRM tizimlarini yaratamiz."
+      "description": "Evolution Systems - Toşkentlik dasturçilar va dizaynerlar jamoasi. Biznesingiz ösişiga yordam beradigan saytlar, ilovalar va CRM tizimlarini yaratamiz."
     },
     "eyebrow": "Biz haqimizda",
     "title": "Raqamli mahsulotlar yaratadigan jamoa",
-    "intro": "Biz Toshkentdagi raqamli ishlab chiqish studiyasimiz. Saytlar, mobil ilovalar va CRM tizimlarini to'liq tayyor holda loyihalaymiz va yaratamiz: birinchi uchrashuvdan ishga tushirish va qo'llab-quvvatlashgacha butun jarayonni o'z zimmamizga olamiz.",
+    "intro": "Biz Toşkentdagi raqamli işlab çiqiş studiyasimiz. Saytlar, mobil ilovalar va CRM tizimlarini töliq tayyor holda loyihalaymiz va yaratamiz: birinçi uçraşuvdan işga tuşiriş va qöllab-quvvatlaşgaça butun jarayonni öz zimmamizga olamiz.",
     "process": {
       "eyebrow": "Jarayon",
-      "title": "Biz qanday ishlaymiz",
-      "subtitle": "Kutilmagan holatlarsiz shaffof jarayon - loyiha qaysi bosqichda ekanini doim bilasiz.",
+      "title": "Biz qanday işlaymiz",
+      "subtitle": "Kutilmagan holatlarsiz şaffof jarayon - loyiha qaysi bosqiçda ekanini doim bilasiz.",
       "s1": {
         "title": "Brifing va tahlil",
-        "text": "Biznesingizga chuqur kirib boramiz: maqsadlar, auditoriya, raqobatchilar. Talablarni shakllantirib, ish hajmini kelishamiz."
+        "text": "Biznesingizga çuqur kirib boramiz: maqsadlar, auditoriya, raqobatçilar. Talablarni şakllantirib, iş hajmini kelişamiz."
       },
       "s2": {
         "title": "Dizayn",
-        "text": "Tuzilma va interfeysni loyihalaymiz. Maketlarni ko'rsatamiz, fikr-mulohazalarni yig'ib, mukammal holatga keltiramiz."
+        "text": "Tuzilma va interfeysni loyihalaymiz. Maketlarni körsatamiz, fikr-mulohazalarni yiğib, mukammal holatga keltiramiz."
       },
       "s3": {
-        "title": "Ishlab chiqish",
-        "text": "Toza va tez ishlaydigan kod yozamiz. Oraliq natijalarni muntazam ko'rsatib boramiz - hech qanday sir yo'q."
+        "title": "Işlab çiqiş",
+        "text": "Toza va tez işlaydigan kod yozamiz. Oraliq natijalarni muntazam körsatib boramiz - heç qanday sir yöq."
       },
       "s4": {
-        "title": "Ishga tushirish",
-        "text": "Haqiqiy qurilmalarda sinovdan o'tkazamiz, hosting va analitikani sozlab, mahsulotni ishga tushiramiz."
+        "title": "Işga tuşiriş",
+        "text": "Haqiqiy qurilmalarda sinovdan ötkazamiz, hosting va analitikani sozlab, mahsulotni işga tuşiramiz."
       },
       "s5": {
-        "title": "Qo'llab-quvvatlash",
-        "text": "Ishga tushirilgandan keyin yo'qolib qolmaymiz: mahsulotni rivojlantiramiz, yangi funksiyalar qo'shamiz va barqarorligini kuzatamiz."
+        "title": "Qöllab-quvvatlaş",
+        "text": "Işga tuşirilgandan keyin yöqolib qolmaymiz: mahsulotni rivojlantiramiz, yangi funksiyalar qöşamiz va barqarorligini kuzatamiz."
       }
     },
     "values": {
       "eyebrow": "Qadriyatlar",
       "title": "Bizning tamoyillarimiz",
       "v1": {
-        "title": "Shaffoflik",
-        "text": "Halol muddatlar va byudjet. Loyiha holatini har bosqichda ko'rib turasiz."
+        "title": "Şaffoflik",
+        "text": "Halol muddatlar va byudjet. Loyiha holatini har bosqiçda körib turasiz."
       },
       "v2": {
         "title": "Sifat",
-        "text": "O'zimiz faxrlanmagunimizcha ishni topshirmaymiz. Har bir loyiha - bizning tashrif qog'ozimiz."
+        "text": "Özimiz faxrlanmagunimizça işni topşirmaymiz. Har bir loyiha - bizning taşrif qoğozimiz."
       },
       "v3": {
         "title": "Natija",
-        "text": "Shunchaki sayt emas, biznes vazifalarini hal qiladigan vosita yaratamiz."
+        "text": "Şunçaki sayt emas, biznes vazifalarini hal qiladigan vosita yaratamiz."
       }
     },
     "cta": {
-      "title": "Loyihangizni muhokama qilishga tayyormisiz?",
-      "text": "G'oyangizni aytib bering - yechim, muddat va narxni bepul taklif qilamiz.",
-      "button": "Biz bilan bog'lanish"
+      "title": "Loyihangizni muhokama qilişga tayyormisiz?",
+      "text": "Ğoyangizni aytib bering - yeçim, muddat va narxni bepul taklif qilamiz.",
+      "button": "Biz bilan boğlaniş"
     }
   },
   "tools": {
     "alphabet": {
       "seo": {
-        "title": "Yangi o‘zbek alifbosi konvertori onlayn",
-        "description": "Bepul o‘zbek matni konvertori: eski lotin va kirill yozuvidan yangi alifboga, yangi o'zbek alifbosidan eski lotin yozuviga o‘girish."
+        "title": "Yangi özbek alifbosi konvertori onlayn",
+        "description": "Bepul özbek matni konvertori: eski lotin va kirill yozuvidan yangi alifboga, yangi özbek alifbosidan eski lotin yozuviga ögiriş."
       },
       "eyebrow": "Bepul onlayn vosita",
-      "title": "Yangi o‘zbek alifbosi konvertori",
-      "intro": "Eski lotin yoki kirill yozuvidagi matnni yangi alifboga va aksincha o‘giring. Konvertor o'zbek alifbosi, lotin alifbosi va kirill lotin oʻgirish uchun brauzerning o‘zida ishlaydi.",
+      "title": "Yangi özbek alifbosi konvertori",
+      "intro": "Eski lotin yoki kirill yozuvidagi matnni yangi alifboga va aksinça ögiring. Konvertor özbek alifbosi, lotin alifbosi va kirill lotin ögiriş uçun brauzerning özida işlaydi.",
       "breadcrumb": "Yangi alifbo konvertori",
-      "converterLabel": "O‘zbek alifbosi konvertori",
-      "sourceLabel": "Boshlang‘ich matn",
+      "converterLabel": "Özbek alifbosi konvertori",
+      "sourceLabel": "Boşlanğiç matn",
       "sourcePlaceholder": "Matnni yozing yoki joylang",
       "resultLabel": "Natija",
-      "resultPlaceholder": "O‘girilgan matn shu yerda paydo bo‘ladi",
-      "replacements": "Almashtirishlar: {count}",
-      "highlightLimited": "20 000 belgidan uzun matnda ajratib ko‘rsatish avtomatik o‘chirildi.",
-      "symbolsLabel": "Belgi kiritish",
-      "privacy": "Matn faqat brauzeringizda qayta ishlanadi va serverga yuborilmaydi.",
-      "articleLink": "Yangi o‘zbek alifbosi haqida batafsil",
+      "resultPlaceholder": "Ögirilgan matn şu yerda paydo böladi",
+      "replacements": "Almaştirişlar: {count}",
+      "highlightLimited": "20 000 belgidan uzun matnda ajratib körsatiş avtomatik öçirildi.",
+      "symbolsLabel": "Belgi kiritiş",
+      "privacy": "Matn faqat brauzeringizda qayta işlanadi va serverga yuborilmaydi.",
+      "articleLink": "Yangi özbek alifbosi haqida batafsil",
       "mode": {
-        "label": "Yo‘nalish",
-        "auto": "Avtomatik aniqlash",
+        "label": "Yönaliş",
+        "auto": "Avtomatik aniqlaş",
         "old-to-new": "Eski lotin → yangi",
         "cyrillic-to-new": "Kirill → yangi lotin",
         "new-to-old": "Yangi → eski lotin"
       },
       "options": {
-        "keepLinks": "Havolalar va kodni o‘zgartirmaslik",
-        "keepEnglish": "Inglizcha so‘zlarni o‘zgartirmaslik",
-        "highlight": "Almashtirishlarni ajratish"
+        "keepLinks": "Havolalar va kodni özgartirmaslik",
+        "keepEnglish": "Inglizça sözlarni özgartirmaslik",
+        "highlight": "Almaştirişlarni ajratiş"
       },
       "actions": {
-        "swap": "Yo‘nalishni almashtirish",
-        "copy": "Natijani nusxalash",
+        "swap": "Yönalişni almaştiriş",
+        "copy": "Natijani nusxalaş",
         "copied": "Nusxalandi",
-        "copyFallback": "Buferga kirib bo‘lmadi. Natija matni belgilandi.",
-        "clear": "Tozalash",
-        "download": ".txt yuklab olish",
-        "upload": ".txt yuklash"
+        "copyFallback": "Buferga kirib bölmadi. Natija matni belgilandi.",
+        "clear": "Tozalaş",
+        "download": ".txt yuklab oliş",
+        "upload": ".txt yuklaş"
       },
       "warnings": {
-        "title": "Yozilishini tekshiring",
+        "title": "Yozilişini tekşiring",
         "double-apostrophe": "O yoki g harfidan keyin ikkita belgi kelgan.",
         "split-digraph": "Apostrof s va h harflarini ajratmoqda.",
-        "ambiguous-quote": "Qo‘shtirnoq ichidagi apostrof boshqa ma’noga ega bo‘lishi mumkin.",
-        "mixed-script": "Bitta so‘zda lotin va kirill harflari aralashgan.",
-        "possible-english": "So‘z inglizcha so‘zga o‘xshaydi va tekshirish talab qilishi mumkin."
+        "ambiguous-quote": "Qöştirnoq içidagi apostrof boşqa maʼnoga ega bölişi mumkin.",
+        "mixed-script": "Bitta sözda lotin va kirill harflari aralaşgan.",
+        "possible-english": "Söz inglizça sözga öxşaydi va tekşiriş talab qilişi mumkin."
       },
       "changes": {
         "eyebrow": "Yangi alifbo",
-        "title": "Alifboda nima o‘zgardi",
-        "subtitle": "To‘rtta avvalgi harf birikmasi alohida belgiga aylandi. Ng va tutuq belgisi saqlanadi.",
+        "title": "Alifboda nima özgardi",
+        "subtitle": "Törtta avvalgi harf birikmasi alohida belgiga aylandi. Ng va tutuq belgisi saqlanadi.",
         "old": "Avval",
         "new": "Endi",
-        "unchanged": "O‘zgarishsiz",
+        "unchanged": "Özgarişsiz",
         "apostrophe": "Tutuq belgisi saqlanadi"
       },
       "business": {
-        "eyebrow": "Biznes uchun",
-        "title": "Saytingizni qidiruvdagi o‘rnini yo‘qotmasdan yangi alifboga o‘tkazamiz",
-        "text": "Sahifa manzillari va SEO signallarini saqlagan holda matn, metama’lumot, qidiruv va til versiyalarini yangilaymiz.",
-        "cta": "Saytni yangilashni muhokama qilish"
+        "eyebrow": "Biznes uçun",
+        "title": "Saytingizni qidiruvdagi örnini yöqotmasdan yangi alifboga ötkazamiz",
+        "text": "Sahifa manzillari va SEO signallarini saqlagan holda matn, metamaʼlumot, qidiruv va til versiyalarini yangilaymiz.",
+        "cta": "Saytni yangilaşni muhokama qiliş"
       },
       "faq": {
         "eyebrow": "FAQ",
-        "title": "Yangi o‘zbek alifbosi haqida savollar",
+        "title": "Yangi özbek alifbosi haqida savollar",
         "q1": {
-          "question": "Yangi alifbo qachon kuchga kiradi?",
-          "answer": "2026-yil 21-oktabrdagi qonun rasmiy e’lon qilinganidan olti oy o‘tib kuchga kirishini nazarda tutadi. Rasmiy qo‘llash uchun qonunning amaldagi tahririni tekshiring."
+          "question": "Yangi alifbo qaçon kuçga kiradi?",
+          "answer": "2026-yil 21-oktabrdagi qonun rasmiy eʼlon qilinganidan olti oy ötib kuçga kirişini nazarda tutadi. Rasmiy qöllaş uçun qonunning amaldagi tahririni tekşiring."
         },
         "q2": {
-          "question": "Oldin rasmiylashtirilgan hujjatlarni almashtirish kerakmi?",
-          "answer": "Avvalgi alifboda rasmiylashtirilgan hujjatlar, pullar va qimmatli qog‘ozlar o‘z kuchini saqlaydi. Muayyan huquqiy holat bo‘yicha rasmiy tushuntirishlarni tekshirish ma’qul."
+          "question": "Oldin rasmiylaştirilgan hujjatlarni almaştiriş kerakmi?",
+          "answer": "Avvalgi alifboda rasmiylaştirilgan hujjatlar, pullar va qimmatli qoğozlar öz kuçini saqlaydi. Muayyan huquqiy holat böyiça rasmiy tuşuntirişlarni tekşiriş maʼqul."
         },
         "q3": {
-          "question": "Ö, Ğ, Ş va Ç harflarini klaviaturada qanday yozish mumkin?",
+          "question": "Ö, Ğ, Ş va Ç harflarini klaviaturada qanday yoziş mumkin?",
           "answer": "Kengaytirilgan lotin klaviaturasidan, tizimdagi belgilar jadvalidan yoki konvertordagi tezkor belgi tugmalaridan foydalaning."
         },
         "q4": {
           "question": "Kiritilgan matn saqlanadimi?",
-          "answer": "Yo‘q. O‘girish brauzerda mahalliy bajariladi, matn serverga yuborilmaydi va vosita tomonidan saqlanmaydi."
+          "answer": "Yöq. Ögiriş brauzerda mahalliy bajariladi, matn serverga yuborilmaydi va vosita tomonidan saqlanmaydi."
         },
         "q5": {
           "question": "Yangi alifboning eski lotin yozuvidan farqi nima?",
-          "answer": "Oʻ, gʻ, sh va ch birikmalari ö, ğ, ş va ç harflariga almashtirilgan. Ng birikmasi va alohida tutuq belgisi saqlanadi."
+          "answer": "Oʻ, gʻ, sh va ch birikmalari ö, ğ, ş va ç harflariga almaştirilgan. Ng birikmasi va alohida tutuq belgisi saqlanadi."
         },
         "q6": {
-          "question": "Saytdagi matnlar bilan nima qilish kerak?",
-          "answer": "Ko‘rinadigan matn bilan birga metama’lumot, qidiruv, lug‘atlar va kontent jarayonlarini ham yangilash kerak. Qidiruv trafikini saqlash uchun URL manzillarini faqat puxta yo‘naltirish rejasi bilan o‘zgartiring."
+          "question": "Saytdagi matnlar bilan nima qiliş kerak?",
+          "answer": "Körinadigan matn bilan birga metamaʼlumot, qidiruv, luğatlar va kontent jarayonlarini ham yangilaş kerak. Qidiruv trafikini saqlaş uçun URL manzillarini faqat puxta yönaltiriş rejasi bilan özgartiring."
         }
       }
     }
   },
   "faq": {
     "eyebrow": "FAQ",
-    "title": "Ko'p beriladigan savollar",
-    "subtitle": "Eng ko'p so'raladigan savollarga qisqa javoblar. Javob topolmadingizmi - bizga yozing.",
+    "title": "Köp beriladigan savollar",
+    "subtitle": "Eng köp söraladigan savollarga qisqa javoblar. Javob topolmadingizmi - bizga yozing.",
     "q1": {
-      "question": "Sayt ishlab chiqish qancha turadi?",
-      "answer": "Vazifalarga bog'liq: lending, korporativ sayt va internet-do'kon turli hajmdagi ishni talab qiladi. Brifingdan so'ng belgilangan narx bilan smetani bepul tayyorlaymiz - yashirin to'lovlarsiz."
+      "question": "Sayt işlab çiqiş qança turadi?",
+      "answer": "Vazifalarga boğliq: lending, korporativ sayt va internet-dökon turli hajmdagi işni talab qiladi. Brifingdan söng belgilangan narx bilan smetani bepul tayyorlaymiz - yaşirin tölovlarsiz."
     },
     "q2": {
-      "question": "Loyiha qancha vaqt oladi?",
-      "answer": "Lending - 2 haftadan, korporativ sayt - 4–6 haftadan, mobil ilova yoki CRM - 2–3 oydan boshlanadi. Aniq muddatlar talablar kelishilgach belgilanadi."
+      "question": "Loyiha qança vaqt oladi?",
+      "answer": "Lending - 2 haftadan, korporativ sayt - 4–6 haftadan, mobil ilova yoki CRM - 2–3 oydan boşlanadi. Aniq muddatlar talablar kelişilgaç belgilanadi."
     },
     "q3": {
-      "question": "Boshlash uchun bizdan nima kerak?",
-      "answer": "G'oya va maqsadlar tavsifi kifoya. Materiallarni - matnlar, suratlar, logotipni - birgalikda tayyorlashimiz mumkin: tuzilma va kontent bo'yicha yordam beramiz."
+      "question": "Boşlaş uçun bizdan nima kerak?",
+      "answer": "Ğoya va maqsadlar tavsifi kifoya. Materiallarni - matnlar, suratlar, logotipni - birgalikda tayyorlaşimiz mumkin: tuzilma va kontent böyiça yordam beramiz."
     },
     "q4": {
-      "question": "Ishga tushirilgandan keyin loyihani qo'llab-quvvatlaysizmi?",
-      "answer": "Ha. Texnik qo'llab-quvvatlash, funksiyalarni rivojlantirish va kontent yuritishni taklif qilamiz. Shartlarni loyihangizga moslaymiz."
+      "question": "Işga tuşirilgandan keyin loyihani qöllab-quvvatlaysizmi?",
+      "answer": "Ha. Texnik qöllab-quvvatlaş, funksiyalarni rivojlantiriş va kontent yuritişni taklif qilamiz. Şartlarni loyihangizga moslaymiz."
     },
     "q5": {
-      "question": "O'zbekistondan tashqaridagi mijozlar bilan ishlaysizmi?",
-      "answer": "Ha, istalgan davlatdagi mijozlar bilan masofadan ishlaymiz. Qo'ng'iroqlar, hisobotlar va demolarni sizga qulay vaqtda onlayn o'tkazamiz."
+      "question": "Özbekistondan taşqaridagi mijozlar bilan işlaysizmi?",
+      "answer": "Ha, istalgan davlatdagi mijozlar bilan masofadan işlaymiz. Qöngiroqlar, hisobotlar va demolarni sizga qulay vaqtda onlayn ötkazamiz."
     },
     "q6": {
-      "question": "Mavjud sayt yoki ilovani takomillashtira olasizmi?",
-      "answer": "Ha. Joriy yechimni tahlil qilib, reja taklif qilamiz: nuqtaviy yaxshilashlardan to'liq qayta dizayngacha."
+      "question": "Mavjud sayt yoki ilovani takomillaştira olasizmi?",
+      "answer": "Ha. Joriy yeçimni tahlil qilib, reja taklif qilamiz: nuqtaviy yaxşilaşlardan töliq qayta dizayngaça."
     },
     "q7": {
-      "question": "Toshkentda vizitka sayt qancha turadi?",
-      "answer": "Hajmga bog'liq: sahifalar soni, dizayn va integratsiyalar. Qisqa brifdan so'ng smetani bepul tayyorlab, aniq narxni ish boshlanishidan oldin belgilaymiz - yashirin to'lovlarsiz."
+      "question": "Toşkentda vizitka sayt qança turadi?",
+      "answer": "Hajmga boğliq: sahifalar soni, dizayn va integratsiyalar. Qisqa brifdan söng smetani bepul tayyorlab, aniq narxni iş boşlanişidan oldin belgilaymiz - yaşirin tölovlarsiz."
     },
     "q8": {
-      "question": "Frilanserning o'rniga veb-studiyani tanlash nega foydali?",
-      "answer": "Studiya - bu jamoa: loyiha ustida tahlilchi, dizayner va dasturchilar ishlaydi, muddatlar va natija shartnoma bilan mustahkamlanadi, qo'llab-quvvatlash esa bitta odamning ta'tiliga bog'liq bo'lmaydi."
+      "question": "Frilanserning örniga veb-studiyani tanlaş nega foydali?",
+      "answer": "Studiya - bu jamoa: loyiha ustida tahlilçi, dizayner va dasturçilar işlaydi, muddatlar va natija şartnoma bilan mustahkamlanadi, qöllab-quvvatlaş esa bitta odamning taʼtiliga boğliq bölmaydi."
     }
   }
 }

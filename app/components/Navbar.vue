@@ -32,7 +32,7 @@ const links = [
 const LANG = {
   en: { name: "English", flag: "/images/en.webp" },
   ru: { name: "Русский", flag: "/images/ru.webp" },
-  uz: { name: "O'zbekcha", flag: "/images/uz.webp" },
+  uz: { name: "Özbekcha", flag: "/images/uz.webp" },
 };
 
 const toggleLang = () => {
