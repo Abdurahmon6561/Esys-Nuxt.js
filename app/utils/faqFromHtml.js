@@ -11,12 +11,19 @@ const ENTITY_MAP = {
   quot: '"',
 };
 
+function fromCodePoint(code, entity) {
+  if (!Number.isInteger(code) || code > 0x10ffff) return entity;
+  return String.fromCodePoint(code);
+}
+
 function decodeEntities(value) {
   return value.replace(
     /&(?:#(\d+)|#x([\da-f]+)|([a-z]+));/gi,
     (entity, decimal, hexadecimal, named) => {
-      if (decimal) return String.fromCodePoint(Number(decimal));
-      if (hexadecimal) return Number.parseInt(hexadecimal, 16);
+      if (decimal) return fromCodePoint(Number(decimal), entity);
+      if (hexadecimal) {
+        return fromCodePoint(Number.parseInt(hexadecimal, 16), entity);
+      }
       return ENTITY_MAP[named.toLowerCase()] ?? entity;
     }
   );

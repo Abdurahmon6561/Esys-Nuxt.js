@@ -19,7 +19,7 @@ const { data, pending, error } = await useAsyncData(
     const lastPage = first?.meta?.last_page ?? 1;
     if (lastPage <= 1) return first;
 
-    const rest = await Promise.all(
+    const rest = await Promise.allSettled(
       Array.from({ length: lastPage - 1 }, (_, i) =>
         blogApi.getBlogs({ page: i + 2 })
       )
@@ -28,7 +28,9 @@ const { data, pending, error } = await useAsyncData(
       ...first,
       data: [
         ...(first?.data ?? []),
-        ...rest.flatMap((page) => page?.data ?? []),
+        ...rest.flatMap((result) =>
+          result.status === "fulfilled" ? result.value?.data ?? [] : []
+        ),
       ],
     };
   },
