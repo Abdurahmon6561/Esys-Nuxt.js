@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Nuxt 4 marketing/portfolio site for Evolution Systems (a Tashkent web agency). Dev server: `npm run dev` → http://localhost:6561. No test runner or linter is configured.
+Nuxt 4 marketing/portfolio site for Evolution Systems (a Tashkent web agency). Dev server: `npm run dev` → http://localhost:6561. Tests: `npm test` (Node built-in test runner, `tests/*.test.ts`). No linter is configured.
 
 ## Deployment
 
