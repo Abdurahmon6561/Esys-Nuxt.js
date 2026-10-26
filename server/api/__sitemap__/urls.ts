@@ -1,5 +1,6 @@
 import { defineSitemapEventHandler } from "#imports";
 import type { SitemapUrlInput } from "#sitemap/types";
+import { staticPageEntries } from "../../utils/static-page-lastmod";
 
 // services/sitemap rows: one per published locale+alias pair, with the
 // service's other published translations pre-grouped by the backend.
@@ -25,7 +26,7 @@ export default defineSitemapEventHandler(
 
     if (!apiUrl || !config.apiUsername || !config.apiPassword) {
       console.error("Sitemap: API url or credentials are not configured");
-      return [];
+      return staticPageEntries();
     }
 
     const credentials = Buffer.from(
@@ -101,6 +102,7 @@ export default defineSitemapEventHandler(
       ...portfolioEntries,
       ...serviceEntries,
       ...listingEntries,
+      ...staticPageEntries(),
     ];
   },
 );
