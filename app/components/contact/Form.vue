@@ -6,6 +6,8 @@ import { ref, reactive, computed } from "vue";
 
 const { api } = useApiService();
 const { t } = useI18n();
+const localePath = useLocalePath();
+const consentErrorId = useId();
 const track = useTrackEvent();
 
 // Emits `submitted` so a parent modal can close itself on success.
@@ -18,11 +20,13 @@ const form = reactive({
   email: "",
   subject: "",
   message: "",
+  consent: false,
 });
 
 const touched = reactive({
   name: false,
   email: false,
+  consent: false,
 });
 
 const status = ref("idle"); // idle | sending | success | error
@@ -31,13 +35,17 @@ const errorMsg = ref("");
 const errors = computed(() => ({
   name: !form.name.trim(),
   email: !EMAIL_RE.test(form.email.trim()),
+  consent: !form.consent,
 }));
 
-const isInvalid = computed(() => errors.value.name || errors.value.email);
+const isInvalid = computed(
+  () => errors.value.name || errors.value.email || errors.value.consent,
+);
 
 const handleSubmit = async () => {
   touched.name = true;
   touched.email = true;
+  touched.consent = true;
   if (isInvalid.value) return;
 
   status.value = "sending";
@@ -64,8 +72,10 @@ const reset = () => {
   form.email = "";
   form.subject = "";
   form.message = "";
+  form.consent = false;
   touched.name = false;
   touched.email = false;
+  touched.consent = false;
   status.value = "idle";
 };
 
@@ -137,6 +147,54 @@ defineExpose({ reset });
           :placeholder="t('contact.messagePlaceholder')"
         />
       </label>
+
+      <div class="cform__consent">
+        <label class="cform__consent-label">
+          <input
+            v-model="form.consent"
+            type="checkbox"
+            class="cform__consent-input"
+            :class="{ 'is-invalid': touched.consent && errors.consent }"
+            required
+            aria-required="true"
+            :aria-invalid="
+              touched.consent && errors.consent ? 'true' : undefined
+            "
+            :aria-describedby="
+              touched.consent && errors.consent
+                ? consentErrorId
+                : undefined
+            "
+            @blur="touched.consent = true"
+          />
+          <span class="cform__consent-box" aria-hidden="true" />
+          <i18n-t
+            keypath="contact.consent"
+            tag="span"
+            class="cform__consent-text"
+            scope="global"
+          >
+            <template #privacy>
+              <NuxtLink
+                :to="localePath('/privacy')"
+                class="cform__consent-link"
+                target="_blank"
+                rel="noopener"
+                @click.stop
+              >
+                {{ t("contact.consentPolicy") }}
+              </NuxtLink>
+            </template>
+          </i18n-t>
+        </label>
+        <p
+          v-if="touched.consent && errors.consent"
+          :id="consentErrorId"
+          class="cform__consent-error"
+        >
+          {{ t("contact.consentRequired") }}
+        </p>
+      </div>
 
       <p v-if="status === 'error'" class="cform__error" role="alert">
         {{ errorMsg }}
@@ -214,6 +272,96 @@ defineExpose({ reset });
 .cform__textarea {
   resize: vertical;
   min-height: 120px;
+}
+
+.cform__consent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cform__consent-label {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 44px;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.cform__consent-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.cform__consent-box {
+  position: relative;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 0.05rem;
+  background: rgba(238, 241, 247, 0.05);
+  border: 1px solid rgba(238, 241, 247, 0.3);
+  border-radius: 0.3rem;
+  transition: border-color 0.2s ease, background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cform__consent-box::after {
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 5px;
+  height: 10px;
+  content: "";
+  border: solid #0a0a2e;
+  border-width: 0 2px 2px 0;
+  opacity: 0;
+  transform: rotate(45deg);
+}
+
+.cform__consent-input:checked + .cform__consent-box {
+  background: #46e6e1;
+  border-color: #46e6e1;
+}
+
+.cform__consent-input:checked + .cform__consent-box::after {
+  opacity: 1;
+}
+
+.cform__consent-input:focus-visible + .cform__consent-box {
+  border-color: rgba(70, 230, 225, 0.55);
+  box-shadow: 0 0 0 3px rgba(70, 230, 225, 0.22);
+}
+
+.cform__consent-input.is-invalid + .cform__consent-box {
+  border-color: rgba(255, 180, 180, 0.6);
+}
+
+.cform__consent-text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(238, 241, 247, 0.7);
+}
+
+.cform__consent-link {
+  color: #46e6e1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cform__consent-link:focus-visible {
+  outline: 2px solid rgba(70, 230, 225, 0.55);
+  outline-offset: 2px;
+}
+
+.cform__consent-error {
+  margin: 0 0 0 2rem;
+  font-size: 0.8125rem;
+  color: #ffb4b4;
 }
 
 .cform__error {
