@@ -20,6 +20,8 @@ export const isRedirectPath = (pathname: string) =>
 // in the dynamic redirect rows anymore.
 export const STATIC_REDIRECTS: RedirectMap = {
   "/portfolio/v-united": { to: "/portfolio", code: 301 },
+  "/uz/portfolio/v-united": { to: "/uz/portfolio", code: 301 },
+  "/en/portfolio/v-united": { to: "/en/portfolio", code: 301 },
 };
 
 export const buildRedirectMap = (

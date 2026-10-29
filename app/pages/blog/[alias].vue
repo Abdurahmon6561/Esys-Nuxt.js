@@ -63,6 +63,13 @@ const summary = computed(() => plainText(blog.value?.short_text));
 // report). It carries the complete title, so the global titleTemplate is
 // bypassed; a locale without its own translation resolves to noindex.
 const resolved = computed(() => data.value?.seo?.resolved ?? null);
+const defaultOgImage = `${siteUrl}/og-image.png`;
+const ogImageCandidate = computed(
+  () => resolved.value?.og_image || absoluteOgImage(blog.value?.image)
+);
+const ogImage = computed(() =>
+  resolveOgImage(ogImageCandidate.value, defaultOgImage)
+);
 
 useSeoMeta({
   title: () => resolved.value?.title || blog.value?.title || t("blog.title"),
@@ -71,8 +78,12 @@ useSeoMeta({
     resolved.value?.description || metaDescription(blog.value?.short_text) || t("blog.subtitle"),
   ogTitle: () => resolved.value?.og_title || undefined,
   ogDescription: () => resolved.value?.og_description || undefined,
-  ogImage: () => resolved.value?.og_image || absoluteOgImage(blog.value?.image),
-  ogImageAlt: () => resolved.value?.og_image_alt || undefined,
+  ogImage: () => ogImage.value,
+  ogImageAlt: () =>
+    isSvgImage(ogImageCandidate.value)
+      ? undefined
+      : resolved.value?.og_image_alt || undefined,
+  twitterImage: () => ogImage.value,
   robots: () => resolved.value?.robots || undefined,
 });
 
@@ -112,8 +123,8 @@ const articleJsonLd = computed(() => {
       headline: blog.value.title,
       description: summary.value || undefined,
       image: schemaImage(
-        absoluteOgImage(blog.value.image),
-        `${siteUrl}/og-image.png`
+        ogImage.value,
+        defaultOgImage
       ),
       datePublished: datePublished.value,
       dateModified: dateModified.value,

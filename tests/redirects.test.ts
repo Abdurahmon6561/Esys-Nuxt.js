@@ -30,6 +30,16 @@ test("redirect map keeps the static fallback under CMS rows", () => {
     to: "/portfolio",
     code: 301,
   });
+  assert.deepEqual(STATIC_REDIRECTS["/uz/portfolio/v-united"], {
+    to: "/uz/portfolio",
+    code: 301,
+  });
+  assert.deepEqual(STATIC_REDIRECTS["/en/portfolio/v-united"], {
+    to: "/en/portfolio",
+    code: 301,
+  });
+  assert.equal(isRedirectPath("/uz/portfolio/v-united"), true);
+  assert.equal(isRedirectPath("/en/portfolio/v-united"), true);
 
   const map = buildRedirectMap([
     { from: "/services/old", to: "/services/new" },

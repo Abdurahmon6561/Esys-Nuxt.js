@@ -1,8 +1,8 @@
 {
   "home": {
     "seo": {
-      "title": "Toşkentdagi veb-studiya - sayt yaratiş",
-      "description": "Toşkentdagi veb-studiya: saytlar, landinglar va internet-dökonlar yaratiş. Vizitka yoki korporativ sayt tayyor holda - brifdan işga tuşirişgaça."
+      "title": "Toshkentdagi veb-studiya - sayt yaratish",
+      "description": "Toshkentdagi veb-studiya: saytlar, landinglar va internet-doʻkonlar yaratish. Vizitka yoki korporativ sayt tayyor holda - brifdan ishga tushirishgacha."
     }
   },
   "errorPage": {
@@ -97,8 +97,8 @@
     "empty": "Yangi loyihalar tayyorlanmoqda - tez orada qaytib köring.",
     "all": "Barça loyihalar",
     "seo": {
-      "title": "Toşkent veb-studiyasi portfoliosi: saytlar, ilovalar, CRM",
-      "description": "Evolution Systems portfoliosi: biznes uçun korporativ saytlar, internet dökonlar, CRM tizimlari va ilovalar. Toşkentdagi loyihalarimizni köring."
+      "title": "Toshkent veb-studiyasi portfoliosi: saytlar, ilovalar, CRM",
+      "description": "Evolution Systems portfoliosi: biznes uchun korporativ saytlar, internet doʻkonlar, CRM tizimlari va ilovalar. Toshkentdagi loyihalarimizni koʻring."
     },
     "intro": {
       "p1": "Evolution Systems - Toşkentdagi veb-studiya. Biz Özbekistondagi biznes uçun raqamli mahsulotlar yaratamiz: korporativ saytlar, internet dökonlar, ovqat buyurtma servislar, klinikalar saytlari, investitsiya platformalari va CRM. Portfoliodagi har bir loyiha - hal etilgan biznes vazifasi: köproq murojaatlar, avtomatlaştiriş va qulay mijoz tajribasi.",
@@ -166,8 +166,8 @@
     "copyLink": "Havolani nusxalaş",
     "linkCopied": "Havola nusxalandi",
     "seo": {
-      "title": "Toşkent veb-studiyasi blogi: saytlar, CRM, ilovalar",
-      "description": "Sayt yaratiş va veb-ilovalar haqida maqolalar: loyiha narxi, biznes uçun CRM, mobil ilovalar va dizayn. Toşkent veb-studiyasidan amaliy maslahatlar."
+      "title": "Toshkent veb-studiyasi blogi: saytlar, CRM, ilovalar",
+      "description": "Sayt yaratish va veb-ilovalar haqida maqolalar: loyiha narxi, biznes uchun CRM, mobil ilovalar va dizayn. Toshkent veb-studiyasidan amaliy maslahatlar."
     },
     "intro": {
       "p1": "Biz Toşkentda saytlar va raqamli mahsulotlar loyihalaymiz va yaratamiz. Evolution Systems blogida biznes uçun amaliy yozuvlar: {webCost} qança turadi va narx nimalardan taşkil topadi, {crm} murojaatlarni yöqotmaslikka qanday yordam beradi, kompaniyaga qaçon {webApps} va SaaS platformalar kerak böladi.",
@@ -195,6 +195,10 @@
     }
   },
   "contact": {
+    "seo": {
+      "title": "Keling, ajoyib narsa yaratamiz",
+      "description": "Loyihangiz haqida soʻzlab bering - bir ish kuni ichida javob beramiz."
+    },
     "eyebrow": "Aloqa",
     "title": "Keling, ajoyib narsa yaratamiz",
     "subtitle": "Loyihangiz haqida sözlab bering - bir iş kuni içida javob beramiz.",
@@ -276,7 +280,7 @@
   "services": {
     "seo": {
       "title": "Xizmatlar: saytlar, ilovalar, CRM, brending",
-      "description": "Evolution Systems xizmatlari: Toşkentda saytlar, mobil ilovalar, CRM tizimlari va brendingni töliq tayyor holda işlab çiqiş."
+      "description": "Evolution Systems xizmatlari: Toshkentda saytlar, mobil ilovalar, CRM tizimlari va brendingni toʻliq tayyor holda ishlab chiqish."
     },
     "eyebrow": "Xizmatlar",
     "title": "Biz nima qilamiz",
@@ -302,7 +306,7 @@
   "about": {
     "seo": {
       "title": "Biz haqimizda",
-      "description": "Evolution Systems - Toşkentlik dasturçilar va dizaynerlar jamoasi. Biznesingiz ösişiga yordam beradigan saytlar, ilovalar va CRM tizimlarini yaratamiz."
+      "description": "Evolution Systems - Toshkentlik dasturchilar va dizaynerlar jamoasi. Biznesingiz oʻsishiga yordam beradigan saytlar, ilovalar va CRM tizimlarini yaratamiz."
     },
     "eyebrow": "Biz haqimizda",
     "title": "Raqamli mahsulotlar yaratadigan jamoa",
@@ -358,7 +362,7 @@
     "hub": {
       "seo": {
         "title": "Bepul onlayn vositalar",
-        "description": "Evolution Systems bepul vositalari: özbek kirill va lotin matnini yangi alifboga ögiruvçi konvertor va boşqa servislar."
+        "description": "Evolution Systems bepul vositalari: oʻzbek kirill va lotin matnini yangi alifboga oʻgiruvchi konvertor va boshqa servislar."
       },
       "eyebrow": "Vositalar",
       "title": "Bepul vositalar",
@@ -382,7 +386,7 @@
     "alphabet": {
       "seo": {
         "title": "Yangi alifbo konvertori: kirill va lotin o'zbek matni",
-        "description": "Bepul onlayn konvertor: kirill va eski lotin (o', g', sh, ch) o'zbek matnini yangi alifboga (ö, ğ, ş, ç) va aksinça ögiradi. Kirill lotin o'girish brauzerda."
+        "description": "Bepul onlayn konvertor: kirill va eski lotin (o', g', sh, ch) o'zbek matnini yangi alifboga (ö, ğ, ş, ç) va aksincha oʻgiradi. Kirill lotin o'girish brauzerda."
       },
       "eyebrow": "Bepul onlayn vosita",
       "title": "Yangi özbek alifbosi konvertori",

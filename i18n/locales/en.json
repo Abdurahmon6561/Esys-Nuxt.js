@@ -195,6 +195,10 @@
     }
   },
   "contact": {
+    "seo": {
+      "title": "Let's build something great",
+      "description": "Tell us about your project - we'll get back to you within one business day."
+    },
     "eyebrow": "Contact",
     "title": "Let's build something great",
     "subtitle": "Tell us about your project - we'll get back to you within one business day.",

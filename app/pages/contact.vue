@@ -10,10 +10,10 @@ const email = "hi@esys.pro";
 const phone = "+998 71 200 11 33";
 
 useSeoMeta({
-  title: () => t("contact.title"),
-  description: () => t("contact.subtitle"),
-  ogTitle: () => t("contact.title"),
-  ogDescription: () => t("contact.subtitle"),
+  title: () => t("contact.seo.title"),
+  description: () => t("contact.seo.description"),
+  ogTitle: () => t("contact.seo.title"),
+  ogDescription: () => t("contact.seo.description"),
 });
 
 const contactJsonLd = computed(() => {

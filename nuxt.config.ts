@@ -122,6 +122,17 @@ export default defineNuxtConfig({
     },
   },
 
+  hooks: {
+    // The sitemap module adds a string redirect after top-level routeRules are
+    // resolved, which Nitro normalizes to 307. Override that generated rule.
+    "nitro:config"(nitroConfig) {
+      nitroConfig.routeRules ||= {};
+      nitroConfig.routeRules["/sitemap.xml"] = {
+        redirect: { to: "/sitemap_index.xml", statusCode: 301 },
+      };
+    },
+  },
+
   // SSR-safe: tree-shakes GSAP plugins not imported. Without this, Vite
   // emits GSAP's ESM/CJS interop in a shape that breaks on the server.
   build: {

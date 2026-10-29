@@ -51,6 +51,15 @@ const absoluteOgImage = (image) =>
 // global titleTemplate is bypassed. The local fallbacks only cover an API
 // that predates `resolved`.
 const resolved = computed(() => seo.value?.resolved ?? null);
+const defaultOgImage = `${siteUrl}/og-image.png`;
+const ogImageCandidate = computed(
+  () =>
+    resolved.value?.og_image ||
+    absoluteOgImage(seo.value?.og_image || service.value?.image)
+);
+const ogImage = computed(() =>
+  resolveOgImage(ogImageCandidate.value, defaultOgImage)
+);
 
 useSeoMeta({
   title: () =>
@@ -76,10 +85,12 @@ useSeoMeta({
     seo.value?.meta_description ||
     leadText.value ||
     t("services.subtitle"),
-  ogImage: () =>
-    resolved.value?.og_image ||
-    absoluteOgImage(seo.value?.og_image || service.value?.image),
-  ogImageAlt: () => resolved.value?.og_image_alt || undefined,
+  ogImage: () => ogImage.value,
+  ogImageAlt: () =>
+    isSvgImage(ogImageCandidate.value)
+      ? undefined
+      : resolved.value?.og_image_alt || undefined,
+  twitterImage: () => ogImage.value,
   robots: () => resolved.value?.robots || seo.value?.robots || "index",
 });
 
@@ -126,8 +137,8 @@ const serviceJsonLd = computed(() => {
         leadText.value ||
         undefined,
       image: schemaImage(
-        absoluteOgImage(service.value.image),
-        `${siteUrl}/og-image.png`
+        ogImage.value,
+        defaultOgImage
       ),
       url: `${siteUrl}${route.path}`,
       provider: { "@id": orgId(siteUrl) },

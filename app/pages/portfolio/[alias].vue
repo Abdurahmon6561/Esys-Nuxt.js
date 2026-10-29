@@ -90,6 +90,13 @@ const absoluteOgImage = (image) =>
 // report). It carries the complete title, so the global titleTemplate is
 // bypassed; a locale without its own translation resolves to noindex.
 const resolved = computed(() => data.value?.seo?.resolved ?? null);
+const defaultOgImage = `${siteUrl}/og-image.png`;
+const ogImageCandidate = computed(
+  () => resolved.value?.og_image || absoluteOgImage(portfolio.value?.image)
+);
+const ogImage = computed(() =>
+  resolveOgImage(ogImageCandidate.value, defaultOgImage)
+);
 
 useSeoMeta({
   title: () => resolved.value?.title || portfolio.value?.title || t("portfolio.title"),
@@ -98,8 +105,12 @@ useSeoMeta({
     resolved.value?.description || portfolio.value?.short_text || t("portfolio.subtitle"),
   ogTitle: () => resolved.value?.og_title || undefined,
   ogDescription: () => resolved.value?.og_description || undefined,
-  ogImage: () => resolved.value?.og_image || absoluteOgImage(portfolio.value?.image),
-  ogImageAlt: () => resolved.value?.og_image_alt || undefined,
+  ogImage: () => ogImage.value,
+  ogImageAlt: () =>
+    isSvgImage(ogImageCandidate.value)
+      ? undefined
+      : resolved.value?.og_image_alt || undefined,
+  twitterImage: () => ogImage.value,
   robots: () => resolved.value?.robots || undefined,
 });
 
@@ -125,8 +136,8 @@ const portfolioJsonLd = computed(() => {
       description: summary.value || undefined,
       url: `${siteUrl}${route.path}`,
       image: schemaImage(
-        absoluteOgImage(portfolio.value.image),
-        `${siteUrl}/og-image.png`
+        ogImage.value,
+        defaultOgImage
       ),
       creator: { "@id": orgId(siteUrl) },
       inLanguage: locale.value,
