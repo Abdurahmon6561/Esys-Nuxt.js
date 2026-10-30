@@ -28,7 +28,21 @@ if (error.value?.statusCode === 404 || (!error.value && !data.value?.blog)) {
 
 const blog = computed(() => data.value?.blog ?? null);
 const similar = computed(() => data.value?.similar ?? []);
-const article = computed(() => buildArticleToc(blog.value?.text));
+const img = useImage();
+
+// Inline CMS media is enhanced after the TOC pass: lazy/async loading, alt
+// fallbacks, responsive /_ipx srcset URLs, and scrollable table wrappers.
+const article = computed(() => {
+  const { html, toc } = buildArticleToc(blog.value?.text);
+
+  return {
+    toc,
+    html: enhanceArticleMedia(html, {
+      imageUrl: (src, width) => img(src, { width, format: "webp" }),
+      fallbackAlt: blog.value?.title,
+    }),
+  };
+});
 const readingTime = computed(() =>
   typeof blog.value?.reading_time === "number" && blog.value.reading_time > 0
     ? blog.value.reading_time
@@ -497,10 +511,15 @@ onBeforeUnmount(() => {
 }
 
 .article__text :deep(img) {
-  max-width: 100%;
+  display: block;
+  width: 100%;
   height: auto;
-  border-radius: 0.75rem;
   margin: 1.5rem 0;
+  border-radius: 0.75rem;
+}
+
+.article__text :deep(figure img) {
+  margin: 0;
 }
 
 .article__text :deep(a) {
@@ -537,25 +556,34 @@ onBeforeUnmount(() => {
   margin-bottom: 0;
 }
 
-.article__text :deep(table) {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  margin: 2rem 0;
+.article__text :deep(.article__table-wrap) {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0;
+}
+
+.article__text :deep(.article__table-wrap:focus-visible) {
+  outline: 2px solid #46e6e1;
+  outline-offset: 3px;
+}
+
+.article__text :deep(table) {
+  width: 100%;
+  min-width: 520px;
   border-collapse: collapse;
 }
 
 .article__text :deep(th),
 .article__text :deep(td) {
   padding: 0.75rem 1rem;
-  text-align: left;
-  border: 1px solid rgba(169, 214, 229, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .article__text :deep(th) {
   color: #eef1f7;
   background: rgba(169, 214, 229, 0.08);
+  font-weight: 700;
+  text-align: left;
 }
 
 .article__text :deep(pre) {
@@ -599,6 +627,7 @@ onBeforeUnmount(() => {
   color: rgba(195, 202, 216, 0.72);
   font-size: 0.8125rem;
   line-height: 1.5;
+  text-align: center;
 }
 
 .article__inner-media {
