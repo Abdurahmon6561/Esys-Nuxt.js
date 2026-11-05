@@ -1,15 +1,16 @@
 <script setup>
 // Three.js cosmos: shader starfield (twinkle + slow drift), a rocket with the
-// site logo flying bottom-left <-> top-right (ping-pong), and an ISS-style
+// site logo following a continuous upward arc, and an ISS-style
 // station with the logo drifting across the upper sky.
 // Client-only: three is dynamically imported inside onMounted.
 
 const containerRef = ref(null);
+const ready = ref(false);
+let disposed = false;
 
 const STAR_COUNT = 1600;
-const FLY_DURATION = 36; // seconds one way
-const END_PAUSE = 2.5; // seconds hidden off-screen at bottom-left
-const TOP_HOLD = 2.5; // seconds visible hold at the top-right destination
+const FLY_DURATION = 30;
+const END_PAUSE = 7; // recycle only after leaving the viewport
 const STATION_DURATION = 70; // seconds for one station crossing
 const STATION_PAUSE = 6;
 const STATION_START_OFFSET = STATION_DURATION * 0.18; // begin mid-crossing so visible at load
@@ -561,11 +562,12 @@ function drawStationCanvas(logo) {
 
 async function initScene(container) {
   const THREE = await import("three");
+  if (disposed) return null;
   const logo = await loadLogo();
+  if (disposed) return null;
 
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let reducedMotion = motionQuery.matches;
 
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
   const initialWidth = container.clientWidth;
@@ -668,7 +670,27 @@ async function initScene(container) {
     flameMat
   );
   flame.position.y = -rocketHeight * 0.72;
+  const haloCanvas = document.createElement("canvas");
+  haloCanvas.width = haloCanvas.height = 64;
+  const haloContext = haloCanvas.getContext("2d");
+  const haloGradient = haloContext.createRadialGradient(32, 32, 0, 32, 32, 32);
+  haloGradient.addColorStop(0, "rgba(120,255,240,0.5)");
+  haloGradient.addColorStop(0.3, "rgba(70,230,225,0.18)");
+  haloGradient.addColorStop(1, "rgba(70,230,225,0)");
+  haloContext.fillStyle = haloGradient;
+  haloContext.fillRect(0, 0, 64, 64);
+  const haloTex = new THREE.CanvasTexture(haloCanvas);
+  haloTex.colorSpace = THREE.SRGBColorSpace;
+  const haloMat = new THREE.MeshBasicMaterial({
+    map: haloTex,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(rocketHeight, rocketHeight), haloMat);
+  halo.position.set(0, -rocketHeight * 0.55, -0.1);
   const rocket = new THREE.Group();
+  rocket.add(halo);
   rocket.add(rocketBody);
   rocket.add(flame);
   scene.add(rocket);
@@ -725,7 +747,7 @@ async function initScene(container) {
   );
   streak.position.z = 5;
   scene.add(streak);
-  const SHOOT_INTERVAL = 6; // seconds between shots (plus random jitter)
+  const SHOOT_INTERVAL = 16; // seconds between shots (plus random jitter)
   const SHOOT_LIFE = 0.9; // seconds a streak is visible
   const shoot = {
     active: false,
@@ -743,9 +765,9 @@ async function initScene(container) {
     // Start somewhere along the upper edge, fly down-right (or random side).
     const fromLeft = Math.random() > 0.5;
     const startX = fromLeft ? -view.w * 0.5 : view.w * 0.5;
-    const startY = view.h * (0.25 + Math.random() * 0.2);
+    const startY = view.h * (0.38 + Math.random() * 0.1);
     const endX = fromLeft ? view.w * 0.5 : -view.w * 0.5;
-    const endY = -view.h * (0.1 + Math.random() * 0.25);
+    const endY = view.h * (0.28 + Math.random() * 0.04);
     const dx = endX - startX;
     const dy = endY - startY;
     const dist = Math.hypot(dx, dy);
@@ -759,7 +781,7 @@ async function initScene(container) {
     shoot.angle = Math.atan2(dy, dx);
   };
 
-  const updateShoot = (dt, elapsed) => {
+  const updateShoot = (dt) => {
     if (!shoot.active) {
       shoot.next -= dt;
       if (shoot.next <= 0) {
@@ -811,60 +833,60 @@ async function initScene(container) {
   }));
   let trailCursor = 0;
 
-  // ---------- Flight paths (recomputed on resize) ----------
-  const path = { p0: [0, 0], p1: [0, 0], p2: [0, 0] };
+  // ---------- Flight paths ----------
+  // The lower leg stays below the CTA until the rocket reaches the right lane.
+  const path = { left: 0, right: 0, bottom: 0, top: 0 };
   const stationPath = { from: [0, 0], to: [0, 0] };
   const updatePaths = () => {
-    // Rocket: bottom-left (off-screen) <-> right-middle (visible)
-    path.p0 = [-view.w * 0.62, -view.h * 0.55];
-    path.p1 = [view.w * 0.0, -view.h * 0.22];
-    path.p2 = [view.w * 0.35, 0];
-    // Station: drifts right -> left across the upper sky
-    stationPath.from = [view.w * 0.62, view.h * 0.3];
-    stationPath.to = [-view.w * 0.62, view.h * 0.16];
+    const bounds = container.getBoundingClientRect();
+    const content = container.closest(".hero")?.querySelector(".hero__actions");
+    const actionsBounds = content?.getBoundingClientRect();
+    const actionsBottom = actionsBounds
+      ? (0.5 - (actionsBounds.bottom - bounds.top) / bounds.height) * view.h
+      : -view.h * 0.22;
+    path.left = -view.w * 0.65;
+    const textBounds = container.closest(".hero")?.querySelector(".hero__text")?.getBoundingClientRect();
+    const contentRight = Math.max(textBounds?.right ?? bounds.left, actionsBounds?.right ?? bounds.left);
+    const rightLane = ((contentRight - bounds.left) / bounds.width - 0.5)
+      * view.w * ((CAMERA_Z - 10) / CAMERA_Z) + rocketHeight * 1.1;
+    // On narrower desktops the safe lane can be outside the viewport: the
+    // rocket exits at the right edge rather than passing over the headline.
+    path.right = Math.max(view.w * 0.43, rightLane);
+    path.bottom = Math.min(-view.h * 0.28, actionsBottom - rocketHeight * 1.3);
+    path.top = view.h * 0.68;
+    stationPath.from = [view.w * 0.62, view.h * 0.34];
+    stationPath.to = [-view.w * 0.62, view.h * 0.32];
   };
   updatePaths();
 
-  const bezier = (t) => {
-    const [x0, y0] = path.p0;
-    const [x1, y1] = path.p1;
-    const [x2, y2] = path.p2;
-    const u = 1 - t;
+  const flightPoint = (t) => {
+    const remaining = 1 - t;
     return {
-      x: u * u * x0 + 2 * u * t * x1 + t * t * x2,
-      y: u * u * y0 + 2 * u * t * y1 + t * t * y2,
-      dx: 2 * u * (x1 - x0) + 2 * t * (x2 - x1),
-      dy: 2 * u * (y1 - y0) + 2 * t * (y2 - y1),
+      x: path.left + (path.right - path.left) * (1 - remaining ** 3),
+      y: path.bottom + (path.top - path.bottom) * t ** 6,
+      dx: (path.right - path.left) * 3 * remaining ** 2,
+      dy: (path.top - path.bottom) * 6 * t ** 5,
     };
   };
 
-  // dir: +1 flying to top-right, -1 flying back - nose leads either way.
-  const placeRocket = (t, dir, elapsed, hold) => {
-    const p = bezier(t);
-    const bob = Math.sin(elapsed * 1.4) * view.h * 0.006;
-    rocket.position.set(p.x, p.y + bob, 10);
-    rocket.rotation.z = Math.atan2(p.dy * dir, p.dx * dir) - Math.PI / 2;
-    // Fade only at the off-screen bottom-left end (t near 0).
-    // The top-right destination (t=1) is visible, so no fade there.
-    const opacity = Math.min(t / 0.06, 1);
+  const placeRocket = (t, elapsed) => {
+    const p = flightPoint(t);
+    const scale = 0.82 + 0.26 * Math.sin(t * Math.PI);
+    rocket.scale.setScalar(scale);
+    rocket.position.set(p.x, p.y, 10);
+    rocket.rotation.z = Math.atan2(p.dy, p.dx) - Math.PI / 2;
+    const opacity = Math.min(t / 0.06, (1 - t) / 0.08, 1);
     rocketMat.opacity = opacity;
-    flameMat.opacity = opacity * (hold ? 0.45 + Math.random() * 0.1 : 0.75 + Math.random() * 0.25);
-    flame.scale.y = hold ? 0.6 + Math.random() * 0.1 : 0.85 + Math.random() * 0.3;
-    return { p, opacity };
+    const pulse = Math.sin(elapsed * 9) * 0.06 + Math.sin(elapsed * 17) * 0.025;
+    flameMat.opacity = opacity * (0.8 + pulse);
+    haloMat.opacity = opacity * (0.7 + pulse);
+    flame.scale.y = 0.95 + pulse;
+    return { p, opacity, scale };
   };
 
-  // Ping-pong schedule: fly out, hold at top-right, fly back, pause off-screen.
-  // Offset so the rocket is already mid-flight (in view, full opacity) at t=0
-  // instead of entering from off-screen.
-  const START_OFFSET = FLY_DURATION * 0.28;
   const rocketPhase = (elapsed) => {
-    const cycle = FLY_DURATION * 2 + TOP_HOLD + END_PAUSE;
-    const ph = (elapsed + START_OFFSET) % cycle;
-    if (ph < FLY_DURATION) return { t: ph / FLY_DURATION, dir: 1 };
-    if (ph < FLY_DURATION + TOP_HOLD) return { t: 1, dir: 1, hold: true };
-    const back = ph - FLY_DURATION - TOP_HOLD;
-    if (back < FLY_DURATION) return { t: 1 - back / FLY_DURATION, dir: -1 };
-    return null;
+    const phase = (elapsed + FLY_DURATION * 0.22) % (FLY_DURATION + END_PAUSE);
+    return phase < FLY_DURATION ? phase / FLY_DURATION : null;
   };
 
   const placeStation = (elapsed) => {
@@ -880,18 +902,22 @@ async function initScene(container) {
     const y = fy + (ty - fy) * t + Math.sin(elapsed * 0.5) * view.h * 0.008;
     station.position.set(x, y, 4);
     station.rotation.z = Math.sin(elapsed * 0.18) * 0.06 - 0.05;
-    const fadeIn = 1; // appear immediately, no fade-in
+    const fadeIn = Math.min(t / 0.08, 1);
     const fadeOut = Math.min((1 - t) / 0.08, 1);
-    stationMat.opacity = Math.max(0, Math.min(fadeIn, fadeOut)) * 0.95;
+    stationMat.opacity = Math.max(0, Math.min(fadeIn, fadeOut)) * 0.58;
   };
 
-  const emitTrail = (p, dir) => {
+  let emissionRemainder = 0;
+  const emitTrail = (p, scale, dt) => {
     const len = Math.hypot(p.dx, p.dy) || 1;
-    const dirX = (p.dx / len) * dir;
-    const dirY = (p.dy / len) * dir;
-    const tailX = p.x - dirX * rocketHeight * 0.75;
-    const tailY = p.y - dirY * rocketHeight * 0.75;
-    for (let n = 0; n < 2; n++) {
+    const dirX = p.dx / len;
+    const dirY = p.dy / len;
+    const tailX = p.x - dirX * rocketHeight * scale * 0.75;
+    const tailY = p.y - dirY * rocketHeight * scale * 0.75;
+    emissionRemainder += dt * 48;
+    const count = Math.floor(emissionRemainder);
+    emissionRemainder -= count;
+    for (let n = 0; n < count; n++) {
       const d = trailData[trailCursor];
       d.maxLife = 0.9 + Math.random() * 0.9;
       d.life = d.maxLife;
@@ -924,50 +950,46 @@ async function initScene(container) {
   };
 
   // ---------- Loop ----------
-  const timer = new THREE.Timer();
+  let elapsed = 0;
   let rafId = 0;
   let isInView = true;
 
-  const renderFrame = () => {
-    timer.update();
-    const dt = Math.min(timer.getDelta(), 0.05);
-    const elapsed = timer.getElapsed();
+  const renderFrame = (dt = 0) => {
+    elapsed += dt;
     starUniforms.uTime.value = elapsed;
     stars.rotation.z = elapsed * 0.0035;
 
     const phase = rocketPhase(elapsed);
-    if (phase) {
-      const { p, opacity } = placeRocket(phase.t, phase.dir, elapsed, phase.hold);
-      if (opacity > 0.1 && !phase.hold) emitTrail(p, phase.dir);
+    if (phase !== null) {
+      const { p, opacity, scale } = placeRocket(phase, elapsed);
+      if (opacity > 0.1) emitTrail(p, scale, dt);
     } else {
       rocketMat.opacity = 0;
       flameMat.opacity = 0;
+      haloMat.opacity = 0;
     }
     placeStation(elapsed);
     updateTrail(dt);
+    updateShoot(dt);
     renderer.render(scene, camera);
   };
 
-  // Fully stop the loop when the scene can't be seen — off-screen or the tab
-  // is backgrounded. Previously the RAF kept rescheduling itself forever and
-  // the Timer kept accumulating wall-clock time, so a page left open for hours
-  // paid for frames nobody watched.
+  // Fully stop both rendering and simulation while off-screen or backgrounded.
   let running = false;
   let lastRenderedAt = 0;
 
   const animate = (timestamp) => {
     rafId = requestAnimationFrame(animate);
     if (lastRenderedAt && timestamp - lastRenderedAt < FRAME_INTERVAL) return;
+    const dt = lastRenderedAt ? Math.min((timestamp - lastRenderedAt) / 1000, 0.05) : 0;
     lastRenderedAt = timestamp;
-    renderFrame();
+    renderFrame(dt);
   };
 
   const start = () => {
     if (running) return;
     running = true;
-    // Re-baseline the clock so the first frame after a pause gets a normal
-    // delta instead of the whole idle gap.
-    timer.update();
+    // Reset the frame baseline; simulation time never includes the idle gap.
     lastRenderedAt = 0;
     rafId = requestAnimationFrame(animate);
   };
@@ -980,13 +1002,16 @@ async function initScene(container) {
   };
 
   const syncPlayback = () => {
-    if (isInView && !document.hidden) start();
+    if (!reducedMotion && isInView && !document.hidden) start();
     else stop();
   };
 
   const renderStatic = () => {
-    placeRocket(0.7, 1, 0);
+    placeRocket(0.35, 0);
     flameMat.opacity = 0;
+    haloMat.opacity = 0;
+    streakMat.opacity = 0;
+    trail.visible = false;
     placeStation(STATION_DURATION * 0.45);
     renderer.render(scene, camera);
   };
@@ -994,8 +1019,10 @@ async function initScene(container) {
   if (reducedMotion) {
     renderStatic();
   } else {
+    renderFrame();
     start();
   }
+  ready.value = true;
 
   const observer = new IntersectionObserver(([entry]) => {
     isInView = entry.isIntersecting;
@@ -1003,9 +1030,19 @@ async function initScene(container) {
   });
   observer.observe(container);
 
-  if (!reducedMotion) {
-    document.addEventListener("visibilitychange", syncPlayback);
-  }
+  const onMotionChange = () => {
+    reducedMotion = motionQuery.matches;
+    if (reducedMotion) {
+      stop();
+      renderStatic();
+    } else {
+      trail.visible = true;
+      renderFrame();
+      syncPlayback();
+    }
+  };
+  motionQuery.addEventListener("change", onMotionChange);
+  document.addEventListener("visibilitychange", syncPlayback);
 
   const resizeObserver = new ResizeObserver(() => {
     const w = container.clientWidth;
@@ -1021,12 +1058,16 @@ async function initScene(container) {
     updateView();
     updatePaths();
     if (reducedMotion) renderStatic();
+    else if (!running) renderFrame();
   });
   resizeObserver.observe(container);
+  const hero = container.closest(".hero");
+  hero?.querySelectorAll(".hero__text, .hero__actions").forEach((el) => resizeObserver.observe(el));
 
   return () => {
     stop();
     document.removeEventListener("visibilitychange", syncPlayback);
+    motionQuery.removeEventListener("change", onMotionChange);
     observer.disconnect();
     resizeObserver.disconnect();
     starGeo.dispose();
@@ -1039,9 +1080,15 @@ async function initScene(container) {
     flameMat.dispose();
     station.geometry.dispose();
     stationMat.dispose();
+    streak.geometry.dispose();
+    streakMat.dispose();
+    streakTex.dispose();
     stationTex.dispose();
     rocketTex.dispose();
     flameTex.dispose();
+    halo.geometry.dispose();
+    haloMat.dispose();
+    haloTex.dispose();
     renderer.dispose();
     renderer.domElement.remove();
   };
@@ -1050,12 +1097,11 @@ async function initScene(container) {
 onMounted(async () => {
   if (!containerRef.value) return;
 
-  // Phones and low-core devices skip WebGL entirely: importing three is a
-  // ~600KB eval that dominates mobile TBT/INP. The CSS background layers
-  // (grain/glow/scrim) carry the hero there.
-  const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches;
+  // Compact layouts use the CSS starfield. Touch input alone does not
+  // indicate a slow device: wide tablets and touch laptops can use WebGL.
+  const compact = window.matchMedia("(max-width: 900px)").matches;
   const cores = navigator.hardwareConcurrency || 4;
-  if (coarsePointer || cores < 4) return;
+  if (compact || cores < 4) return;
 
   // Desktop: wait for `load` first so the three eval lands after the
   // Lighthouse TBT window, then idle so hydration fully settles. The CSS
@@ -1064,7 +1110,9 @@ onMounted(async () => {
   await waitForIdle();
   if (!containerRef.value) return; // unmounted while waiting
   try {
-    cleanup = await initScene(containerRef.value);
+    const disposeScene = await initScene(containerRef.value);
+    if (disposed) disposeScene?.();
+    else cleanup = disposeScene;
   } catch (error) {
     // WebGL unavailable - CSS background layers still render, so fail quietly.
     console.error("CosmosScene init failed:", error);
@@ -1072,13 +1120,14 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  disposed = true;
   if (cleanup) cleanup();
   cleanup = null;
 });
 </script>
 
 <template>
-  <div ref="containerRef" class="cosmos" aria-hidden="true" />
+  <div ref="containerRef" class="cosmos" :class="{ 'cosmos--ready': ready }" aria-hidden="true" />
 </template>
 
 <style scoped>
@@ -1087,6 +1136,16 @@ onBeforeUnmount(() => {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 800ms ease-out;
+}
+
+.cosmos--ready {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cosmos { transition: none; }
 }
 
 .cosmos :deep(canvas) {

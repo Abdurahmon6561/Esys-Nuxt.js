@@ -23,8 +23,8 @@ onMounted(() => {
       [title.value, subtitle.value, actions.value],
       {
         opacity: 0,
-        y: 28,
-        duration: 0.8,
+        y: 10,
+        duration: 0.65,
         ease: "power3.out",
         stagger: 0.14,
       }
@@ -46,7 +46,7 @@ onMounted(() => {
       });
 
     parallax(".hero__glow", -60);
-    parallax(".hero__grain", -40);
+    parallax(".hero__grain-drift", -40);
   }, hero);
 });
 
@@ -59,7 +59,11 @@ onBeforeUnmount(() => {
 <template>
   <section ref="hero" class="hero">
     <!-- Heavy procedural film grain (SVG noise) - textures the gradient -->
-    <div class="hero__grain" aria-hidden="true" />
+    <div class="hero__grain-drift" aria-hidden="true">
+      <div class="hero__grain" />
+    </div>
+
+    <div class="hero__stars" aria-hidden="true" />
 
     <!-- Teal glow concentrated at bottom-left + bottom-right corners -->
     <div class="hero__glow" aria-hidden="true" />
@@ -108,7 +112,31 @@ onBeforeUnmount(() => {
   color: #eef1f7;
 }
 
-/* ---------- Film grain (procedural SVG noise, high density) ---------- */
+/* Static stars also carry the atmosphere when WebGL is unavailable. */
+.hero__stars {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.42;
+  background-image:
+    radial-gradient(1px 1px at 17px 31px, #c3cad8 65%, transparent),
+    radial-gradient(1px 1px at 113px 157px, #46e6e1 65%, transparent),
+    radial-gradient(1px 1px at 211px 73px, #eef1f7 65%, transparent);
+  background-size: 251px 239px, 337px 311px, 419px 367px;
+  mask-image: linear-gradient(to bottom, transparent, #000 20%, #000 85%, transparent);
+}
+
+/* Separate transforms: GSAP moves the wrapper, CSS moves the grain. */
+.hero__grain-drift {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- Film grain ---------- */
 .hero__grain {
   position: absolute;
   inset: -10%;
@@ -116,8 +144,7 @@ onBeforeUnmount(() => {
   width: 120%;
   height: 120%;
   pointer-events: none;
-  opacity: 0.38;
-  mix-blend-mode: overlay;
+  opacity: 0.24;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 220px 220px;
   will-change: transform;
