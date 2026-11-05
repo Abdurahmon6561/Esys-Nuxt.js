@@ -227,6 +227,10 @@
     "subtitle": "Honest feedback from teams we've built with."
   },
   "consultant": {
+    "invitation": "Hi! Shall we discuss your project?",
+    "open": "Open chat with ESYS",
+    "dismiss_invitation": "Dismiss invitation",
+    "unread": "Unread replies: {count}",
     "title": "AI Consultant",
     "empty": "Ask a question - I'm here to help.",
     "placeholder": "Type a message...",

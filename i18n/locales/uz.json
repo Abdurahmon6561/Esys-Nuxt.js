@@ -227,6 +227,10 @@
     "subtitle": "Biz bilan işlagan jamoalarning haqiqiy fikrlari."
   },
   "consultant": {
+    "invitation": "Salom! Loyihangizni muhokama qilamizmi?",
+    "open": "ESYS bilan chatni ochish",
+    "dismiss_invitation": "Taklifni yashirish",
+    "unread": "Oʻqilmagan javoblar: {count}",
     "title": "AI Konsultant",
     "empty": "Savol bering - yordam berişga tayyorman.",
     "placeholder": "Xabar yozing...",

@@ -1,7 +1,8 @@
 <script setup>
-import { ref, nextTick, watch } from "vue";
+import { ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue";
 
 const { t } = useI18n();
+const { isOpen: contactOpen } = useContactModal();
 const config = useRuntimeConfig();
 const cookieBannerVisible = useState("cookie-banner-visible", () => false);
 const cookieBannerHeight = useState("cookie-banner-height", () => 0);
@@ -51,6 +52,28 @@ const saveState = () => {
 const persisted = loadState();
 
 const isOpen = ref(false);
+const toggleEl = ref(null);
+const greeting = ref(0);
+const invitation = ref(false);
+const INVITATION_KEY = "consultant_invitation_seen";
+let invitationTimer;
+let hideTimer;
+const dismissInvitation = () => {
+  invitation.value = false;
+  clearTimeout(invitationTimer);
+  clearTimeout(hideTimer);
+};
+onMounted(() => {
+  try { if (sessionStorage.getItem(INVITATION_KEY)) return; } catch { /* optional storage */ }
+  invitationTimer = setTimeout(() => {
+    if (isOpen.value || contactOpen.value || document.hidden) return;
+    invitation.value = true;
+    try { sessionStorage.setItem(INVITATION_KEY, "1"); } catch { /* optional storage */ }
+    hideTimer = setTimeout(dismissInvitation, 8000);
+  }, 3000);
+});
+onBeforeUnmount(dismissInvitation);
+watch(contactOpen, (open) => { if (open) dismissInvitation(); });
 const input = ref("");
 const loading = ref(false);
 const messages = ref(persisted?.messages ?? []);
@@ -72,8 +95,11 @@ watch(sessionId, () => saveState());
 // Opening the panel: focus the input, clear unread badge; Escape closes from anywhere inside.
 watch(isOpen, (open) => {
   if (open) {
+    dismissInvitation();
     unread.value = 0;
     nextTick(() => inputEl.value?.focus());
+  } else if (!contactOpen.value) {
+    nextTick(() => toggleEl.value?.focus());
   }
 });
 
@@ -146,7 +172,9 @@ const newSession = () => {
 
 <template>
   <div
+    v-show="!contactOpen"
     class="consultant"
+    @keydown.esc="onEscape"
     :class="{
       'cookie-banner-visible':
         cookieBannerVisible && cookieBannerHeight > 0 && !isOpen,
@@ -156,6 +184,7 @@ const newSession = () => {
     <Transition name="consultant-panel">
       <div
         v-if="isOpen"
+        id="consultant-panel"
         class="consultant__panel"
         role="dialog"
         :aria-label="t('consultant.title')"
@@ -267,32 +296,24 @@ const newSession = () => {
       </div>
     </Transition>
 
-    <!-- Toggle button -->
+    <div v-if="invitation && !isOpen" class="consultant__invitation">
+      <button class="consultant__invite-text" @click="isOpen = true">{{ t('consultant.invitation') }}</button>
+      <button class="consultant__invite-dismiss" :aria-label="t('consultant.dismiss_invitation')" @click="dismissInvitation">×</button>
+    </div>
     <button
+      ref="toggleEl"
       class="consultant__toggle"
       :class="{ 'is-open': isOpen }"
-      :aria-label="isOpen ? t('consultant.close') : t('consultant.title')"
+      :aria-label="isOpen ? t('consultant.close') : t('consultant.open')"
       :aria-expanded="isOpen"
+      aria-controls="consultant-panel"
       @click="isOpen = !isOpen"
+      @mouseenter="greeting++"
+      @focus="greeting++"
     >
-      <span
-        v-if="!isOpen && unread > 0"
-        class="consultant__badge"
-        aria-label="unread"
-      >{{ unread > 99 ? "99+" : unread }}</span>
-      <svg
-        v-if="!isOpen"
-        viewBox="0 0 24 24"
-        width="22"
-        height="22"
-        aria-hidden="true"
-      >
-        <path
-          d="M12 3C6.92 3 2.8 6.55 2.8 10.93c0 2.51 1.36 4.75 3.49 6.2-.14 1.2-.6 2.43-1.53 3.44-.18.2-.04.52.23.49 2.03-.23 3.66-1.05 4.79-1.87.71.15 1.45.24 2.22.24 5.08 0 9.2-3.55 9.2-7.93S17.08 3 12 3Z"
-          fill="currentColor"
-        />
-      </svg>
-      <svg v-else viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <span v-if="!isOpen && unread > 0" class="consultant__badge" :aria-label="t('consultant.unread', { count: unread })">{{ unread > 99 ? "99+" : unread }}</span>
+      <ConsultantMascot v-show="!isOpen" :active="!isOpen && !contactOpen" :greeting="greeting" />
+      <svg v-if="isOpen" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path
           d="M6 6l12 12M18 6L6 18"
           fill="none"
@@ -602,62 +623,36 @@ const newSession = () => {
   transition: filter 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Idle attention: soft breathing glow to draw the eye when closed */
 .consultant__toggle:not(.is-open) {
-  animation: consultant-breathe 3.2s ease-in-out infinite;
+  width: 120px;
+  height: 140px;
+  padding: 0;
+  border-radius: 24px;
+  background: transparent;
+  box-shadow: none;
 }
-
-/* Expanding pulse ring - radiates outward, loops, only while closed */
-.consultant__toggle:not(.is-open)::after {
-  content: "";
+.consultant__invitation {
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px solid rgba(var(--consultant-accent-rgb), 0.7);
-  animation: consultant-ring 2.4s ease-out infinite;
-  pointer-events: none;
+  bottom: 148px;
+  right: 0;
+  display: flex;
+  width: min(260px, calc(100vw - 48px));
+  border: 1px solid rgba(var(--consultant-accent-rgb), .35);
+  border-radius: 18px 18px 4px 18px;
+  background: #f4faf9;
+  color: var(--consultant-ink);
+  box-shadow: 0 8px 28px #0002;
 }
-
-@keyframes consultant-breathe {
-  0%,
-  100% {
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45),
-      0 0 0 0 rgba(var(--consultant-accent-rgb), 0.35);
-  }
-  50% {
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45),
-      0 0 26px 6px rgba(var(--consultant-accent-rgb), 0.6);
-  }
+.consultant__invite-text, .consultant__invite-dismiss {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
-
-@keyframes consultant-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  70% {
-    transform: scale(1.55);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.55);
-    opacity: 0;
-  }
-}
-
-.consultant__toggle:hover {
-  filter: brightness(1.12);
-  transform: translateY(-2px);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.5),
-    0 8px 26px rgba(var(--consultant-accent-rgb), 0.55);
-  animation: none;
-}
-
-/* Hover cancels the idle pulse ring */
-.consultant__toggle:hover::after {
-  animation: none;
-  opacity: 0;
-}
+.consultant__invite-text { padding: 14px 0 14px 16px; text-align: left; font-size: 14px; line-height: 1.5; }
+.consultant__invite-dismiss { align-self: flex-start; min-width: 44px; min-height: 44px; font-size: 23px; }
+.consultant__invitation button:focus-visible { outline: 2px solid var(--consultant-accent-lo); outline-offset: 2px; border-radius: 12px; }
 
 .consultant__toggle:focus-visible {
   outline: 2px solid var(--consultant-accent-hi);
@@ -697,6 +692,8 @@ const newSession = () => {
 }
 
 @media (max-width: 639px) {
+  .consultant__toggle:not(.is-open) { width: 88px; height: 104px; }
+  .consultant__invitation { bottom: 112px; }
   .consultant {
     transition: bottom 0.2s ease;
   }
