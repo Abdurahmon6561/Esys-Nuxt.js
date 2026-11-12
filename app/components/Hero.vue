@@ -1,10 +1,9 @@
 <script setup>
 // Background: CSS layers (grain + glow + scrim) over a Three.js cosmos
-// (starfield + rocket) rendered by UiCosmosScene. Content unchanged.
+// (starfield + rocket) rendered by UiCosmosScene.
 // Motion: GSAP entrance timeline for text + scrub parallax on bg layers.
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
-const localePath = useLocalePath();
 const { open: openContact } = useContactModal();
 
 const hero = ref(null);
@@ -22,7 +21,6 @@ onMounted(() => {
     gsap.timeline({ delay: 0.2 }).from(
       [title.value, subtitle.value, actions.value],
       {
-        opacity: 0,
         y: 10,
         duration: 0.65,
         ease: "power3.out",
@@ -87,12 +85,12 @@ onBeforeUnmount(() => {
       </div>
 
       <div ref="actions" class="hero__actions">
-        <NuxtLink :to="localePath('/portfolio')" class="btn btn--primary">
-          {{ $t("hero.cta_projects") }}
-        </NuxtLink>
-        <button type="button" class="btn btn--ghost" @click="openContact">
+        <button type="button" class="btn btn--primary" @click="openContact">
           {{ $t("hero.cta_contact") }}
         </button>
+        <a href="#portfolio" class="btn btn--ghost">
+          {{ $t("hero.cta_projects") }}
+        </a>
       </div>
     </div>
   </section>
@@ -218,7 +216,7 @@ onBeforeUnmount(() => {
   z-index: 1;
 }
 
-/* ---------- Content (unchanged layout/typography) ---------- */
+/* ---------- Content ---------- */
 .hero__content {
   position: relative;
   z-index: 2;
@@ -226,7 +224,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1.75rem;
   min-height: 100vh;
   min-height: 100svh;
   padding: 6rem 1.5rem;
@@ -242,7 +240,8 @@ onBeforeUnmount(() => {
 }
 
 .hero__title {
-  max-width: 24ch;
+  max-width: 23ch;
+  text-wrap: balance;
   margin: 0;
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 700;
@@ -251,12 +250,14 @@ onBeforeUnmount(() => {
 }
 
 .hero__subtitle {
-  max-width: 60ch;
+  max-width: 54ch;
   margin: 0;
   font-size: clamp(1rem, 2vw, 1.375rem);
   line-height: 1.5;
   color: #c3cad8;
 }
+
+.btn:focus-visible { outline: 2px solid #46e6e1; outline-offset: 4px; }
 
 /* Actions */
 .hero__actions {
@@ -284,6 +285,7 @@ onBeforeUnmount(() => {
 
 .btn--primary {
   background: #eef1f7;
+  border: 1px solid #eef1f7;
   color: #0a0a2e;
 }
 

@@ -1,109 +1,23 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from "vue";
-
 const { portfolioApi } = useApiService();
 const { locale } = useI18n();
 const localePath = useLocalePath();
-
-// Refetches when locale changes - API returns content in the active language.
 const { data, pending, error } = await useAsyncData(
-  "portfolios",
-  () => portfolioApi.getPortfolios(),
-  { watch: [locale] }
+  "portfolios", () => portfolioApi.getPortfolios(), { watch: [locale] },
 );
-
-const items = computed(() => data.value?.data ?? []);
-
-// Bento rhythm: per 6 items - first is featured (2×2). No vertical/tall cards.
-const cardClass = (index) => ({
-  "card--featured": index % 6 === 0,
-});
-
-// GSAP scroll-reveal: stagger cards in as they enter the viewport. Cards are
-// rendered after async data resolves, so batch is wired once items populate.
-const root = ref(null);
-let scope = null;
-let stopWatch = null;
-
-onMounted(() => {
-  scope = useGsapScope(({ gsap, ScrollTrigger, isReducedMotion }) => {
-    if (isReducedMotion) return;
-
-    const wireBatch = () => {
-      const selector = ".portfolio__grid .card:not(.card--skeleton)";
-      // Pre-hide once, idempotently. fromTo below sets the same start state,
-      // but this guarantees cards are hidden before they're measured so a
-      // late scroll-restoration event can't snapshot a mid-animation opacity
-      // as the tween's end value (the gsap.from + overwrite footgun).
-      gsap.set(selector, { opacity: 0, y: 40 });
-
-      ScrollTrigger.batch(selector, {
-        start: "top 90%",
-        onEnter: (batch) =>
-          // fromTo (not from): explicit end state => the tween always resolves
-          // to opacity:1 even if interrupted/overwritten mid-flight. gsap.from
-          // records its end from the live computed value, which on a mid-page
-          // refresh can be a partial opacity, leaving cards stuck mid-fade.
-          gsap.fromTo(
-            batch,
-            { opacity: 0, y: 40 },
-            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.1, overwrite: "auto" },
-          ),
-      });
-
-      // Reveal cards already in the viewport at wire time. ScrollTrigger only
-      // fires onEnter on a scroll-driven toggle; on the first refresh a card
-      // already past `start` doesn't toggle, so onEnter never fires for it.
-      const revealInView = () => {
-        const cards = Array.from(document.querySelectorAll(selector));
-        const entering = cards.filter((c) => {
-          const r = c.getBoundingClientRect();
-          return r.top < window.innerHeight * 0.9;
-        });
-        if (entering.length) gsap.to(entering, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", stagger: 0.1, overwrite: "auto" });
-      };
-
-      // Cards + images land after async data: recalc trigger positions so
-      // reveals fire at the right scroll offsets, then reveal any cards that
-      // are already in view (e.g. mid-page refresh with scroll restoration).
-      ScrollTrigger.refresh();
-      revealInView();
-    };
-
-    // Cards already in DOM (cached data) → wire now. Otherwise wait for the
-    // watch fired by useAsyncData resolving.
-    if (items.value.length) {
-      nextTick(wireBatch);
-    } else {
-      stopWatch = watch(
-        items,
-        (vals) => {
-          if (vals?.length) {
-            nextTick(() => {
-              wireBatch();
-              stopWatch?.();
-              stopWatch = null;
-            });
-          }
-        },
-        { immediate: true }
-      );
-    }
-  }, root);
-});
-
-onBeforeUnmount(() => {
-  stopWatch?.();
-  scope?.revert();
-  scope = null;
-});
+// A short homepage selection; the complete catalogue stays on /portfolio.
+const items = computed(() => (data.value?.data ?? []).slice(0, 3));
+const failedImages = ref(new Set());
+const imageFailed = (alias) => { failedImages.value = new Set([...failedImages.value, alias]); };
+watch(locale, () => { failedImages.value = new Set(); });
+const cardClass = (index) => ({ "card--featured": index === 0 });
+const initials = (title) => title.split(/\s+/).filter(Boolean).slice(0, 2).map(word => word[0]).join("");
 </script>
 
 <template>
-  <section ref="root" class="portfolio" id="portfolio">
+  <section class="portfolio" id="portfolio">
     <div class="portfolio__inner">
       <UiSectionHead
-        :eyebrow="$t('portfolio.eyebrow')"
         :title="$t('portfolio.title')"
         :subtitle="$t('portfolio.subtitle')"
       />
@@ -112,7 +26,7 @@ onBeforeUnmount(() => {
 
       <div v-else-if="pending" class="portfolio__grid">
         <div
-          v-for="n in 6"
+          v-for="n in 3"
           :key="n"
           class="card card--skeleton"
           :class="cardClass(n - 1)"
@@ -132,15 +46,24 @@ onBeforeUnmount(() => {
             class="card"
             :class="cardClass(index)"
           >
-            <NuxtImg
-              :src="item.image"
-              :alt="item.title"
-              loading="lazy"
-              format="webp"
-              sizes="100vw md:50vw"
-              class="card__img"
-            />
-            <div class="card__scrim" aria-hidden="true" />
+            <div class="card__media">
+              <div class="card__fallback" aria-hidden="true">
+                <span class="card__monogram">{{ initials(item.title) }}</span>
+                <span v-if="failedImages.has(item.alias) || !item.image" class="card__fallback-label">{{ $t('portfolio.openCase') }}</span>
+              </div>
+              <NuxtImg
+                v-if="item.image && !failedImages.has(item.alias)"
+                :src="item.image"
+                :alt="item.title"
+                loading="eager"
+                width="960"
+                height="720"
+                format="webp"
+                sizes="100vw md:66vw lg:800px"
+                @error="imageFailed(item.alias)"
+                class="card__img"
+              />
+            </div>
             <div class="card__content">
               <ul v-if="item.services?.length" class="card__tags">
                 <li v-for="srv in item.services" :key="srv" class="tag">
@@ -163,7 +86,7 @@ onBeforeUnmount(() => {
                 </span>
               </div>
               <div class="card__text-wrap">
-                <p class="card__text">{{ item.short_text }}</p>
+                <p class="card__text">{{ plainText(item.short_text) }}</p>
               </div>
             </div>
           </NuxtLink>
@@ -183,6 +106,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .portfolio {
+  scroll-margin-top: 5rem;
   position: relative;
   width: 100%;
   /* Pull up under the hero's bottom fade so the seam disappears */
@@ -216,13 +140,13 @@ onBeforeUnmount(() => {
 }
 
 .portfolio__grid .card {
-  min-height: 380px;
+  min-height: 0;
 }
 
 @media (min-width: 900px) {
   .portfolio__grid {
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 280px;
+    grid-auto-rows: minmax(380px, auto);
     grid-auto-flow: dense;
   }
   .portfolio__grid .card {
@@ -240,27 +164,13 @@ onBeforeUnmount(() => {
   margin-top: 3rem;
 }
 
-/* ---------- Spotlight: hovering the grid dims non-hovered cards ---------- */
-.portfolio__grid .card {
-  transition: transform 0.4s ease, border-color 0.4s ease,
-    box-shadow 0.4s ease, opacity 0.4s ease;
-}
-
-@media (hover: hover) {
-  .portfolio__grid:hover .card {
-    opacity: 0.42;
-  }
-  .portfolio__grid:hover .card:hover {
-    opacity: 1;
-  }
-}
-
 /* ---------- Card: image-first ---------- */
 .card {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  background: #0a0a2e;
+  background: #0b1023;
   border: 1px solid rgba(238, 241, 247, 0.08);
   border-radius: 1.25rem;
   text-decoration: none;
@@ -312,34 +222,43 @@ onBeforeUnmount(() => {
   transform: scale(1.06);
 }
 
-/* Scrim - text legibility over the image */
-.card__scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    to top,
-    rgba(5, 5, 26, 0.92) 0%,
-    rgba(5, 5, 26, 0.4) 45%,
-    rgba(5, 5, 26, 0) 70%
-  );
-  transition: opacity 0.3s ease;
+/* Captions have their own opaque surface; artwork never sits behind text. */
+.card__media {
+  position: relative;
+  flex: 1 0 180px;
+  min-height: 180px;
+  overflow: hidden;
+}
+@media (max-width: 899px) {
+  .card__media { flex: none; aspect-ratio: 16 / 10; }
 }
 
-.card:hover .card__scrim {
-  opacity: 1;
+.card__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 2rem;
+  background: #101d31;
+  color: #a9d6e5;
 }
+.card__monogram { font-size: clamp(3rem, 7vw, 5rem); font-weight: 700; letter-spacing: -0.03em; }
+.card__fallback-label { font-size: 0.875rem; }
 
 /* ---------- Content ---------- */
 .card__content {
-  position: absolute;
-  inset: auto 0 0 0;
+  position: relative;
   z-index: 2;
+  flex: 0 0 auto;
+  background: #0b1023;
+  border-top: 1px solid rgba(169, 214, 229, 0.14);
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
-  padding: 1.5rem;
+  padding: 1.25rem;
 }
 
 .card--featured .card__content {
@@ -348,14 +267,14 @@ onBeforeUnmount(() => {
 
 .card__top {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
 }
 
 .card__title {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -376,7 +295,7 @@ onBeforeUnmount(() => {
   background: rgba(42, 111, 151, 0.28);
   border: 1px solid rgba(42, 111, 151, 0.4);
   transform: translate(4px, -2px);
-  opacity: 0.55;
+  opacity: 1;
   transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease;
 }
 
@@ -386,38 +305,16 @@ onBeforeUnmount(() => {
   background: rgba(42, 111, 151, 0.45);
 }
 
-/* Short text - collapsed, revealed on hover/focus.
-   grid-template-rows 0fr→1fr animates the track without reflowing text
-   contents (unlike max-height), so the reveal stays on the compositor
-   friendly path and doesn't drop frames on hover. */
-.card__text-wrap {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.card:hover .card__text-wrap,
-.card:focus-visible .card__text-wrap {
-  grid-template-rows: 1fr;
-}
-
 .card__text {
   margin: 0;
   overflow: hidden;
-  opacity: 0;
   font-size: 0.9375rem;
   line-height: 1.5;
   color: #c3cad8;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
-  transition: opacity 0.3s ease;
-}
-
-.card:hover .card__text,
-.card:focus-visible .card__text {
-  opacity: 1;
 }
 
 .card__tags {
@@ -433,11 +330,9 @@ onBeforeUnmount(() => {
   padding: 0.3rem 0.75rem;
   font-size: 0.8125rem;
   color: #a9d6e5;
-  background: rgba(5, 5, 26, 0.55);
+  background: #142139;
   border: 1px solid rgba(42, 111, 151, 0.45);
   border-radius: 999px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 
 /* ---------- Skeleton: shimmer sweep, heights come from the bento grid ---------- */
@@ -463,8 +358,6 @@ onBeforeUnmount(() => {
   .card,
   .card__img,
   .card__arrow,
-  .card__text,
-  .card__text-wrap,
   .card::before {
     transition: none;
   }
@@ -473,16 +366,6 @@ onBeforeUnmount(() => {
   }
   .card:hover .card__img {
     transform: none;
-  }
-  .card__text-wrap {
-    grid-template-rows: 1fr;
-    transition: none;
-  }
-  .card__text {
-    opacity: 1;
-  }
-  .portfolio__grid:hover .card {
-    opacity: 1;
   }
   .card--skeleton {
     animation: none;

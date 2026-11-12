@@ -12,10 +12,10 @@
     "home": "Back home"
   },
   "hero": {
-    "title": "Web studio in Tashkent: websites, apps and CRM development",
-    "subtitle": "We build business card websites, landing pages, corporate sites and online stores, as well as mobile apps and CRM systems. Modern design, well-thought structure and support after launch.",
+    "title": "Websites, apps and CRM for your business",
+    "subtitle": "A web studio in Tashkent. From structure and design to launch and support. We start with your task and a free estimate.",
     "cta_projects": "Our projects",
-    "cta_contact": "Contact us"
+    "cta_contact": "Discuss your project"
   },
   "homeServices": {
     "eyebrow": "Services",
@@ -26,7 +26,7 @@
   },
   "homeAbout": {
     "eyebrow": "About the studio",
-    "title": "Turnkey website development in Tashkent",
+    "title": "From your brief to launch",
     "p1a": "Evolution Systems is a web studio in Tashkent that develops websites end to end: from the idea and prototype to launch and support. We build ",
     "link_websites": "business card websites",
     "p1b": ", landing pages, corporate sites and online stores, as well as ",
@@ -34,7 +34,7 @@
     "p1c": " and ",
     "link_crm": "CRM systems",
     "p1d": ".",
-    "p2": "Every project starts with a brief and a free estimate. Then come structure, design, development and an SEO foundation, so the site not only looks modern but also brings clients from search. We work across Uzbekistan and remotely with clients from any country.",
+    "p2": "We start with a brief and a free estimate. Then we plan the structure, design, develop and prepare the SEO foundation. After launch, we stay in touch and support the project. We work across Uzbekistan and remotely with clients abroad.",
     "p3a": "Take a look at ",
     "link_portfolio": "our projects",
     "p3b": " to see the websites we create - or tell us about your task and we'll suggest the format that fits it best.",
@@ -90,6 +90,7 @@
     "cta": "Discuss the project"
   },
   "portfolio": {
+    "openCase": "View project",
     "eyebrow": "Portfolio",
     "title": "Our work",
     "subtitle": "Projects we're proud of - from investment platforms to corporate websites.",
@@ -195,6 +196,9 @@
     }
   },
   "contact": {
+    "optional": "optional",
+    "emailInvalid": "Enter an email such as name{'@'}example.com.",
+    "nameRequired": "Enter your name.",
     "seo": {
       "title": "Let's build something great",
       "description": "Tell us about your project - we'll get back to you within one business day."
@@ -216,12 +220,14 @@
     "submit": "Send message",
     "sending": "Sending...",
     "success": "Thank you! We'll be in touch shortly.",
-    "error": "Something went wrong. Please try again.",
+    "error": "We could not send your message. Your details are still here — try again or email hi{'@'}esys.pro.",
     "close": "Close",
     "infoEmail": "Email us",
     "infoPhone": "Call us"
   },
   "reviews": {
+    "readLess": "Collapse review",
+    "readMore": "Read full review",
     "eyebrow": "Reviews",
     "title": "What clients say",
     "subtitle": "Honest feedback from teams we've built with."
@@ -276,6 +282,7 @@
     }
   },
   "nav": {
+    "pricing": "Pricing",
     "services": "Services",
     "portfolio": "Portfolio",
     "blog": "Blog",

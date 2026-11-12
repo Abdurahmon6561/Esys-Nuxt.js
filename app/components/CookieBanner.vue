@@ -3,6 +3,7 @@ import { ref, onBeforeUnmount, onMounted, nextTick, watch } from "vue";
 
 const { t } = useI18n();
 const localePath = useLocalePath();
+const { isOpen: contactOpen } = useContactModal();
 
 const STORAGE_KEY = "cookie_consent";
 const visible = useState("cookie-banner-visible", () => false);
@@ -68,6 +69,7 @@ const acceptAll = () => {
   <Transition name="cookie">
     <div
       v-if="visible"
+      v-show="!contactOpen"
       ref="bannerEl"
       class="cookie"
       role="dialog"
@@ -162,6 +164,7 @@ const acceptAll = () => {
 }
 
 .cookie__btn {
+  min-height: 44px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;

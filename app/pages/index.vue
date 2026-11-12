@@ -14,11 +14,23 @@ useSeoMeta({
 <template>
   <div class="home-page">
     <Hero />
-    <HomeServices />
     <Portfolio />
+    <HomeServices />
     <HomeAbout />
     <HomeProcess />
     <Reviews />
     <Faq />
   </div>
 </template>
+
+<style scoped>
+/* Keep the existing section language with a tighter homepage rhythm. */
+.home-page :deep(.shead) { margin-bottom: 2rem; padding-bottom: 1.5rem; }
+@media (max-width: 640px) {
+  .home-page :deep(.portfolio),
+  .home-page :deep(.reviews) { padding-block: 3.5rem; }
+  .home-page :deep(.habout__inner),
+  .home-page :deep(.hservices__inner),
+  .home-page :deep(.hprocess__inner) { padding-block: 3.5rem; }
+}
+</style>

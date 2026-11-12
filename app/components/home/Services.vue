@@ -25,7 +25,6 @@ const cardText = (item) => plainText(item.short_text);
   <section class="hservices">
     <div class="hservices__inner">
       <UiSectionHead
-        :eyebrow="$t('homeServices.eyebrow')"
         :title="$t('homeServices.title')"
         :subtitle="$t('homeServices.subtitle')"
       />
@@ -52,15 +51,12 @@ const cardText = (item) => plainText(item.short_text);
           :class="{ 'hservices__grid--five': items.length === 5 }"
         >
           <NuxtLink
-            v-for="(item, index) in items"
+            v-for="item in items"
             :key="item.alias"
             :to="localePath(`/services/${item.alias}`)"
             class="hservices__card"
           >
             <span class="hservices__top">
-              <span class="hservices__num">
-                {{ String(index + 1).padStart(2, "0") }}
-              </span>
               <span class="hservices__more" aria-hidden="true">
                 <svg
                   viewBox="0 0 24 24"
@@ -219,15 +215,8 @@ const cardText = (item) => plainText(item.short_text);
 .hservices__top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 1rem;
-}
-
-.hservices__num {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  color: rgba(169, 214, 229, 0.45);
 }
 
 .hservices__title {
@@ -242,6 +231,11 @@ const cardText = (item) => plainText(item.short_text);
 }
 
 .hservices__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.65;

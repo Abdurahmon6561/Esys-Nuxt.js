@@ -24,6 +24,7 @@ useMagnetic(cta, 0.4);
 // Labels are i18n keys - rendered via $t() in the template.
 const links = [
   { label: "nav.services", to: "/services" },
+  { label: "nav.pricing", to: "/pricing" },
   { label: "nav.portfolio", to: "/portfolio" },
   { label: "nav.blog", to: "/blog" },
   { label: "nav.about", to: "/about" },
@@ -557,8 +558,8 @@ onBeforeUnmount(() => {
   justify-content: center;
   align-items: center;
   gap: 5px;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.06);
@@ -745,5 +746,13 @@ onBeforeUnmount(() => {
   .navbar__cta {
     display: none;
   }
+}
+
+@media (max-width: 380px) {
+  .navbar__inner,
+  .navbar__inner.is-compact,
+  .navbar__right,
+  .navbar__inner.is-compact .navbar__right { gap: 8px; }
+  .navbar__logo img { height: 28px; }
 }
 </style>

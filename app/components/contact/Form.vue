@@ -8,6 +8,9 @@ const { api } = useApiService();
 const { t } = useI18n();
 const localePath = useLocalePath();
 const consentErrorId = useId();
+const nameErrorId = useId();
+const emailErrorId = useId();
+const formEl = ref(null);
 const track = useTrackEvent();
 
 // Emits `submitted` so a parent modal can close itself on success.
@@ -43,10 +46,15 @@ const isInvalid = computed(
 );
 
 const handleSubmit = async () => {
+  if (status.value === "sending") return;
   touched.name = true;
   touched.email = true;
   touched.consent = true;
-  if (isInvalid.value) return;
+  if (isInvalid.value) {
+    await nextTick();
+    formEl.value?.querySelector('[aria-invalid="true"]')?.focus();
+    return;
+  }
 
   status.value = "sending";
   errorMsg.value = "";
@@ -61,9 +69,9 @@ const handleSubmit = async () => {
     status.value = "success";
     track("form_submit");
     emit("submitted");
-  } catch (e) {
+  } catch {
     status.value = "error";
-    errorMsg.value = e?.data?.message || t("contact.error");
+    errorMsg.value = t("contact.error");
   }
 };
 
@@ -77,6 +85,7 @@ const reset = () => {
   touched.email = false;
   touched.consent = false;
   status.value = "idle";
+  errorMsg.value = "";
 };
 
 defineExpose({ reset });
@@ -99,10 +108,10 @@ defineExpose({ reset });
       <p>{{ t("contact.success") }}</p>
     </div>
 
-    <form v-else class="cform__form" novalidate @submit.prevent="handleSubmit">
+    <form v-else ref="formEl" class="cform__form" novalidate :aria-busy="status === 'sending'" @submit.prevent="handleSubmit">
       <div class="cform__row">
         <label class="cform__field">
-          <span class="cform__label">{{ t("contact.name") }}</span>
+          <span class="cform__label">{{ t("contact.name") }} <span aria-hidden="true">*</span></span>
           <input
             v-model="form.name"
             type="text"
@@ -110,12 +119,15 @@ defineExpose({ reset });
             :class="{ 'is-invalid': touched.name && errors.name }"
             :placeholder="t('contact.namePlaceholder')"
             autocomplete="name"
-            @blur="touched.name = true"
+            required
+            :aria-invalid="touched.name && errors.name ? 'true' : undefined"
+            :aria-describedby="touched.name && errors.name ? nameErrorId : undefined"
           />
+          <span v-if="touched.name && errors.name" :id="nameErrorId" class="cform__field-error" role="alert">{{ t('contact.nameRequired') }}</span>
         </label>
 
         <label class="cform__field">
-          <span class="cform__label">{{ t("contact.email") }}</span>
+          <span class="cform__label">{{ t("contact.email") }} <span aria-hidden="true">*</span></span>
           <input
             v-model="form.email"
             type="email"
@@ -123,13 +135,16 @@ defineExpose({ reset });
             :class="{ 'is-invalid': touched.email && errors.email }"
             :placeholder="t('contact.emailPlaceholder')"
             autocomplete="email"
-            @blur="touched.email = true"
+            required
+            :aria-invalid="touched.email && errors.email ? 'true' : undefined"
+            :aria-describedby="touched.email && errors.email ? emailErrorId : undefined"
           />
+          <span v-if="touched.email && errors.email" :id="emailErrorId" class="cform__field-error" role="alert">{{ t('contact.emailInvalid') }}</span>
         </label>
       </div>
 
       <label class="cform__field">
-        <span class="cform__label">{{ t("contact.subject") }}</span>
+        <span class="cform__label">{{ t("contact.subject") }} · {{ t('contact.optional') }}</span>
         <input
           v-model="form.subject"
           type="text"
@@ -139,10 +154,10 @@ defineExpose({ reset });
       </label>
 
       <label class="cform__field">
-        <span class="cform__label">{{ t("contact.message") }}</span>
+        <span class="cform__label">{{ t("contact.message") }} · {{ t('contact.optional') }}</span>
         <textarea
           v-model="form.message"
-          rows="4"
+          rows="3"
           class="cform__input cform__textarea"
           :placeholder="t('contact.messagePlaceholder')"
         />
@@ -165,7 +180,6 @@ defineExpose({ reset });
                 ? consentErrorId
                 : undefined
             "
-            @blur="touched.consent = true"
           />
           <span class="cform__consent-box" aria-hidden="true" />
           <i18n-t
@@ -247,7 +261,7 @@ defineExpose({ reset });
   width: 100%;
   padding: 0.85rem 1rem;
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: #eef1f7;
   background: rgba(238, 241, 247, 0.05);
   border: 1px solid rgba(238, 241, 247, 0.14);
@@ -256,7 +270,7 @@ defineExpose({ reset });
 }
 
 .cform__input::placeholder {
-  color: rgba(238, 241, 247, 0.35);
+  color: #aab2c4;
 }
 
 .cform__input:focus {
@@ -271,7 +285,13 @@ defineExpose({ reset });
 
 .cform__textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 96px;
+}
+
+.cform__field-error {
+  color: #ffb4b4;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
 .cform__consent {
@@ -371,6 +391,7 @@ defineExpose({ reset });
 }
 
 .cform__submit {
+  min-height: 48px;
   align-self: flex-start;
   padding: 0.85rem 1.75rem;
   font-family: inherit;
@@ -383,6 +404,11 @@ defineExpose({ reset });
   cursor: pointer;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.cform__submit:focus-visible {
+  outline: 2px solid #46e6e1;
+  outline-offset: 4px;
 }
 
 .cform__submit:hover:not(:disabled) {

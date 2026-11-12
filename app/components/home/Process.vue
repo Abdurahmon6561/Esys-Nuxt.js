@@ -12,7 +12,6 @@ const TIMELINE = ["t1", "t2", "t3", "t4"];
   <section class="hprocess">
     <div class="hprocess__inner">
       <UiSectionHead
-        :eyebrow="$t('homeProcess.eyebrow')"
         :title="$t('homeProcess.title')"
         :subtitle="$t('homeProcess.subtitle')"
       />
@@ -90,8 +89,8 @@ const TIMELINE = ["t1", "t2", "t3", "t4"];
 /* ── Steps ── */
 .hprocess__steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -100,16 +99,16 @@ const TIMELINE = ["t1", "t2", "t3", "t4"];
 
 .hprocess__step {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.75rem 1.5rem;
-  border-radius: 1.25rem;
-  background: rgba(20, 28, 48, 0.38);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  column-gap: 1.25rem;
+  row-gap: 0.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .hprocess__num {
+  grid-row: span 2;
   display: grid;
   place-items: center;
   width: 2.25rem;
@@ -122,6 +121,7 @@ const TIMELINE = ["t1", "t2", "t3", "t4"];
 }
 
 .hprocess__step-title {
+  grid-column: 2;
   margin: 0;
   font-size: 1.0625rem;
   font-weight: 600;
@@ -130,6 +130,7 @@ const TIMELINE = ["t1", "t2", "t3", "t4"];
 }
 
 .hprocess__step-text {
+  grid-column: 2;
   margin: 0;
   font-size: 0.9375rem;
   line-height: 1.65;
@@ -138,7 +139,7 @@ const TIMELINE = ["t1", "t2", "t3", "t4"];
 
 /* ── Timeline ── */
 .hprocess__timeline-wrap {
-  margin-top: 4rem;
+  margin-top: 2.5rem;
   padding: 2rem;
   border-radius: 1.25rem;
   background: rgba(20, 28, 48, 0.38);

@@ -7,37 +7,88 @@ const { isOpen, close } = useContactModal();
 const { t } = useI18n();
 
 const formRef = ref(null);
+const panel = ref(null);
+const route = useRoute();
+let returnFocus;
+let previousOverflow = "";
+let background;
+let previousInert = false;
+let closeTimer;
+let submitted = false;
 
 const onKeydown = (e) => {
-  if (e.key === "Escape" && isOpen.value) close();
+  if (!isOpen.value) return;
+  if (e.key === "Escape") {
+    e.preventDefault();
+    close();
+  }
+  if (e.key !== "Tab") return;
+  const controls = [...panel.value.querySelectorAll('a[href], button:not(:disabled), input:not(:disabled), textarea:not(:disabled), [tabindex="0"]')]
+    .filter((el) => el.getClientRects().length);
+  const first = controls[0];
+  const last = controls.at(-1);
+  if (!first) {
+    e.preventDefault();
+    panel.value.focus();
+  } else if (e.shiftKey && (document.activeElement === first || document.activeElement === panel.value)) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && (document.activeElement === last || !panel.value.contains(document.activeElement))) {
+    e.preventDefault();
+    first.focus();
+  }
 };
 
 const lockScroll = () => {
+  previousOverflow = document.body.style.overflow;
   document.body.style.overflow = "hidden";
+  background = document.getElementById("__nuxt");
+  previousInert = background?.inert ?? false;
+  if (background) background.inert = true;
 };
 const unlockScroll = () => {
-  document.body.style.overflow = "";
+  document.body.style.overflow = previousOverflow;
+  if (background) background.inert = previousInert;
 };
 
-watch(isOpen, (open) => {
+watch(isOpen, async (open) => {
   if (open) {
+    returnFocus = document.activeElement;
     lockScroll();
+    await nextTick();
+    if (isOpen.value) {
+      panel.value.scrollTop = 0;
+      panel.value.querySelector("input")?.focus({ preventScroll: true });
+    }
   } else {
+    clearTimeout(closeTimer);
     unlockScroll();
-    // Reset the form for the next open.
-    nextTick(() => formRef.value?.reset?.());
+    if (submitted) formRef.value?.reset?.();
+    submitted = false;
+    if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
   }
 });
+watch(() => route.fullPath, close);
 
 onMounted(() => document.addEventListener("keydown", onKeydown));
 onBeforeUnmount(() => {
+  clearTimeout(closeTimer);
   document.removeEventListener("keydown", onKeydown);
-  unlockScroll();
+  if (isOpen.value) {
+    unlockScroll();
+    close();
+  }
 });
 
 const onSubmitted = () => {
+  submitted = true;
+  if (!isOpen.value) {
+    formRef.value?.reset?.();
+    submitted = false;
+    return;
+  }
   // Close shortly after the success state renders.
-  setTimeout(() => close(), 2000);
+  closeTimer = setTimeout(close, 2000);
 };
 </script>
 
@@ -45,7 +96,7 @@ const onSubmitted = () => {
   <Teleport to="body">
     <transition name="cmodal">
       <div
-        v-if="isOpen"
+        v-show="isOpen"
         class="cmodal"
         role="dialog"
         aria-modal="true"
@@ -53,7 +104,7 @@ const onSubmitted = () => {
       >
         <div class="cmodal__backdrop" @click="close" />
 
-        <div class="cmodal__panel" role="document">
+        <div ref="panel" class="cmodal__panel" tabindex="-1">
           <button
             type="button"
             class="cmodal__close"
@@ -88,7 +139,7 @@ const onSubmitted = () => {
 .cmodal {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,7 +160,9 @@ const onSubmitted = () => {
   width: 100%;
   max-width: 560px;
   max-height: calc(100vh - 3rem);
+  max-height: calc(100dvh - 3rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 2.5rem 2.25rem;
   background: rgba(16, 22, 40, 0.85);
   backdrop-filter: blur(28px) saturate(160%);
@@ -127,8 +180,8 @@ const onSubmitted = () => {
   right: 1rem;
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   color: rgba(238, 241, 247, 0.65);
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -140,6 +193,19 @@ const onSubmitted = () => {
 .cmodal__close:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.12);
+}
+
+.cmodal__close:focus-visible {
+  outline: 2px solid #46e6e1;
+  outline-offset: 3px;
+}
+
+@media (max-width: 560px) {
+  .cmodal { padding: 0.75rem; }
+  .cmodal__panel {
+    max-height: calc(100dvh - 1.5rem);
+    padding: 2rem 1.25rem;
+  }
 }
 
 .cmodal__head {

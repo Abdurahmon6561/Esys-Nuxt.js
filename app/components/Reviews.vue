@@ -11,6 +11,14 @@ const { data, pending, error } = await useAsyncData(
 
 const items = computed(() => data.value?.data ?? []);
 
+const expanded = ref(new Set());
+const reviewId = useId();
+const toggleReview = (index) => {
+  const next = new Set(expanded.value);
+  next.has(index) ? next.delete(index) : next.add(index);
+  expanded.value = next;
+};
+watch(locale, () => { expanded.value = new Set(); });
 const SKELETON_COUNT = 3;
 const STAGGER_MS = 90;
 
@@ -31,7 +39,6 @@ const initials = (name) =>
   >
     <div class="reviews__inner">
       <UiSectionHead
-        :eyebrow="$t('reviews.eyebrow')"
         :title="$t('reviews.title')"
         :subtitle="$t('reviews.subtitle')"
       />
@@ -71,7 +78,10 @@ const initials = (name) =>
                 />
               </svg>
             </div>
-            <blockquote class="review__text">{{ item.text }}</blockquote>
+            <blockquote :id="`${reviewId}-${index}`" class="review__text" :class="{ 'review__text--collapsed': item.text?.length > 280 && !expanded.has(index) }">{{ item.text }}</blockquote>
+            <button v-if="item.text?.length > 280" type="button" class="review__toggle" :aria-expanded="expanded.has(index)" :aria-controls="`${reviewId}-${index}`" @click="toggleReview(index)">
+              {{ $t(expanded.has(index) ? 'reviews.readLess' : 'reviews.readMore') }}
+            </button>
             <figcaption class="review__author">
               <img
                 v-if="item.avatar"
@@ -243,6 +253,31 @@ const initials = (name) =>
   font-size: 0.8125rem;
   color: rgba(238, 241, 247, 0.55);
 }
+
+.review__text--collapsed {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.review__toggle {
+  align-self: flex-start;
+  min-height: 44px;
+  margin: -1rem 0 1rem;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: #a9d6e5;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.review__toggle:focus-visible { outline: 2px solid #46e6e1; outline-offset: 4px; }
+.review__toggle:hover { color: #fff; }
 
 /* ── Skeleton ── */
 .reviews__skeleton {

@@ -12,10 +12,10 @@
     "home": "Boş sahifaga"
   },
   "hero": {
-    "title": "Toşkentdagi veb-studiya: sayt, ilova va CRM işlab çiqiş",
-    "subtitle": "Vizitka saytlari, landinglar, korporativ saytlar va internet-dökonlar, şuningdek mobil ilovalar va CRM tizimlari yaratamiz. Zamonaviy dizayn, puxta tuzilma va işga tuşirilgandan keyingi qöllab-quvvatlaş.",
+    "title": "Biznesingiz uçun saytlar, ilovalar va CRM",
+    "subtitle": "Toşkentdagi veb-studiya. Tuzilma va dizayndan işga tuşiriş va qöllab-quvvatlaşgaça. Vazifangiz va bepul smetadan boşlaymiz.",
     "cta_projects": "Bizning loyihalar",
-    "cta_contact": "Biz bilan boğlaniş"
+    "cta_contact": "Loyihani muhokama qiliş"
   },
   "homeServices": {
     "eyebrow": "Xizmatlar",
@@ -26,7 +26,7 @@
   },
   "homeAbout": {
     "eyebrow": "Studiya haqida",
-    "title": "Toşkentda saytlarni tayyor holda yaratiş",
+    "title": "Vazifadan işga tuşirişgaça",
     "p1a": "Evolution Systems - Toşkentdagi veb-studiya bölib, saytlarni ğoyadan prototipgaça, işga tuşiriş va qöllab-quvvatlaşgaça töliq sikl bilan yaratadi. Biz ",
     "link_websites": "vizitka saytlari",
     "p1b": ", landinglar, korporativ saytlar va internet-dökonlar, şuningdek ",
@@ -34,7 +34,7 @@
     "p1c": " va ",
     "link_crm": "CRM tizimlari",
     "p1d": " yasaymiz.",
-    "p2": "Har bir loyiha brif va bepul smetadan boşlanadi. Keyin tuzilma, dizayn, işlab çiqiş va SEO-asos keladi - sayt nafaqat zamonaviy körinsin, balki qidiruvdan mijozlar ham keltirsin. Butun Özbekiston böylab va istalgan davlatdagi mijozlar bilan masofadan işlaymiz.",
+    "p2": "Brif va bepul smetadan boşlaymiz. Tuzilmani rejalaymiz, dizayn yaratamiz, işlab çiqamiz va SEO-asosni tayyorlaymiz. İşga tuşirgandan keyin aloqada bölib, loyihani qöllab-quvvatlaymiz. Özbekiston böylab va xorijdagi mijozlar bilan masofadan işlaymiz.",
     "p3a": "Yaratgan saytlarimiz qanday körinişini baholaş uçun ",
     "link_portfolio": "loyihalarimizni köring",
     "p3b": " - yoki vazifangizni aytib bering: qaysi format sizga eng mos ekanini tavsiya qilamiz.",
@@ -90,6 +90,7 @@
     "cta": "Loyihani muhokama qiliş"
   },
   "portfolio": {
+    "openCase": "Loyihani oçiş",
     "eyebrow": "Portfolio",
     "title": "Bizning işlarimiz",
     "subtitle": "Biz faxrlanadigan loyihalar - investitsiya platformalaridan korporativ saytlargaça.",
@@ -195,6 +196,9 @@
     }
   },
   "contact": {
+    "optional": "ixtiyoriy",
+    "emailInvalid": "Emailni name{'@'}example.com formatida kiriting.",
+    "nameRequired": "Ismingizni kiriting.",
     "seo": {
       "title": "Keling, ajoyib narsa yaratamiz",
       "description": "Loyihangiz haqida soʻzlab bering - bir ish kuni ichida javob beramiz."
@@ -216,12 +220,14 @@
     "submit": "Yuboriş",
     "sending": "Yuborilmoqda...",
     "success": "Rahmat! Tez orada boğlanamiz.",
-    "error": "Nimadir notöğri ketdi. Qayta urinib köring.",
+    "error": "Xabarni yuborib bölmadi. Maʼlumotlaringiz saqlandi — qayta urinib köring yoki hi{'@'}esys.pro manziliga yozing.",
     "close": "Yopiş",
     "infoEmail": "Bizga yozing",
     "infoPhone": "Qönğiroq qiling"
   },
   "reviews": {
+    "readLess": "Fikrni qisqartiriş",
+    "readMore": "Töliq öqiş",
     "eyebrow": "Fikrlar",
     "title": "Mijozlar nima deydi",
     "subtitle": "Biz bilan işlagan jamoalarning haqiqiy fikrlari."
@@ -276,6 +282,7 @@
     }
   },
   "nav": {
+    "pricing": "Narxlar",
     "services": "Xizmatlar",
     "portfolio": "Portfolio",
     "blog": "Blog",
