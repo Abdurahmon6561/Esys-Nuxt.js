@@ -58,10 +58,11 @@ export default defineSitemapEventHandler(
       }
     };
 
-    const [blogEntries, portfolioEntries, serviceEntries] = await Promise.all([
+    const [blogEntries, portfolioEntries, serviceEntries, pricingEntries] = await Promise.all([
       fetchLocalizedEntries("blog/sitemap", blogLoc),
       fetchLocalizedEntries("portfolio/sitemap", portfolioLoc),
       fetchLocalizedEntries("services/sitemap", serviceLoc),
+      fetchLocalizedEntries("pricing/sitemap", (locale) => locale === "ru" ? "/pricing" : `/${locale}/pricing`),
     ]);
 
     // Listing pages come from app sources without a lastmod; the module's
@@ -101,6 +102,7 @@ export default defineSitemapEventHandler(
       ...blogEntries,
       ...portfolioEntries,
       ...serviceEntries,
+      ...pricingEntries,
       ...listingEntries,
       ...staticPageEntries(),
     ];

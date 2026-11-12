@@ -1,6 +1,6 @@
 // Proxies client requests to the backend API, attaching Basic Auth
 // server-side so credentials never reach the browser bundle.
-const ALLOWED_POST_PATHS = new Set(["feedback"]);
+const ALLOWED_POST_PATHS = new Set(["feedback", "pricing/leads"]);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FEEDBACK_RATE_LIMIT_WINDOW_MS = 60_000;
@@ -47,6 +47,9 @@ export default defineEventHandler(async (event) => {
 
   const path = getRouterParam(event, "path") || "";
   const method = event.method;
+  if (path === "pricing/preview") {
+    setResponseHeader(event, "Cache-Control", "private, no-store");
+  }
 
   const isAllowed =
     method === "GET" || (method === "POST" && ALLOWED_POST_PATHS.has(path));
@@ -55,8 +58,10 @@ export default defineEventHandler(async (event) => {
   }
 
   let feedbackBody: Record<string, unknown> | undefined;
-  if (method === "POST" && path === "feedback") {
+  let clientIp: string | undefined;
+  if (method === "POST" && (path === "feedback" || path === "pricing/leads")) {
     const ip = getRequestIP(event, { xForwardedFor: true }) || "unknown";
+    clientIp = ip;
     if (isFeedbackRateLimited(ip)) {
       throw createError({
         statusCode: 429,
@@ -64,8 +69,13 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    feedbackBody = await readBody(event);
-    if (!isValidFeedbackBody(feedbackBody as unknown)) {
+    const rawBody = await readRawBody(event);
+    if (!rawBody || Buffer.byteLength(rawBody) > 20_000) {
+      throw createError({ statusCode: 413, statusMessage: "Request too large" });
+    }
+    try { feedbackBody = JSON.parse(rawBody); }
+    catch { throw createError({ statusCode: 422, statusMessage: "Invalid JSON" }); }
+    if (path === "feedback" && !isValidFeedbackBody(feedbackBody as unknown)) {
       throw createError({
         statusCode: 422,
         statusMessage: "Invalid feedback data",
@@ -81,6 +91,11 @@ export default defineEventHandler(async (event) => {
     Authorization: `Basic ${credentials}`,
     "Content-Type": "application/json",
   };
+  // Laravel sees every request coming from this server; forward the visitor's
+  // address so its per-visitor lead throttle does not become site-wide.
+  if (clientIp && clientIp !== "unknown") {
+    headers["X-Client-IP"] = clientIp;
+  }
   const contentLanguage = getHeader(event, "content-language");
   if (contentLanguage) {
     headers["Content-Language"] = contentLanguage;

@@ -8,10 +8,10 @@ import {
 } from "../server/utils/cache-purge.ts";
 
 test("only record and list pages are purgeable", () => {
-  for (const ok of ["/services", "/services/websites", "/uz/services/crm-systems", "/en/portfolio/bbd", "/blog/x"]) {
+  for (const ok of ["/pricing", "/uz/pricing", "/en/pricing", "/services", "/services/websites", "/uz/services/crm-systems", "/en/portfolio/bbd", "/blog/x"]) {
     assert.ok(isPurgeablePath(ok), ok);
   }
-  for (const bad of ["/", "/api/backend/x", "/services/../x", "/services/a/b", "/ru/services/x", "*", "/services/Web", 42, null]) {
+  for (const bad of ["/", "/pricing/unknown", "/pricing-preview", "/api/backend/x", "/services/../x", "/services/a/b", "/ru/services/x", "*", "/services/Web", 42, null]) {
     assert.ok(!isPurgeablePath(bad), String(bad));
   }
 });

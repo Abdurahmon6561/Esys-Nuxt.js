@@ -7,7 +7,7 @@ export const MAX_PURGE_PATHS = 50;
 // assets, arbitrary strings) is rejected, so the endpoint cannot be used as a
 // generic cache flush.
 const PURGEABLE =
-  /^\/(?:(?:en|uz)\/)?(?:services|portfolio|blog)(?:\/[a-z0-9][a-z0-9-]{0,190})?$/;
+  /^\/(?:(?:en|uz)\/)?(?:pricing|(?:services|portfolio|blog)(?:\/[a-z0-9][a-z0-9-]{0,190})?)$/;
 
 export const isPurgeablePath = (path: unknown): path is string =>
   typeof path === "string" && PURGEABLE.test(path);

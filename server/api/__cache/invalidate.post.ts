@@ -35,6 +35,14 @@ export default defineEventHandler(async (event) => {
 
   await Promise.all(keys.map((key) => storage.removeItem(key)));
 
+  // Pricing publication verifies sitemap membership immediately. Clear both
+  // the module's XML and resolved-URL caches, shared by all production workers.
+  const sitemapStorage = useStorage("sitemap");
+  const sitemapKeys = paths.some((path) => /^\/(?:(?:en|uz)\/)?pricing$/.test(path))
+    ? await sitemapStorage.getKeys()
+    : [];
+  await Promise.all(sitemapKeys.map((key) => sitemapStorage.removeItem(key)));
+
   setResponseHeader(event, "Cache-Control", "no-store");
-  return { removed: keys.length, paths, rejected };
+  return { removed: keys.length + sitemapKeys.length, paths, rejected };
 });

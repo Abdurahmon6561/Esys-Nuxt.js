@@ -74,7 +74,7 @@ export default defineNuxtConfig({
     sources: ["/api/__sitemap__/urls"],
     // The sitemap lists only canonical URLs we want indexed. /privacy renders
     // `noindex, follow`, so it must not be advertised here (all locales).
-    exclude: ["/privacy", "/en/privacy", "/uz/privacy"],
+    exclude: ["/privacy", "/en/privacy", "/uz/privacy", "/pricing-preview", "/en/pricing-preview", "/uz/pricing-preview"],
   },
 
   i18n: {
@@ -119,6 +119,7 @@ export default defineNuxtConfig({
       // both. It lives in .output/, so every build/deploy starts with an
       // empty cache and never serves HTML pointing at deleted _nuxt chunks.
       cache: { driver: "fs", base: ".output/cache" },
+      sitemap: { driver: "fs", base: ".output/sitemap-cache" },
     },
   },
 
@@ -181,6 +182,11 @@ export default defineNuxtConfig({
     "/blog": { swr: 300 },
     "/portfolio": { swr: 300 },
     "/services/**": { swr: 300 },
+    // Purged by admin on publish/rollback/recovery. Errors (unpublished
+    // locale -> 404) are never cached by Nitro. Preview stays uncached.
+    "/pricing": { swr: 300 },
+    "/en/pricing": { swr: 300 },
+    "/uz/pricing": { swr: 300 },
   },
 
   runtimeConfig: {

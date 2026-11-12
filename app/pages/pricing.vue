@@ -1,0 +1,1 @@
+<template><PricingPage /></template>
