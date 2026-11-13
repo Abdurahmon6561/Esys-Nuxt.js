@@ -66,6 +66,17 @@ async function submit() {
 .estimate { scroll-margin-top: 110px; display: grid; grid-template-columns: 1fr 1.3fr; gap: 4rem; border-top: 1px solid #34415c; padding-top: 4rem; }
 h2 { font-size: clamp(2rem,4vw,3rem); line-height: 1.1; margin: 0 0 1.5rem; } p { color: #bcc8dc; line-height: 1.7; } .channels { display: grid; gap: 1rem; margin-top: 2rem; } a { color: #b6e7fa; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; } label { display: grid; gap: .6rem; font-size: .9rem; } .full { grid-column: 1/-1; } input,select,textarea { width: 100%; min-width: 0; box-sizing: border-box; font: inherit; padding: .9rem; color: #fff; background: #131c31; border: 1px solid #50617f; border-radius: 8px; } option { background: #131c31; } textarea { resize: vertical; } fieldset { border: 1px solid #50617f; border-radius: 8px; padding: 1rem; } .check { display: inline-flex; align-items: center; margin-right: 1.5rem; margin-top: .5rem; } .check input { width: 1.1rem; height: 1.1rem; }
+select {
+    appearance: none;
+    padding-inline-end: 2.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .9rem center;
+    background-size: 1rem;
+}
+@media (forced-colors: active) {
+    select { appearance: auto; background-image: none; }
+}
 .actions { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; } button { font: inherit; padding: 1rem 1.3rem; border-radius: 9px; border: 0; cursor: pointer; } .primary { background: #b6e7fa; color: #09172c; font-weight: 600; } .secondary { background: #26344e; color: white; } button:disabled { opacity: .5; cursor: default; } .privacy { font-size: .8rem; } .error { color: #ffbdc2; } .success { border: 1px solid #93c9b8; padding: 2rem; border-radius: 10px; } :focus-visible { outline: 3px solid #b6e7fa; outline-offset: 3px; }
 @media(max-width:750px) { .estimate { grid-template-columns: 1fr; gap: 2rem; } } @media(max-width:450px) { .form-grid { grid-template-columns: 1fr; } }
 </style>
