@@ -1,4 +1,6 @@
 <script setup>
+import { pricingCopy } from "~/components/pricing/copy.js";
+
 const { servicesApi } = useApiService();
 const { locale, t } = useI18n();
 const localePath = useLocalePath();
@@ -15,6 +17,9 @@ const { data, pending, error } = await useAsyncData(
 );
 
 const items = computed(() => data.value?.data ?? []);
+const hasPricing = computed(() => items.value.some((item) => item.pricing));
+const cardPrice = (item) =>
+  formatServicePrice(item.pricing, pricingCopy[locale.value], { fromOnly: true });
 
 const SKELETON_COUNT = 4;
 
@@ -42,12 +47,28 @@ const breadcrumbsJsonLd = computed(() => {
   );
 });
 
+const servicesJsonLd = computed(() => JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: items.value.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.title,
+    url: `${siteUrl}${localePath(`/services/${item.alias}`)}`,
+  })),
+}));
+
 useHead(() => ({
   script: [
     {
       key: "services-breadcrumb-schema",
       type: "application/ld+json",
       innerHTML: breadcrumbsJsonLd.value,
+    },
+    {
+      key: "services-item-list-schema",
+      type: "application/ld+json",
+      innerHTML: servicesJsonLd.value.replace(/</g, "\\u003c"),
     },
   ],
 }));
@@ -86,6 +107,7 @@ useHead(() => ({
           </div>
           <h2 class="scard__title">{{ item.title }}</h2>
           <p class="scard__text">{{ cardText(item) }}</p>
+          <p v-if="item.pricing && cardPrice(item)" class="scard__price">{{ cardPrice(item) }}</p>
           <button type="button" class="scard__cta" @click.prevent="openContact">
             {{ $t("services.cta") }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -95,6 +117,14 @@ useHead(() => ({
           </button>
         </NuxtLink>
       </UiReveal>
+
+      <section v-if="!error && !pending && hasPricing" class="services__pricing">
+        <h2>{{ $t("services.priceSummary.compareTitle") }}</h2>
+        <p>{{ $t("services.priceSummary.compareText") }}</p>
+        <NuxtLink :to="localePath('/pricing')">
+          {{ $t("services.priceSummary.compareLink") }}
+        </NuxtLink>
+      </section>
     </div>
   </main>
 </template>
@@ -121,6 +151,32 @@ useHead(() => ({
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
+}
+
+.services__pricing {
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(169, 214, 229, 0.14);
+}
+
+.services__pricing h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.services__pricing p {
+  color: #aab2c4;
+  line-height: 1.65;
+}
+
+.services__pricing a {
+  color: #a9d6e5;
+  text-underline-offset: 3px;
+}
+
+.services__pricing a:focus-visible {
+  outline: 2px solid #46e6e1;
+  outline-offset: 3px;
 }
 
 @media (min-width: 900px) {
@@ -196,6 +252,13 @@ useHead(() => ({
   font-size: 0.9375rem;
   line-height: 1.65;
   color: #aab2c4;
+}
+
+.scard__price {
+  margin: 0;
+  color: #46e6e1;
+  font-size: 1.125rem;
+  font-weight: 600;
 }
 
 .scard__cta {

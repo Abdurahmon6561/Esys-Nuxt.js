@@ -15,10 +15,10 @@ const content = computed(() => page.value.content);
 const items = computed(() => [...page.value.items].sort((a,b) => a.sort_order-b.sort_order));
 const cases = computed(() => [...new Map(items.value.flatMap(i => i.cases || []).map(c => [c.id,c])).values()].slice(0,4));
 const selectedId = ref(null);
-const price = (value) => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-const suffix = item => item.billing_period === 'month' ? copy.value.month : item.billing_period === 'hour' ? copy.value.hour : '';
+const price = formatPricingNumber;
+const suffix = item => formatPricingSuffix(item, copy.value);
 // "from X" when open-ended, "X–Y" when the item has an upper bound.
-const amount = item => item.price_to ? `${price(item.price_from)}–${price(item.price_to)}` : price(item.price_from);
+const amount = formatPricingAmount;
 const unitText = { month: 'MONTH', hour: 'HOUR' };
 function select(id) { selectedId.value = id; track('pricing_service_selected', { pricing_item_id: id }); }
 function cta(item, location) {
@@ -34,6 +34,7 @@ const schema = computed(() => ({ '@context':'https://schema.org', '@graph': [
     { '@type':'BreadcrumbList', itemListElement: [ { '@type':'ListItem', position:1, name:'Evolution Systems', item:`${siteUrl}${locale.value === 'ru' ? '' : '/'+locale.value}` }, { '@type':'ListItem', position:2, name:copy.value.nav, item:`${siteUrl}${pathFor(locale.value)}` } ] },
     { '@type':'FAQPage', mainEntity: content.value.faq.map(f => ({ '@type':'Question', name:f.question, acceptedAnswer:{ '@type':'Answer', text:f.answer } })) },
     ...items.value.map(i => ({ '@type':'Service', name:i.title, description:i.short_text, provider:{ '@id':`${siteUrl}/#org` },
+        ...(i.service_url ? { '@id':`${siteUrl}${i.service_url}#service` } : {}),
         url:`${siteUrl}${i.service_url || pathFor(locale.value)+'#'+i.service_key}`,
         // price is the starting price; priceSpecification states it as a minimum.
         ...(page.value.published ? { offers:{ '@type':'Offer', name:i.title, price:i.price_from, priceCurrency:'UZS', url:`${siteUrl}${pathFor(locale.value)}#${i.service_key}`,
@@ -76,7 +77,7 @@ onBeforeUnmount(() => observer?.disconnect());
             <section class="packages" aria-labelledby="pricing-packages">
                 <h2 id="pricing-packages">{{ copy.packages }}</h2>
                 <div class="package-grid"><article v-for="item in items" :id="item.service_key" :key="item.id" class="package" :data-pricing-id="item.id" :data-price="item.price_from">
-                    <div class="package-heading"><h3>{{ item.title }}</h3><span class="timeline">{{ item.timeline }}</span></div>
+                    <div class="package-heading"><h3><NuxtLink v-if="item.service_url" :to="item.service_url">{{ item.title }}</NuxtLink><template v-else>{{ item.title }}</template></h3><span class="timeline">{{ item.timeline }}</span></div>
                     <p class="package-price"><span v-if="!item.price_to && copy.fromPre">{{ copy.fromPre }}</span> {{ amount(item) }} <span>{{ item.price_to ? copy.currency : copy.fromPost }}{{ suffix(item) }}</span></p>
                     <p class="typical">{{ copy.typical }}: {{ price(item.typical_from) }}–{{ price(item.typical_to) }} {{ copy.currency }}{{ suffix(item) }}</p>
                     <p class="audience">{{ item.short_text }}</p>
@@ -107,6 +108,7 @@ section { margin-top:5rem; } h2 { font-size:clamp(1.8rem,3.5vw,2.75rem); letter-
 .factors { display:grid; grid-template-columns:1fr 1fr; gap:2rem; border-top:1px solid #34415c; padding-top:3rem; } .factors ul { margin:0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; color:#bdc9dc; line-height:1.6; } .process ol { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; list-style:none; padding:0; } .process li { display:flex; gap:1rem; } .step-number { color:#b6e7fa; border:1px solid #34415c; border-radius:50%; width:2rem; height:2rem; display:grid; place-items:center; flex-shrink:0; } .process h3 { font-size:1rem; margin-top:.3rem; } .process p,.case-grid p { color:#aabbd4; line-height:1.7; font-size:.9rem; }
 .case-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:2rem; } .case-grid img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:12px; margin-bottom:1rem; } .case-grid a { color:inherit; } .case-grid span { color:#b6e7fa; } .faq { max-width:900px; margin-left:auto; margin-right:auto; } .faq details { border-bottom:1px solid #34415c; } .faq summary { cursor:pointer; padding:1.4rem 0; font-size:1.05rem; font-weight:500; } .faq p { color:#bdc9dc; line-height:1.75; margin:0 0 1.5rem; } .preview-note { border:1px solid #f6c975; padding:1rem; color:#f6c975; } .visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
 :focus-visible { outline:3px solid #b6e7fa; outline-offset:4px; }
+.package-heading h3 a { color:inherit; }
 @media(max-width:900px) { .hero-bottom { flex-direction:column; align-items:flex-start; gap:1.5rem; } .hero-actions { flex-direction:row; flex-wrap:wrap; align-items:center; gap:1.5rem; } .process ol { grid-template-columns:1fr 1fr; } th,td { padding:1rem .4rem; } }
 @media(max-width:700px) { .pricing-inner { padding:8rem 1rem 4rem; } section { margin-top:3.5rem; } .package-grid,.factors,.case-grid { grid-template-columns:1fr; } .package { padding:1.5rem; } table,tbody,tr,th,td { display:block; width:auto; } thead { display:none; } tbody tr { border:1px solid #34415c; border-radius:12px; padding:1rem; margin:1rem 0; } tbody th,td,.table-price { width:auto; padding:.3rem 0; border:0; } tbody th { font-size:1.2rem; } .table-price { font-size:1.1rem; } .process ol { grid-template-columns:1fr; } .benefits { gap:1rem; } }
 @media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto; } }

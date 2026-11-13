@@ -298,6 +298,15 @@
     "subtitle": "Full-cycle digital development - from idea and design to launch and support.",
     "error": "Failed to load services. Please try again later.",
     "cta": "Discuss a project",
+    "priceSummary": {
+      "title": "Pricing",
+      "timeline": "Timeline",
+      "included": "What's included",
+      "allPrices": "All prices and packages",
+      "compareTitle": "Budget and scope",
+      "compareText": "Compare base packages, timelines and included work on the pricing page.",
+      "compareLink": "Compare packages and prices"
+    },
     "blocks": {
       "hero": "Overview",
       "problems": "Problems",

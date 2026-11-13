@@ -14,7 +14,7 @@ if (slug.value.includes(".")) {
   throw createError({ statusCode: 404, message: "Not found", fatal: true });
 }
 
-// view response envelope: { service, seo, alternates, blocks, faqs, cases, articles, similar }
+// view response envelope: { service, seo, alternates, blocks, faqs, cases, articles, similar, pricing }
 const { data, pending, error } = await useAsyncData(
   () => `services-${slug.value}`,
   () => servicesApi.getServiceByAlias(route.params.slug),
@@ -29,7 +29,8 @@ if (error.value?.statusCode === 404 || (!error.value && !data.value?.service)) {
 const service = computed(() => data.value?.service ?? null);
 const seo = computed(() => data.value?.seo ?? null);
 const alternates = computed(() => data.value?.alternates ?? {});
-const blocks = computed(() => data.value?.blocks ?? []);
+const pricing = computed(() => data.value?.pricing ?? null);
+const blocks = computed(() => serviceContentBlocks(data.value?.blocks, pricing.value));
 const faqs = computed(() => data.value?.faqs ?? []);
 const cases = computed(() => data.value?.cases ?? []);
 const articles = computed(() => data.value?.articles ?? []);
@@ -143,6 +144,7 @@ const serviceJsonLd = computed(() => {
       url: `${siteUrl}${route.path}`,
       provider: { "@id": orgId(siteUrl) },
       areaServed: { "@type": "City", name: "Tashkent" },
+      ...(pricing.value ? { offers: buildServicePricingOffer(pricing.value, siteUrl) } : {}),
     },
     {
       "@context": "https://schema.org",
@@ -272,6 +274,8 @@ const similarTitle = computed(() => {
           </UiReveal>
         </div>
       </div>
+
+      <ServicePriceSummary v-if="pricing" :pricing="pricing" />
 
       <!-- Content blocks -->
       <div v-if="blocks.length" class="service__blocks">

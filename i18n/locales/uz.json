@@ -298,6 +298,15 @@
     "subtitle": "Raqamli işlab çiqişning töliq sikli - ğoya va dizayndan tortib işga tuşiriş va qöllab-quvvatlaşgaça.",
     "error": "Xizmatlarni yuklab bölmadi. Keyinroq urinib köring.",
     "cta": "Loyihani muhokama qiliş",
+    "priceSummary": {
+      "title": "Narx",
+      "timeline": "Muddatlar",
+      "included": "Paketga kiradi",
+      "allPrices": "Barcha narxlar va paketlar",
+      "compareTitle": "Byudjet va ish tarkibi",
+      "compareText": "Narxlar sahifasida asosiy paketlar, muddatlar va paketga kiradigan ishlarni solishtiring.",
+      "compareLink": "Paketlar va narxlarni solishtirish"
+    },
     "blocks": {
       "hero": "Xizmat haqida",
       "problems": "Muammolar",
