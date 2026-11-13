@@ -19,7 +19,6 @@ const price = formatPricingNumber;
 const suffix = item => formatPricingSuffix(item, copy.value);
 // "from X" when open-ended, "X–Y" when the item has an upper bound.
 const amount = formatPricingAmount;
-const unitText = { month: 'MONTH', hour: 'HOUR' };
 function select(id) { selectedId.value = id; track('pricing_service_selected', { pricing_item_id: id }); }
 function cta(item, location) {
     if (item) select(item.id);
@@ -30,17 +29,9 @@ const pathFor = (l) => `${l === 'ru' ? '' : `/${l}`}/pricing`;
 usePageAlternates(() => props.preview ? {} : Object.fromEntries(page.value.locales.map(l => [l,pathFor(l)])));
 useSeoMeta({ title: () => content.value.title, description: () => content.value.description, ogTitle: () => content.value.title,
     ogDescription: () => content.value.description, ogType: 'website', ogUrl: () => `${siteUrl}${pathFor(locale.value)}`, robots: () => props.preview ? 'noindex, nofollow' : 'index, follow' });
-const schema = computed(() => ({ '@context':'https://schema.org', '@graph': [
-    { '@type':'BreadcrumbList', itemListElement: [ { '@type':'ListItem', position:1, name:'Evolution Systems', item:`${siteUrl}${locale.value === 'ru' ? '' : '/'+locale.value}` }, { '@type':'ListItem', position:2, name:copy.value.nav, item:`${siteUrl}${pathFor(locale.value)}` } ] },
-    { '@type':'FAQPage', mainEntity: content.value.faq.map(f => ({ '@type':'Question', name:f.question, acceptedAnswer:{ '@type':'Answer', text:f.answer } })) },
-    ...items.value.map(i => ({ '@type':'Service', name:i.title, description:i.short_text, provider:{ '@id':`${siteUrl}/#org` },
-        ...(i.service_url ? { '@id':`${siteUrl}${i.service_url}#service` } : {}),
-        url:`${siteUrl}${i.service_url || pathFor(locale.value)+'#'+i.service_key}`,
-        // price is the starting price; priceSpecification states it as a minimum.
-        ...(page.value.published ? { offers:{ '@type':'Offer', name:i.title, price:i.price_from, priceCurrency:'UZS', url:`${siteUrl}${pathFor(locale.value)}#${i.service_key}`,
-            priceSpecification: { '@type': unitText[i.billing_period] ? 'UnitPriceSpecification' : 'PriceSpecification', minPrice:i.price_from,
-                ...(i.price_to ? { maxPrice:i.price_to } : {}), priceCurrency:'UZS', ...(unitText[i.billing_period] ? { unitText:unitText[i.billing_period] } : {}) } } } : {}) }))
-] }));
+const schema = computed(() => buildPricingPageSchema({
+    page: page.value, items: items.value, locale: locale.value, siteUrl, navLabel: copy.value.nav, pathFor,
+}));
 useHead(() => ({ titleTemplate: null, script: props.preview ? [] : [{ key:'pricing-schema', type:'application/ld+json', innerHTML:JSON.stringify(schema.value).replace(/</g,'\\u003c') }] }));
 let observer;
 onMounted(() => {

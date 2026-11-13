@@ -14,6 +14,80 @@ export const formatPricingSuffix = (item, copy) =>
       ? copy.hour
       : "";
 
+export const PRICING_SERVICE_TYPES = {
+  landing: "Landing page development",
+  corporate: "Corporate website development",
+  store: "E-commerce development",
+  mobile: "Mobile app development",
+  crm: "CRM development and business automation",
+  saas: "Web application and SaaS development",
+  branding: "Branding and visual identity",
+  support: "Website and software maintenance",
+};
+
+// Keep the publication's calendar date, not its potentially different UTC date.
+// Reject malformed timestamps and calendar dates that Date.parse normalizes.
+const publicationDate = (value) => {
+  if (typeof value !== "string") return undefined;
+  const date = /^(\d{4}-\d{2}-\d{2})(?:T|$)/.exec(value)?.[1];
+  if (!date || !Number.isFinite(Date.parse(value))) return undefined;
+  return new Date(date).toISOString().slice(0, 10) === date ? date : undefined;
+};
+
+export const buildPricingPageSchema = ({ page, items, locale, siteUrl, navLabel, pathFor }) => {
+  const validFrom = publicationDate(page.published_at);
+  const unitText = { month: "MONTH", hour: "HOUR" };
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Evolution Systems", item: `${siteUrl}${locale === "ru" ? "" : "/" + locale}` },
+          { "@type": "ListItem", position: 2, name: navLabel, item: `${siteUrl}${pathFor(locale)}` },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: page.content.faq.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      },
+      ...items.map((item) => ({
+        "@type": "Service",
+        name: item.title,
+        description: item.short_text,
+        provider: { "@id": `${siteUrl}/#org` },
+        ...(Object.hasOwn(PRICING_SERVICE_TYPES, item.service_key) ? { serviceType: PRICING_SERVICE_TYPES[item.service_key] } : {}),
+        areaServed: { "@type": "City", name: "Tashkent" },
+        ...(item.service_url ? { "@id": `${siteUrl}${item.service_url}#service` } : {}),
+        url: `${siteUrl}${item.service_url || pathFor(locale) + "#" + item.service_key}`,
+        ...(page.published ? {
+          offers: {
+            "@type": "Offer",
+            name: item.title,
+            price: item.price_from,
+            priceCurrency: "UZS",
+            url: `${siteUrl}${pathFor(locale)}#${item.service_key}`,
+            availability: "https://schema.org/InStock",
+            ...(validFrom ? { validFrom } : {}),
+            // price is the starting price; priceSpecification states it as a minimum.
+            priceSpecification: {
+              "@type": unitText[item.billing_period] ? "UnitPriceSpecification" : "PriceSpecification",
+              minPrice: item.price_from,
+              ...(item.price_to ? { maxPrice: item.price_to } : {}),
+              priceCurrency: "UZS",
+              ...(unitText[item.billing_period] ? { unitText: unitText[item.billing_period] } : {}),
+            },
+          },
+        } : {}),
+      })),
+    ],
+  };
+};
+
 // Old APIs may omit individual snapshot fields. Never invent a starting price.
 export const formatServicePrice = (pricing, copy, { fromOnly = false } = {}) => {
   if (!Number.isFinite(pricing?.price_from)) return "";
