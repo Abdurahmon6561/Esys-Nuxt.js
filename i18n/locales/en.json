@@ -9,7 +9,11 @@
     "notFound": "Page not found",
     "serverError": "Something went wrong",
     "text": "The page may have been moved or deleted.",
-    "home": "Back home"
+    "home": "Back home",
+    "orbit": "This page is out of orbit",
+    "description": "Looks like no one has landed here yet. The page was removed or the address is incorrect. Let’s head back to our projects.",
+    "serverText": "We couldn’t load this page. Try returning to the homepage a little later.",
+    "footer": "Building digital worlds. Even here."
   },
   "hero": {
     "title": "Websites, apps and CRM for your business",

@@ -9,7 +9,11 @@
     "notFound": "Sahifa topilmadi",
     "serverError": "Nimadir xato ketdi",
     "text": "Sahifa köçirilgan yoki öçirilgan bölişi mumkin.",
-    "home": "Boş sahifaga"
+    "home": "Boş sahifaga",
+    "orbit": "Bu sahifa orbitadan taşqarida",
+    "description": "Bu yerga hali heç kim qönmaganga öxşaydi. Sahifa öçirilgan yoki manzil notöğri. Loyihalarimizga qaytamizmi?",
+    "serverText": "Sahifani yuklab bölmadi. Birozdan keyin boş sahifaga qaytişga urinib köring.",
+    "footer": "Raqamli olamlar yaratamiz. Hatto bu yerda ham."
   },
   "hero": {
     "title": "Biznesingiz uçun saytlar, ilovalar va CRM",
