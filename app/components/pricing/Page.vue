@@ -54,7 +54,7 @@ onBeforeUnmount(() => observer?.disconnect());
             <p v-if="preview" class="preview-note">{{ copy.preview }}</p>
             <header class="hero">
                 <h1>{{ content.h1 }}</h1>
-                <div class="hero-bottom"><p>{{ content.subtitle }}</p><div class="hero-actions"><a class="button primary" href="#estimate" @click="cta(null,'hero')">{{ copy.estimate }}</a><a class="text-link" href="https://t.me/esys_pro" @click="track('pricing_telegram_click'); cta(null,'discuss')">{{ copy.discuss }}</a></div></div>
+                <div class="hero-bottom"><p>{{ content.subtitle }}</p><div class="hero-actions"><a class="button primary" href="#estimate" @click="cta(null,'hero')">{{ copy.estimate }}</a><a class="hero-discuss" href="https://t.me/esys_pro" @click="track('pricing_telegram_click'); cta(null,'discuss')">{{ copy.discuss }}</a></div></div>
                 <ul class="benefits"><li v-for="benefit in copy.benefits" :key="benefit">{{ benefit }}</li></ul>
             </header>
             <nav class="anchors" :aria-label="copy.service"><a v-for="item in items" :key="item.id" :href="`#${item.service_key}`">{{ item.title }}</a></nav>
@@ -92,6 +92,32 @@ onBeforeUnmount(() => observer?.disconnect());
 .hero h1 { max-width:1050px; font-size:clamp(2.4rem,6.2vw,5.4rem); line-height:1.06; letter-spacing:-.045em; font-weight:600; margin:0 0 2.5rem; }
 .hero-bottom { display:flex; align-items:center; justify-content:space-between; gap:3rem; } .hero-bottom p { font-size:1.1rem; line-height:1.7; max-width:540px; color:#bdc9dc; margin:0; } .hero-actions { display:flex; flex-direction:column; align-items:flex-start; gap:1rem; flex-shrink:0; }
 a { color:#b6e7fa; text-decoration:none; } a:hover { text-decoration:underline; } .button { display:inline-flex; justify-content:center; padding:1rem 1.25rem; border-radius:9px; font-weight:600; text-align:center; } .primary { background:#b6e7fa; color:#09172c; } .primary:hover { background:#d6f1fc; text-decoration:none; }
+.hero-discuss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0.875rem 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(238, 241, 247, 0.4);
+  background: transparent;
+  color: #eef1f7;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.hero-discuss:hover {
+  border-color: #eef1f7;
+  background: rgba(238, 241, 247, 0.08);
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-discuss { transition: none; }
+}
 .benefits { list-style:none; display:flex; flex-wrap:wrap; gap:1rem 2rem; padding:2rem 0; margin:2rem 0 0; color:#b4c6df; font-size:.9rem; border-top:1px solid #2b3750; } .benefits li::before { content:'✓'; margin-right:.6rem; color:#b6e7fa; }
 .anchors { display:flex; gap:.75rem; overflow-x:auto; padding:1rem 0; margin:0 0 3rem; } .anchors a { border:1px solid #34415c; padding:.6rem 1rem; border-radius:30px; white-space:nowrap; font-size:.85rem; }
 section { margin-top:5rem; } h2 { font-size:clamp(1.8rem,3.5vw,2.75rem); letter-spacing:-.025em; line-height:1.15; font-weight:600; margin:0 0 2rem; } table { width:100%; border-collapse:collapse; text-align:left; } th,td { padding:1.2rem .8rem; border-bottom:1px solid #2b3750; font-size:.9rem; vertical-align:top; line-height:1.6; } thead th { color:#aabbd4; font-weight:400; padding-top:0; } tbody th { font-weight:500; font-size:1rem; width:20%; } td { color:#bdc9dc; } .table-price { color:white; width:21%; font-weight:600; } .disclaimer { color:#aebdd5; line-height:1.7; max-width:900px; margin-top:1.5rem; }
