@@ -1,20 +1,31 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
+const props = defineProps({
+  items: { type: Array, default: null },
+  title: { type: String, default: null },
+  subtitle: { type: String, default: null },
+  schema: { type: Boolean, default: true },
+});
+const emit = defineEmits(["open"]);
 const { t, locale } = useI18n();
 
 const FAQ_COUNT = 8;
-const items = Array.from({ length: FAQ_COUNT }, (_, i) => i + 1);
+const items = computed(() => props.items ?? Array.from({ length: FAQ_COUNT }, (_, i) => ({
+  question: t(`faq.q${i + 1}.question`),
+  answer: t(`faq.q${i + 1}.answer`),
+})));
 
 const openIndex = ref(null);
 
 const toggle = (n) => {
   openIndex.value = openIndex.value === n ? null : n;
+  if (openIndex.value !== null) emit("open", n);
 };
 
 // FAQPage schema - recomputed per locale so search engines get localized Q&A.
 useHead(() => ({
-  script: [
+  script: props.schema ? [
     {
       key: "faq-jsonld",
       type: "application/ld+json",
@@ -22,17 +33,17 @@ useHead(() => ({
         "@context": "https://schema.org",
         "@type": "FAQPage",
         inLanguage: locale.value,
-        mainEntity: items.map((n) => ({
+        mainEntity: items.value.map((item) => ({
           "@type": "Question",
-          name: t(`faq.q${n}.question`),
+          name: item.question,
           acceptedAnswer: {
             "@type": "Answer",
-            text: t(`faq.q${n}.answer`),
+            text: item.answer,
           },
         })),
       }),
     },
-  ],
+  ] : [],
 }));
 </script>
 
@@ -41,14 +52,14 @@ useHead(() => ({
     <div class="faq__inner">
       <UiSectionHead
         :eyebrow="$t('faq.eyebrow')"
-        :title="$t('faq.title')"
-        :subtitle="$t('faq.subtitle')"
+        :title="title ?? $t('faq.title')"
+        :subtitle="subtitle ?? $t('faq.subtitle')"
       />
 
       <UiReveal tag="div" class="faq__list">
         <div
-          v-for="n in items"
-          :key="n"
+          v-for="(item, n) in items"
+          :key="item.question"
           class="faq__item"
           :class="{ 'is-open': openIndex === n }"
         >
@@ -60,7 +71,7 @@ useHead(() => ({
             :aria-controls="`faq-answer-${n}`"
             @click="toggle(n)"
           >
-            <span>{{ $t(`faq.q${n}.question`) }}</span>
+            <span>{{ item.question }}</span>
             <svg
               class="faq__chevron"
               viewBox="0 0 24 24"
@@ -81,7 +92,7 @@ useHead(() => ({
             :aria-labelledby="`faq-btn-${n}`"
           >
             <div class="faq__answer-inner">
-              <p class="faq__answer-text">{{ $t(`faq.q${n}.answer`) }}</p>
+              <p class="faq__answer-text">{{ item.answer }}</p>
             </div>
           </div>
         </div>
