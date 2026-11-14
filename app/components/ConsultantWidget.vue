@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue";
 import { buildConsultantContext, estimateAnalyticsParams } from "../utils/estimate.js";
 
 const { t, locale } = useI18n();
@@ -81,6 +81,7 @@ watch(contactOpen, (open) => { if (open) dismissInvitation(); });
 const input = ref("");
 const loading = ref(false);
 const messages = ref(persisted?.messages ?? []);
+const hasConversation = computed(() => messages.value.some((msg) => msg.role === "user"));
 const messagesEl = ref(null);
 const inputEl = ref(null);
 const sessionId = ref(persisted?.session_id ?? null);
@@ -233,9 +234,11 @@ const newSession = () => {
         v-show="isOpen"
         id="consultant-panel"
         class="consultant__panel"
+        :class="{ 'consultant__panel--conversation': hasConversation }"
         role="dialog"
         :aria-label="t('consultant.title')"
         @keydown.esc="onEscape"
+        @transitionend.self="($event.propertyName === 'height') && scrollBottom()"
       >
         <!-- Header -->
         <div class="consultant__header">
@@ -427,6 +430,12 @@ const newSession = () => {
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   color: #eef1f7;
+  transition: width 0.25s ease, height 0.25s ease;
+}
+
+.consultant__panel--conversation {
+  width: min(460px, calc(100vw - 3rem));
+  height: min(620px, calc(100dvh - 8rem));
 }
 
 .consultant-panel-enter-active {
@@ -511,6 +520,7 @@ const newSession = () => {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-height: 0;
   gap: 0.75rem;
   overflow-y: auto;
   padding: 1rem;
@@ -795,6 +805,7 @@ const newSession = () => {
     animation: none;
   }
   .consultant,
+  .consultant__panel,
   .consultant__toggle,
   .consultant-panel-enter-active,
   .consultant-panel-leave-active {
