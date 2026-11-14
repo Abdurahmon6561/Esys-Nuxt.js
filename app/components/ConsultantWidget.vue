@@ -219,7 +219,7 @@ const newSession = () => {
 
 <template>
   <div
-    v-show="!contactOpen"
+    v-show="!contactOpen && (!/\/pricing(?:-preview)?\/?$/.test(route.path) || isOpen)"
     class="consultant"
     @keydown.esc="onEscape"
     :class="{

@@ -15,7 +15,7 @@ if (error.value || !data.value?.data) throw createError({ statusCode: error.valu
 const page = computed(() => data.value?.data);
 const content = computed(() => page.value.content);
 const items = computed(() => [...page.value.items].sort((a,b) => a.sort_order-b.sort_order));
-const cases = computed(() => [...new Map(items.value.flatMap(i => i.cases || []).map(c => [c.id,c])).values()].slice(0,4));
+
 const selectedId = ref(null);
 const selectedService = computed(() => consultantServiceKey(items.value.find(item => item.id === selectedId.value)?.service_key));
 watch(selectedService, value => { suggestedService.value = value; }, { immediate: true });
@@ -38,8 +38,16 @@ const schema = computed(() => buildPricingPageSchema({
     page: page.value, items: items.value, locale: locale.value, siteUrl, navLabel: copy.value.nav, pathFor,
 }));
 useHead(() => ({ titleTemplate: null, script: props.preview ? [] : [{ key:'pricing-schema', type:'application/ld+json', innerHTML:JSON.stringify(schema.value).replace(/</g,'\\u003c') }] }));
+function openHashPackage() {
+    const key = route.hash.slice(1);
+    if (!items.value.some(item => item.service_key === key)) return;
+    const disclosure = document.getElementById(key)?.querySelector('details');
+    if (disclosure) disclosure.open = true;
+}
+watch(() => route.hash, () => nextTick(openHashPackage));
 let observer;
 onMounted(() => {
+    openHashPackage();
     if (props.preview) return;
     track('pricing_page_view', { locale: locale.value });
     observer = new IntersectionObserver(entries => {
@@ -60,79 +68,91 @@ onBeforeUnmount(() => observer?.disconnect());
             <header class="hero">
                 <h1>{{ content.h1 }}</h1>
                 <div class="hero-bottom"><p>{{ content.subtitle }}</p><div class="hero-actions"><a class="button primary" href="#estimate" @click="cta(null,'hero')">{{ copy.estimate }}</a><button type="button" class="hero-discuss consultant-cta" @click="startEstimate(selectedService)">{{ t('consultant.estimate.pricingCta') }}</button><a class="hero-discuss" href="https://t.me/esys_pro" @click="track('pricing_telegram_click'); cta(null,'discuss')">{{ copy.discuss }}</a></div></div>
-                <ul class="benefits"><li v-for="benefit in copy.benefits" :key="benefit">{{ benefit }}</li></ul>
+
             </header>
-            <nav class="anchors" :aria-label="copy.service"><a v-for="item in items" :key="item.id" :href="`#${item.service_key}`">{{ item.title }}</a></nav>
             <section class="overview" aria-labelledby="pricing-overview">
                 <h2 id="pricing-overview">{{ copy.overview }}</h2>
-                <table><thead><tr><th scope="col">{{ copy.service }}</th><th scope="col">{{ copy.price }}</th><th scope="col">{{ copy.timeline }}</th><th scope="col">{{ copy.scope }}</th><th scope="col"><span class="visually-hidden">{{ copy.estimate }}</span></th></tr></thead>
-                    <tbody><tr v-for="item in items" :key="item.id"><th scope="row"><a :href="`#${item.service_key}`">{{ item.title }}</a></th><td class="table-price">{{ amount(item) }} {{ copy.currency }}{{ suffix(item) }}</td><td>{{ item.timeline }}</td><td>{{ item.included[0] }}</td><td><a href="#estimate" @click="cta(item,'table')">{{ item.cta }}</a></td></tr></tbody>
-                </table>
+                <p class="overview-intro">{{ copy.compareIntro }}</p>
+                <div class="package-list">
+                    <article v-for="item in items" :id="item.service_key" :key="item.id" class="package" :data-pricing-id="item.id" :data-price="item.price_from">
+                        <details>
+                            <summary>
+                                <span class="package-heading"><span class="package-title">{{ item.title }}</span><span class="timeline">{{ copy.timeline }}: {{ item.timeline }}</span></span>
+                                <span class="package-budget"><span class="package-price"><span v-if="!item.price_to && copy.fromPre">{{ copy.fromPre }}&nbsp;</span>{{ amount(item) }} <span>{{ item.price_to ? copy.currency : copy.fromPost }}{{ suffix(item) }}</span></span><span class="typical">{{ copy.typical }}: {{ price(item.typical_from) }}–{{ price(item.typical_to) }} {{ copy.currency }}{{ suffix(item) }}</span></span>
+                                <span class="disclosure-label">{{ copy.packageDetails }}<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                            </summary>
+                            <div class="package-body">
+                                <p class="audience">{{ item.short_text }}</p>
+                                <div class="scope-grid"><div><h3>{{ copy.included }}</h3><ul class="included"><li v-for="line in item.included" :key="line">{{ line }}</li></ul></div><div class="excluded"><h3>{{ copy.excluded }}</h3><p>{{ item.excluded }}</p></div></div>
+                                <div v-if="item.cases?.length" class="related-cases"><h3>{{ copy.cases }}</h3><div class="case-grid"><NuxtLink v-for="project in item.cases" :key="project.id" :to="project.url"><img :src="project.image" :alt="project.title" loading="lazy" /><h4>{{ project.title }}</h4><p>{{ project.summary }}</p><p v-if="project.task"><strong>{{ copy.task }}:</strong> {{ project.task }}</p><p v-if="project.solution"><strong>{{ copy.solution }}:</strong> {{ project.solution }}</p><ul v-if="project.features?.length"><li v-for="feature in project.features" :key="feature">{{ feature }}</li></ul><span>{{ copy.caseLink }}</span></NuxtLink></div></div>
+                                <div class="package-actions"><a class="button primary" :href="item.cta_route.startsWith('/') ? localePath(item.cta_route) : item.cta_route" @click="cta(item,'card')">{{ item.cta }}</a><NuxtLink v-if="item.service_url" :to="item.service_url" class="text-link">{{ serviceLinkText(copy, item.title) }}</NuxtLink></div>
+                            </div>
+                        </details>
+                    </article>
+                </div>
+                <ul class="benefits"><li v-for="benefit in copy.benefits" :key="benefit">{{ benefit }}</li></ul>
                 <p class="disclaimer">{{ content.disclaimer }}</p>
+                <details class="glossary"><summary>{{ copy.glossaryTitle }}</summary><dl><template v-for="[term, explanation] in copy.glossary" :key="term"><dt>{{ term }}</dt><dd>{{ explanation }}</dd></template></dl></details>
             </section>
-            <section class="packages" aria-labelledby="pricing-packages">
-                <h2 id="pricing-packages">{{ copy.packages }}</h2>
-                <div class="package-grid"><article v-for="item in items" :id="item.service_key" :key="item.id" class="package" :data-pricing-id="item.id" :data-price="item.price_from">
-                    <div class="package-heading"><h3><NuxtLink v-if="item.service_url" :to="item.service_url">{{ item.title }}</NuxtLink><template v-else>{{ item.title }}</template></h3><span class="timeline">{{ item.timeline }}</span></div>
-                    <p class="package-price"><span v-if="!item.price_to && copy.fromPre">{{ copy.fromPre }}</span> {{ amount(item) }} <span>{{ item.price_to ? copy.currency : copy.fromPost }}{{ suffix(item) }}</span></p>
-                    <p class="typical">{{ copy.typical }}: {{ price(item.typical_from) }}–{{ price(item.typical_to) }} {{ copy.currency }}{{ suffix(item) }}</p>
-                    <p class="audience">{{ item.short_text }}</p>
-                    <h4>{{ copy.included }}</h4><ul class="included"><li v-for="line in item.included" :key="line">{{ line }}</li></ul>
-                    <div class="excluded"><h4>{{ copy.excluded }}</h4><p>{{ item.excluded }}</p></div>
-                    <div class="package-actions"><a class="button primary" :href="item.cta_route.startsWith('/') ? localePath(item.cta_route) : item.cta_route" @click="cta(item,'card')">{{ item.cta }}</a><NuxtLink v-if="item.service_url" :to="item.service_url" class="text-link">{{ serviceLinkText(copy, item.title) }}</NuxtLink></div>
-                </article></div>
-            </section>
+            <PricingEstimateForm :items="items" :selected-id="selectedId" :copy="copy" :preview="preview" @select="select" />
             <section class="factors"><h2>{{ copy.factorsTitle }}</h2><ul><li v-for="factor in copy.factors" :key="factor">{{ factor }}</li></ul></section>
             <section class="process"><h2>{{ copy.processTitle }}</h2><ol><li v-for="(step,n) in copy.steps" :key="step[0]"><span class="step-number">{{ n+1 }}</span><div><h3>{{ step[0] }}</h3><p>{{ step[1] }}</p></div></li></ol></section>
-            <section v-if="cases.length" class="cases"><h2>{{ copy.cases }}</h2><div class="case-grid"><NuxtLink v-for="project in cases" :key="project.id" :to="project.url"><img :src="project.image" :alt="project.title" loading="lazy" /><h3>{{ project.title }}</h3><p>{{ project.summary }}</p><p v-if="project.task"><strong>{{ copy.task }}:</strong> {{ project.task }}</p><p v-if="project.solution"><strong>{{ copy.solution }}:</strong> {{ project.solution }}</p><ul v-if="project.features?.length"><li v-for="feature in project.features" :key="feature">{{ feature }}</li></ul><span>{{ copy.caseLink }}</span></NuxtLink></div></section>
             <Faq :items="content.faq" :title="copy.faq" subtitle="" :schema="false" data-pricing-faq @open="faqOpened" />
-            <PricingEstimateForm :items="items" :selected-id="selectedId" :copy="copy" :preview="preview" @select="select" />
+
         </div>
     </main>
 </template>
 
 <style scoped>
-.pricing-page { background:#05051a; color:#eef1f7; min-height:100vh; }
-.pricing-inner { max-width:1200px; padding:10rem 1.5rem 6rem; margin:auto; }
-.hero h1 { max-width:1050px; font-size:clamp(2.4rem,6.2vw,5.4rem); line-height:1.06; letter-spacing:-.045em; font-weight:600; margin:0 0 2.5rem; }
-.hero-bottom { display:flex; align-items:center; justify-content:space-between; gap:3rem; } .hero-bottom p { font-size:1.1rem; line-height:1.7; max-width:540px; color:#bdc9dc; margin:0; } .hero-actions { display:flex; flex-direction:column; align-items:flex-start; gap:1rem; flex-shrink:0; }
-a { color:#b6e7fa; text-decoration:none; } a:hover { text-decoration:underline; } .button { display:inline-flex; justify-content:center; padding:1rem 1.25rem; border-radius:9px; font-weight:600; text-align:center; } .primary { background:#b6e7fa; color:#09172c; } .primary:hover { background:#d6f1fc; text-decoration:none; }
-.hero-discuss {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  max-width: 100%;
-  padding: 0.875rem 2rem;
-  border-radius: 999px;
-  border: 1px solid rgba(238, 241, 247, 0.4);
-  background: transparent;
-  color: #eef1f7;
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-.hero-discuss:hover {
-  border-color: #eef1f7;
-  background: rgba(238, 241, 247, 0.08);
-  text-decoration: none;
-}
-.consultant-cta { max-width: 310px; font-family: inherit; cursor: pointer; }
-@media (prefers-reduced-motion: reduce) {
-  .hero-discuss { transition: none; }
-}
-.benefits { list-style:none; display:flex; flex-wrap:wrap; gap:1rem 2rem; padding:2rem 0; margin:2rem 0 0; color:#b4c6df; font-size:.9rem; border-top:1px solid #2b3750; } .benefits li::before { content:'✓'; margin-right:.6rem; color:#b6e7fa; }
-.anchors { display:flex; gap:.75rem; overflow-x:auto; padding:1rem 0; margin:0 0 3rem; } .anchors a { border:1px solid #34415c; padding:.6rem 1rem; border-radius:30px; white-space:nowrap; font-size:.85rem; }
-section { margin-top:5rem; } h2 { font-size:clamp(1.8rem,3.5vw,2.75rem); letter-spacing:-.025em; line-height:1.15; font-weight:600; margin:0 0 2rem; } table { width:100%; border-collapse:collapse; text-align:left; } th,td { padding:1.2rem .8rem; border-bottom:1px solid #2b3750; font-size:.9rem; vertical-align:top; line-height:1.6; } thead th { color:#aabbd4; font-weight:400; padding-top:0; } tbody th { font-weight:500; font-size:1rem; width:20%; } td { color:#bdc9dc; } .table-price { color:white; width:21%; font-weight:600; } .disclaimer { color:#aebdd5; line-height:1.7; max-width:900px; margin-top:1.5rem; }
-.package-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; } .package { border:1px solid #303c56; background:#0d1328; padding:2rem; border-radius:20px; scroll-margin-top:110px; display:flex; flex-direction:column; min-width:0; } .package-heading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:.75rem; } h3 { font-size:1.35rem; font-weight:600; margin:0; } .timeline { color:#b6c5db; font-size:.85rem; } .package-price { font-size:clamp(1.6rem,2.8vw,2.4rem); font-weight:600; letter-spacing:-.03em; margin:1.5rem 0 .5rem; } .package-price span { font-size:1rem; font-weight:400; letter-spacing:0; } .typical { font-size:.8rem; color:#aabbd4; margin:0; } .audience { color:#bdc9dc; line-height:1.7; margin:1.5rem 0; } h4 { font-size:.85rem; font-weight:600; margin:0 0 .75rem; color:#dbe7fa; } .included { list-style:none; padding:0; margin:0 0 1.5rem; } .included li { position:relative; padding-left:1.25rem; line-height:1.65; color:#bdc9dc; font-size:.9rem; margin:.5rem 0; } .included li::before { content:'✓'; position:absolute; left:0; color:#b6e7fa; } .excluded { border-top:1px solid #303c56; padding-top:1.25rem; margin-top:auto; } .excluded p { color:#aabbd4; font-size:.85rem; line-height:1.7; margin:0; } .package-actions { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; margin-top:1.5rem; font-size:.85rem; }
-.factors { display:grid; grid-template-columns:1fr 1fr; gap:2rem; border-top:1px solid #34415c; padding-top:3rem; } .factors ul { margin:0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; color:#bdc9dc; line-height:1.6; } .process ol { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; list-style:none; padding:0; } .process li { display:flex; gap:1rem; } .step-number { color:#b6e7fa; border:1px solid #34415c; border-radius:50%; width:2rem; height:2rem; display:grid; place-items:center; flex-shrink:0; } .process h3 { font-size:1rem; margin-top:.3rem; } .process p,.case-grid p { color:#aabbd4; line-height:1.7; font-size:.9rem; }
-.case-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:2rem; } .case-grid img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:12px; margin-bottom:1rem; } .case-grid a { color:inherit; } .case-grid span { color:#b6e7fa; } .preview-note { border:1px solid #f6c975; padding:1rem; color:#f6c975; } .visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+.pricing-page { background:#05051a; color:#eef1f7; min-height:100vh; color-scheme:dark; }
+.pricing-page ::selection { background:#b6e7fa; color:#09172c; }
+.pricing-inner { max-width:1200px; padding:8rem 1.5rem 5rem; margin:auto; }
+.hero h1 { max-width:1000px; font-size:clamp(2rem,4.2vw,3.5rem); line-height:1.12; letter-spacing:-.035em; font-weight:600; margin:0 0 1.25rem; text-wrap:balance; }
+.hero-bottom p { font-size:1rem; line-height:1.6; max-width:72ch; color:#bdc9dc; margin:0; }
+.hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; margin-top:1.5rem; }
+a { color:#b6e7fa; text-decoration:none; text-underline-offset:4px; } a:hover { text-decoration:underline; }
+.button,.hero-discuss { display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; min-height:44px; padding:.8rem 1.1rem; border-radius:9px; font:inherit; font-weight:600; text-align:center; }
+.primary { background:#b6e7fa; color:#09172c; } .primary:hover { background:#d6f1fc; text-decoration:none; }
+.hero-discuss { border:1px solid #50617f; background:transparent; color:#eef1f7; cursor:pointer; font-size:.9rem; } .hero-discuss:hover { background:#131c31; text-decoration:none; }
+section { margin-top:4rem; } .overview { margin-top:2.5rem; }
+h2 { font-size:clamp(1.65rem,3vw,2.5rem); letter-spacing:-.025em; line-height:1.15; font-weight:600; margin:0 0 1.25rem; }
+.overview-intro { color:#bdc9dc; line-height:1.6; margin:0 0 1.25rem; max-width:72ch; }
+.package { border-top:1px solid #34415c; scroll-margin-top:100px; }
+.package:last-child { border-bottom:1px solid #34415c; }
+summary { display:grid; grid-template-columns:1fr 1fr auto; align-items:center; gap:1.5rem; padding:1.5rem 0; cursor:pointer; list-style:none; }
+summary::-webkit-details-marker { display:none; } summary:hover .package-title { color:#b6e7fa; }
+.package-heading,.package-budget { display:grid; gap:.5rem; min-width:0; }
+.package-title { font-size:1.2rem; font-weight:600; }
+.timeline,.typical { color:#b4c6df; font-size:.85rem; line-height:1.6; }
+.package-price { font-size:1.35rem; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.4; }
+.package-price span { font-size:.9rem; font-weight:400; }
+.disclosure-label { display:flex; align-items:center; gap:.75rem; color:#b6e7fa; font-size:.85rem; }
+details[open] .disclosure-label svg { transform:rotate(180deg); }
+.package-body { padding:0 0 2rem; } .audience { max-width:72ch; color:#bdc9dc; line-height:1.7; margin:0 0 1.5rem; }
+.scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; }
+h3 { font-size:1rem; font-weight:600; margin:0 0 .75rem; } h4 { font-size:1rem; margin:0; }
+.included { padding-left:1.25rem; margin:0; } .included li { line-height:1.7; color:#bdc9dc; font-size:.95rem; margin:.4rem 0; }
+.excluded p { color:#b4c6df; font-size:.95rem; line-height:1.7; margin:0; max-width:65ch; }
+.package-actions { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; margin-top:1.5rem; font-size:.9rem; } .text-link { display:inline-flex; align-items:center; min-height:44px; }
+.benefits { list-style:none; display:flex; flex-wrap:wrap; gap:.75rem 1.5rem; padding:0; margin:1.5rem 0; color:#b4c6df; font-size:.9rem; line-height:1.6; }
+.disclaimer { color:#b4c6df; line-height:1.7; max-width:75ch; }
+.factors { display:grid; grid-template-columns:1fr 1fr; gap:2rem; border-top:1px solid #34415c; padding-top:3rem; }
+.factors ul { margin:0; padding:0; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:1rem; color:#bdc9dc; line-height:1.6; }
+.process ol { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; list-style:none; padding:0; } .process li { display:flex; gap:1rem; }
+.step-number { color:#b6e7fa; border:1px solid #34415c; border-radius:50%; width:2rem; height:2rem; display:grid; place-items:center; flex-shrink:0; } .process h3 { margin-top:.3rem; }
+.process p,.case-grid p { color:#b4c6df; line-height:1.7; font-size:.9rem; }
+.related-cases { margin-top:2rem; } .case-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; }
+.case-grid img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:9px; margin-bottom:1rem; } .case-grid a { color:inherit; } .case-grid span { color:#b6e7fa; }
+.glossary { margin-top:1.25rem; } .glossary summary { display:list-item; padding:.75rem 0; min-height:44px; color:#b6e7fa; } .glossary dl { max-width:72ch; line-height:1.7; } .glossary dt { font-weight:600; margin-top:1rem; } .glossary dd { margin:.25rem 0 0; color:#bdc9dc; }
+.preview-note { border:1px solid #f6c975; padding:1rem; color:#f6c975; }
 :focus-visible { outline:3px solid #b6e7fa; outline-offset:4px; }
-.package-heading h3 a { color:inherit; }
-@media(max-width:900px) { .hero-bottom { flex-direction:column; align-items:flex-start; gap:1.5rem; } .hero-actions { flex-direction:row; flex-wrap:wrap; align-items:center; gap:1.5rem; } .process ol { grid-template-columns:1fr 1fr; } th,td { padding:1rem .4rem; } }
-@media(max-width:700px) { .pricing-inner { padding:8rem 1rem 4rem; } section { margin-top:3.5rem; } .package-grid,.factors,.case-grid { grid-template-columns:1fr; } .package { padding:1.5rem; } table,tbody,tr,th,td { display:block; width:auto; } thead { display:none; } tbody tr { border:1px solid #34415c; border-radius:12px; padding:1rem; margin:1rem 0; } tbody th,td,.table-price { width:auto; padding:.3rem 0; border:0; } tbody th { font-size:1.2rem; } .table-price { font-size:1.1rem; } .process ol { grid-template-columns:1fr; } .benefits { gap:1rem; } }
-@media(prefers-reduced-motion:reduce) { * { scroll-behavior:auto; } }
+@media(max-width:900px) { summary { grid-template-columns:1fr 1fr; } .disclosure-label { grid-column:1/-1; } .process ol { grid-template-columns:1fr 1fr; } }
+@media(max-width:600px) {
+    .pricing-inner { padding:6.5rem 1rem 3rem; } .hero h1 { font-size:1.85rem; } .hero-bottom p { font-size:.9rem; line-height:1.5; }
+    .hero-actions { gap:.5rem; margin-top:1rem; } .hero-actions .primary { width:100%; } .hero-discuss { flex:1; font-size:.8rem; padding:.6rem; }
+    .overview { margin-top:1.5rem; } .overview h2 { font-size:1.4rem; margin-bottom:.5rem; } .overview-intro { font-size:.85rem; margin-bottom:.5rem; }
+    summary { grid-template-columns:1fr auto; gap:.75rem; padding:1.25rem 0; } .package-heading,.package-budget { grid-column:1; } .disclosure-label { grid-column:2; grid-row:1/3; font-size:0; gap:0; }
+    .package-title { font-size:1.1rem; } .package-price { font-size:1.2rem; } .timeline,.typical { font-size:.8rem; }
+    .scope-grid,.factors,.case-grid,.process ol { grid-template-columns:1fr; } section { margin-top:3rem; }
+}
 </style>

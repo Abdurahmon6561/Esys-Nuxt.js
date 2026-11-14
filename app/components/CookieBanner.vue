@@ -4,6 +4,9 @@ import { ref, onBeforeUnmount, onMounted, nextTick, watch } from "vue";
 const { t } = useI18n();
 const localePath = useLocalePath();
 const { isOpen: contactOpen } = useContactModal();
+const { isOpen: consultantOpen } = useConsultant();
+
+const estimateVisible = useState('pricing-estimate-visible', () => false);
 
 const STORAGE_KEY = "cookie_consent";
 const visible = useState("cookie-banner-visible", () => false);
@@ -69,7 +72,7 @@ const acceptAll = () => {
   <Transition name="cookie">
     <div
       v-if="visible"
-      v-show="!contactOpen"
+      v-show="!contactOpen && !consultantOpen && !estimateVisible"
       ref="bannerEl"
       class="cookie"
       role="dialog"

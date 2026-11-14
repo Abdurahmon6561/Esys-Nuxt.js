@@ -1,5 +1,7 @@
 export const pricingCopy = {
   ru: {
+    glossaryTitle: 'Что означают технические термины?', glossary: [['Discovery','Изучение задачи и требований перед разработкой.'],['MVP','Первая версия продукта с основными функциями для проверки идеи.'],['SLA','Соглашение об уровне обслуживания, например о времени реакции на обращения.'],['Multi-tenancy','Работа нескольких организаций в одной системе с разделением их данных.'],['Dashboard','Экран со сводными показателями и данными.'],['CRM','Система для работы с клиентами, заявками и продажами.'],['SaaS','Программа, доступная через интернет как сервис.']],
+    compareIntro: 'Сравните бюджет и сроки. Откройте услугу, чтобы увидеть состав работ и проекты.', packageDetails: 'Состав и проекты', requiredNote: '* Обязательные поля', descriptionHint: 'Что нужно создать, для кого и какую задачу решить?',
     nav: 'Цены', estimate: 'Получить точную смету', discuss: 'Обсудить проект', fromPre: 'от', fromPost: 'сум', currency: 'сум', month: '/мес', hour: '/час',
     benefits: ['Базовая оценка до старта', 'Работа по этапам', 'Передача доступов', 'Поддержка после запуска'],
     overview: 'Бюджет и сроки', service: 'Услуга', price: 'Цена', timeline: 'Базовый срок', scope: 'Что входит', typical: 'Типичный бюджет',
@@ -14,6 +16,8 @@ export const pricingCopy = {
     error: 'Не удалось отправить заявку. Попробуйте ещё раз или свяжитесь с нами по телефону.', select: 'Выберите услугу', privacy: 'Отправляя заявку, вы соглашаетесь с политикой конфиденциальности.', privacyLink: 'Политика конфиденциальности', preview: 'Предпросмотр черновика',
   },
   en: {
+    glossaryTitle: 'Technical terms explained', glossary: [['Discovery','Researching the task and requirements before development.'],['MVP','A first product version with core features for testing an idea.'],['SLA','A service-level agreement, such as the response time for support requests.'],['Multi-tenancy','Several organisations use one system while their data stays separate.'],['Dashboard','A screen summarising key figures and information.'],['CRM','A system for managing customers, enquiries and sales.'],['SaaS','Software accessed over the internet as a service.']],
+    compareIntro: 'Compare budgets and timelines. Open a service for its scope and related projects.', packageDetails: 'Scope and projects', requiredNote: '* Required fields', descriptionHint: 'What do you need to build, who is it for, and what should it solve?',
     nav: 'Pricing', estimate: 'Get a detailed estimate', discuss: 'Discuss your project', fromPre: 'from', fromPost: 'UZS', currency: 'UZS', month: '/month', hour: '/hour',
     benefits: ['Initial scope and estimate', 'Delivery in stages', 'Full access handover', 'Support after launch'],
     overview: 'Budgets and timelines', service: 'Service', price: 'Price', timeline: 'Indicative timeline', scope: 'Included scope', typical: 'Typical budget',
@@ -28,6 +32,8 @@ export const pricingCopy = {
     error: 'We could not send your enquiry. Please try again or call us.', select: 'Select a service', privacy: 'By sending an enquiry you agree to our privacy policy.', privacyLink: 'Privacy policy', preview: 'Draft preview',
   },
   uz: {
+    glossaryTitle: 'Texnik atamalar izohi', glossary: [['Discovery','Ishlab chiqishdan oldin vazifa va talablarni o‘rganish.'],['MVP','G‘oyani sinash uchun asosiy funksiyalarga ega dastlabki mahsulot.'],['SLA','Xizmat darajasi, masalan, murojaatlarga javob berish muddati haqidagi kelishuv.'],['Multi-tenancy','Bir tizimdan bir nechta tashkilot foydalanishi, ularning ma’lumotlari esa alohida saqlanishi.'],['Dashboard','Asosiy ko‘rsatkichlar va ma’lumotlarni jamlovchi ekran.'],['CRM','Mijozlar, murojaatlar va savdolar bilan ishlash tizimi.'],['SaaS','Internet orqali xizmat sifatida foydalaniladigan dastur.']],
+    compareIntro: 'Byudjet va muddatlarni solishtiring. Ish tarkibi va loyihalarni ko‘rish uchun xizmatni oching.', packageDetails: 'Ish tarkibi va loyihalar', requiredNote: '* Majburiy maydonlar', descriptionHint: 'Nima yaratish kerak, kim uchun va qanday vazifani hal qilishi lozim?',
     nav: 'Narxlar', estimate: 'Aniq smeta olish', discuss: 'Loyihani muhokama qilish', fromPre: '', fromPost: 'so‘mdan', currency: 'so‘m', month: '/oy', hour: '/soat',
     benefits: ['Boshlang‘ich baholash', 'Bosqichma-bosqich ishlash', 'Kirish huquqlarini topshirish', 'Ishga tushirgandan keyin yordam'],
     overview: 'Byudjet va muddatlar', service: 'Xizmat', price: 'Narx', timeline: 'Taxminiy muddat', scope: 'Ish tarkibi', typical: 'Odatdagi byudjet',
