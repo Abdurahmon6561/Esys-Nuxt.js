@@ -1,5 +1,5 @@
 <script setup>
-import { pricingCopy } from './copy.js';
+import { pricingCopy, serviceLinkText } from './copy.js';
 const props = defineProps({ preview: Boolean });
 const { locale } = useI18n();
 const route = useRoute();
@@ -74,7 +74,7 @@ onBeforeUnmount(() => observer?.disconnect());
                     <p class="audience">{{ item.short_text }}</p>
                     <h4>{{ copy.included }}</h4><ul class="included"><li v-for="line in item.included" :key="line">{{ line }}</li></ul>
                     <div class="excluded"><h4>{{ copy.excluded }}</h4><p>{{ item.excluded }}</p></div>
-                    <div class="package-actions"><a class="button primary" :href="item.cta_route.startsWith('/') ? localePath(item.cta_route) : item.cta_route" @click="cta(item,'card')">{{ item.cta }}</a><NuxtLink v-if="item.service_url" :to="item.service_url" class="text-link">{{ copy.more }}</NuxtLink></div>
+                    <div class="package-actions"><a class="button primary" :href="item.cta_route.startsWith('/') ? localePath(item.cta_route) : item.cta_route" @click="cta(item,'card')">{{ item.cta }}</a><NuxtLink v-if="item.service_url" :to="item.service_url" class="text-link">{{ serviceLinkText(copy, item.title) }}</NuxtLink></div>
                 </article></div>
             </section>
             <section class="factors"><h2>{{ copy.factorsTitle }}</h2><ul><li v-for="factor in copy.factors" :key="factor">{{ factor }}</li></ul></section>
