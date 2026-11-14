@@ -1,7 +1,9 @@
 <script setup>
 import { pricingCopy, serviceLinkText } from './copy.js';
+import { consultantServiceKey } from '../../utils/estimate.js';
 const props = defineProps({ preview: Boolean });
-const { locale } = useI18n();
+const { locale, t } = useI18n();
+const { suggestedService, startEstimate } = useConsultant();
 const route = useRoute();
 const localePath = useLocalePath();
 const track = useTrackEvent();
@@ -15,6 +17,9 @@ const content = computed(() => page.value.content);
 const items = computed(() => [...page.value.items].sort((a,b) => a.sort_order-b.sort_order));
 const cases = computed(() => [...new Map(items.value.flatMap(i => i.cases || []).map(c => [c.id,c])).values()].slice(0,4));
 const selectedId = ref(null);
+const selectedService = computed(() => consultantServiceKey(items.value.find(item => item.id === selectedId.value)?.service_key));
+watch(selectedService, value => { suggestedService.value = value; }, { immediate: true });
+onBeforeRouteLeave(() => { suggestedService.value = null; });
 const price = formatPricingNumber;
 const suffix = item => formatPricingSuffix(item, copy.value);
 // "from X" when open-ended, "X–Y" when the item has an upper bound.
@@ -54,7 +59,7 @@ onBeforeUnmount(() => observer?.disconnect());
             <p v-if="preview" class="preview-note">{{ copy.preview }}</p>
             <header class="hero">
                 <h1>{{ content.h1 }}</h1>
-                <div class="hero-bottom"><p>{{ content.subtitle }}</p><div class="hero-actions"><a class="button primary" href="#estimate" @click="cta(null,'hero')">{{ copy.estimate }}</a><a class="hero-discuss" href="https://t.me/esys_pro" @click="track('pricing_telegram_click'); cta(null,'discuss')">{{ copy.discuss }}</a></div></div>
+                <div class="hero-bottom"><p>{{ content.subtitle }}</p><div class="hero-actions"><a class="button primary" href="#estimate" @click="cta(null,'hero')">{{ copy.estimate }}</a><button type="button" class="hero-discuss consultant-cta" @click="startEstimate(selectedService)">{{ t('consultant.estimate.pricingCta') }}</button><a class="hero-discuss" href="https://t.me/esys_pro" @click="track('pricing_telegram_click'); cta(null,'discuss')">{{ copy.discuss }}</a></div></div>
                 <ul class="benefits"><li v-for="benefit in copy.benefits" :key="benefit">{{ benefit }}</li></ul>
             </header>
             <nav class="anchors" :aria-label="copy.service"><a v-for="item in items" :key="item.id" :href="`#${item.service_key}`">{{ item.title }}</a></nav>
@@ -115,6 +120,7 @@ a { color:#b6e7fa; text-decoration:none; } a:hover { text-decoration:underline; 
   background: rgba(238, 241, 247, 0.08);
   text-decoration: none;
 }
+.consultant-cta { max-width: 310px; font-family: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .hero-discuss { transition: none; }
 }

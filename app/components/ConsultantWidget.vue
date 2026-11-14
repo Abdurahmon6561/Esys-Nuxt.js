@@ -1,8 +1,13 @@
 <script setup>
 import { ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue";
+import { buildConsultantContext, estimateAnalyticsParams } from "../utils/estimate.js";
 
-const { t } = useI18n();
-const { isOpen: contactOpen } = useContactModal();
+const { t, locale } = useI18n();
+const { isOpen: contactOpen, open: openContact } = useContactModal();
+const { isOpen, suggestedService, startEstimate, estimateRequests, estimateStarted } = useConsultant();
+const route = useRoute();
+const localePath = useLocalePath();
+const track = useTrackEvent();
 const config = useRuntimeConfig();
 const cookieBannerVisible = useState("cookie-banner-visible", () => false);
 const cookieBannerHeight = useState("cookie-banner-height", () => 0);
@@ -51,7 +56,6 @@ const saveState = () => {
 
 const persisted = loadState();
 
-const isOpen = ref(false);
 const toggleEl = ref(null);
 const greeting = ref(0);
 const invitation = ref(false);
@@ -80,6 +84,10 @@ const messages = ref(persisted?.messages ?? []);
 const messagesEl = ref(null);
 const inputEl = ref(null);
 const sessionId = ref(persisted?.session_id ?? null);
+if (messages.value.some((msg) => msg.estimate || (msg.role === "user" &&
+  ["ru", "uz", "en"].some((lang) => msg.content === t("consultant.estimate.starter", {}, { locale: lang }))))) {
+  estimateStarted.value = true;
+}
 // Assistant replies received while the panel was closed. Cleared on open.
 const unread = ref(0);
 
@@ -123,18 +131,25 @@ const autoGrow = () => {
   el.style.height = `${Math.min(el.scrollHeight, INPUT_MAX_HEIGHT_PX)}px`;
 };
 
-const send = async () => {
-  const message = input.value.trim();
-  if (!message || loading.value) return;
+const contextForRoute = () => buildConsultantContext({
+  routeName: route.name, path: route.path, query: route.query,
+  origin: import.meta.client ? window.location.origin : undefined,
+  suggestedService: suggestedService.value,
+});
 
-  input.value = "";
+const send = async (text, request) => {
+  const message = (typeof text === "string" ? text : input.value).trim();
+  if (!message || message.length > 2000 || loading.value) return;
+
+  if (typeof text !== "string") input.value = "";
   nextTick(autoGrow);
   loading.value = true;
   messages.value = [...messages.value, { role: "user", content: message }];
   messages.value = [...messages.value, { role: "typing" }];
   await scrollBottom();
 
-  const body = { message };
+  const body = { message, locale: request?.locale ?? locale.value, context: request?.context ?? contextForRoute() };
+  const analyticsExtras = { locale: body.locale, ...body.context };
   if (sessionId.value) body.session_id = sessionId.value;
 
   try {
@@ -144,27 +159,59 @@ const send = async () => {
       body,
     });
 
+    const previousEstimates = messages.value.filter((msg) => msg.estimate).length;
     messages.value = messages.value.slice(0, -1);
     sessionId.value = data.session_id;
     messages.value = [
       ...messages.value,
-      { role: "assistant", content: data.reply },
+      { role: "assistant", content: data.reply, estimate: data.estimate ?? null },
     ];
+    if (data.estimate) {
+      estimateStarted.value = true;
+      const params = estimateAnalyticsParams(data.estimate, analyticsExtras);
+      track("consultant_estimate_shown", params);
+      if (previousEstimates) track("consultant_estimate_recalculated", params);
+      if (data.estimate.manual_review) track("consultant_estimate_manual_review", params);
+    }
     // Reply arrived after the user closed the panel → count as unread.
     if (!isOpen.value) unread.value += 1;
   } catch (err) {
     messages.value = messages.value.slice(0, -1);
     const errMsg = err?.data?.error ?? t("consultant.error");
     messages.value = [...messages.value, { role: "error", content: errMsg }];
+    if (estimateStarted.value) {
+      const lastEstimate = [...messages.value].reverse().find((msg) => msg.estimate)?.estimate;
+      track("consultant_estimate_error", estimateAnalyticsParams(lastEstimate, analyticsExtras));
+    }
   } finally {
     loading.value = false;
     await scrollBottom();
   }
 };
 
+watch([() => estimateRequests.value.length, loading], () => {
+  if (loading.value || !estimateRequests.value.length) return;
+  const request = estimateRequests.value.shift();
+  send(request.message, request);
+}, { immediate: true });
+
+const estimateMessage = (key) => {
+  estimateStarted.value = true;
+  send(t(`consultant.estimate.${key}`));
+};
+
+const markEstimateSent = (estimateId) => {
+  for (const msg of messages.value) {
+    if (msg.estimate?.estimate_id === estimateId) msg.sent = true;
+  }
+};
+
 const newSession = () => {
+  if (loading.value) return;
   sessionId.value = null;
   messages.value = [];
+  estimateStarted.value = false;
+  estimateRequests.value = [];
   unread.value = 0;
   if (import.meta.client) localStorage.removeItem(STORAGE_KEY);
 };
@@ -183,7 +230,7 @@ const newSession = () => {
   >
     <Transition name="consultant-panel">
       <div
-        v-if="isOpen"
+        v-show="isOpen"
         id="consultant-panel"
         class="consultant__panel"
         role="dialog"
@@ -199,6 +246,7 @@ const newSession = () => {
           <div class="consultant__actions">
             <button
               class="consultant__icon-btn"
+              :disabled="loading"
               :title="t('consultant.new_session')"
               :aria-label="t('consultant.new_session')"
               @click="newSession"
@@ -241,6 +289,9 @@ const newSession = () => {
           <p v-if="!messages.length" class="consultant__empty">
             {{ t("consultant.empty") }}
           </p>
+          <button v-if="!messages.length" type="button" class="consultant__fallback" @click="startEstimate()">
+            {{ t("consultant.estimate.starter") }}
+          </button>
           <template v-for="(msg, i) in messages" :key="i">
             <div
               v-if="msg.role === 'typing'"
@@ -260,7 +311,21 @@ const newSession = () => {
               }"
             >
               {{ msg.content }}
+              <div v-if="msg.role === 'error'" class="consultant__fallbacks">
+                <button type="button" class="consultant__fallback" @click="openContact">{{ t("consultant.estimate.contactFallback") }}</button>
+                <NuxtLink class="consultant__fallback" :to="localePath('/pricing')">{{ t("consultant.estimate.pricingFallback") }}</NuxtLink>
+              </div>
             </div>
+            <ConsultantEstimateCard
+              v-if="msg.role === 'assistant' && msg.estimate"
+              :estimate="msg.estimate"
+              :session-id="sessionId"
+              :sent="Boolean(msg.sent)"
+              :busy="loading"
+              @sent="markEstimateSent(msg.estimate.estimate_id)"
+              @change="estimateMessage('changeMessage')"
+              @restart="estimateMessage('restartMessage')"
+            />
           </template>
         </div>
 
@@ -270,6 +335,8 @@ const newSession = () => {
             ref="inputEl"
             v-model="input"
             rows="1"
+            maxlength="2000"
+            :aria-label="t('consultant.placeholder')"
             class="consultant__input"
             :placeholder="t('consultant.placeholder')"
             @input="autoGrow"
@@ -277,7 +344,7 @@ const newSession = () => {
           />
           <button
             class="consultant__send"
-            :disabled="loading || !input.trim()"
+            :disabled="loading || !input.trim() || input.trim().length > 2000"
             :aria-label="t('consultant.send')"
             @click="send"
           >
@@ -494,6 +561,23 @@ const newSession = () => {
   background: rgba(220, 76, 76, 0.14);
   color: #f2a3a3;
 }
+
+.consultant__fallbacks { display: grid; gap: .5rem; margin-top: .75rem; white-space: normal; }
+.consultant__fallback {
+  padding: .625rem .75rem;
+  border: 1px solid rgba(var(--consultant-accent-rgb), .5);
+  border-radius: .75rem;
+  background: transparent;
+  color: #eef1f7;
+  font: inherit;
+  font-size: .8125rem;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.consultant__fallback:hover { background: rgba(var(--consultant-accent-rgb), .12); }
+.consultant__fallback:focus-visible { outline: 2px solid var(--consultant-accent-hi); outline-offset: 2px; }
+.consultant__icon-btn:disabled { opacity: .4; cursor: not-allowed; }
 
 /* ── Typing indicator ── */
 .consultant__msg--typing {

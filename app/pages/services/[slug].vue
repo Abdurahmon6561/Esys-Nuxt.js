@@ -1,4 +1,6 @@
 <script setup>
+import { consultantServiceKey } from "../../utils/estimate.js";
+
 const { servicesApi } = useApiService();
 const { locale, t, te } = useI18n();
 const route = useRoute();
@@ -30,6 +32,11 @@ const service = computed(() => data.value?.service ?? null);
 const seo = computed(() => data.value?.seo ?? null);
 const alternates = computed(() => data.value?.alternates ?? {});
 const pricing = computed(() => data.value?.pricing ?? null);
+const { suggestedService } = useConsultant();
+watch(() => pricing.value?.service_key, (key) => {
+  suggestedService.value = consultantServiceKey(key);
+}, { immediate: true });
+onBeforeRouteLeave(() => { suggestedService.value = null; });
 const blocks = computed(() => serviceContentBlocks(data.value?.blocks, pricing.value));
 const faqs = computed(() => data.value?.faqs ?? []);
 const cases = computed(() => data.value?.cases ?? []);

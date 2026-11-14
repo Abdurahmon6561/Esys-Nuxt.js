@@ -12,6 +12,13 @@
 //   converter_copy      - converter result copied
 //   converter_download  - converter result downloaded
 //   converter_cta_click - converter business CTA clicked
+//   consultant_estimate_started         - estimate starter selected (page/service context)
+//   consultant_estimate_shown           - estimate returned by the consultant
+//   consultant_estimate_recalculated    - second or later estimate in the conversation
+//   consultant_estimate_manual_review   - estimate needs the team's review
+//   consultant_estimate_error           - chat failed during an estimate flow
+//   consultant_estimate_contact_started - inline estimate lead form opened
+//   consultant_estimate_lead_submitted  - estimate lead accepted (no contact data in analytics)
 export const useTrackEvent = () => {
   const { gtagId, metrikaId } = useRuntimeConfig().public;
 
