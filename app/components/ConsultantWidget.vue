@@ -229,6 +229,14 @@ const newSession = () => {
     }"
     :style="{ '--cookie-banner-h': `${cookieBannerHeight}px` }"
   >
+    <Transition name="consultant-backdrop">
+      <div
+        v-if="isOpen"
+        class="consultant__backdrop"
+        aria-hidden="true"
+        @click="isOpen = false"
+      />
+    </Transition>
     <Transition name="consultant-panel">
       <div
         v-show="isOpen"
@@ -412,6 +420,25 @@ const newSession = () => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+
+.consultant__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(8, 12, 30, 0.18);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.consultant-backdrop-enter-active,
+.consultant-backdrop-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.consultant-backdrop-enter-from,
+.consultant-backdrop-leave-to {
+  opacity: 0;
 }
 
 /* ── Panel ── */
@@ -807,6 +834,8 @@ const newSession = () => {
   .consultant,
   .consultant__panel,
   .consultant__toggle,
+  .consultant-backdrop-enter-active,
+  .consultant-backdrop-leave-active,
   .consultant-panel-enter-active,
   .consultant-panel-leave-active {
     transition: none;
