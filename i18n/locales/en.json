@@ -86,8 +86,8 @@
     "timeline_title": "Timelines by project type",
     "timeline": {
       "t1": { "label": "Business card website or landing page", "value": "from 2 weeks" },
-      "t2": { "label": "Corporate website", "value": "from 4-6 weeks" },
-      "t3": { "label": "Online store", "value": "from 6-8 weeks" },
+      "t2": { "label": "Corporate website", "value": "3–6 weeks" },
+      "t3": { "label": "Online store", "value": "6–10 weeks" },
       "t4": { "label": "Mobile app or CRM", "value": "from 2-3 months" }
     },
     "price_note": "The price is set by estimate: the calculation is free after a short brief, with no hidden extras.",
@@ -545,7 +545,7 @@
     },
     "q2": {
       "question": "How long does a project take?",
-      "answer": "A landing page from 2 weeks, a corporate website from 4–6 weeks, a mobile app or CRM from 2–3 months. Exact timelines are fixed once the requirements are agreed."
+      "answer": "A landing page from 2 weeks, a corporate website 3–6 weeks, a mobile app or CRM from 2–3 months. Exact timelines are fixed once the requirements are agreed."
     },
     "q3": {
       "question": "What do you need from us to start?",

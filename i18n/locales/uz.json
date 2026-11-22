@@ -86,8 +86,8 @@
     "timeline_title": "Loyiha turlari böyiça muddatlar",
     "timeline": {
       "t1": { "label": "Vizitka sayt yoki landing", "value": "2 haftadan" },
-      "t2": { "label": "Korporativ sayt", "value": "4-6 haftadan" },
-      "t3": { "label": "Internet-dökon", "value": "6-8 haftadan" },
+      "t2": { "label": "Korporativ sayt", "value": "3–6 hafta" },
+      "t3": { "label": "Internet-dökon", "value": "6–10 hafta" },
       "t4": { "label": "Mobil ilova yoki CRM", "value": "2-3 oydan" }
     },
     "price_note": "Narx smeta böyiça: qisqa brifdan keyin hisob-kitob bepul, yaşirin tölovlarsiz.",
@@ -545,7 +545,7 @@
     },
     "q2": {
       "question": "Loyiha qança vaqt oladi?",
-      "answer": "Lending - 2 haftadan, korporativ sayt - 4–6 haftadan, mobil ilova yoki CRM - 2–3 oydan boşlanadi. Aniq muddatlar talablar kelişilgaç belgilanadi."
+      "answer": "Lending - 2 haftadan, korporativ sayt - 3–6 hafta, mobil ilova yoki CRM - 2–3 oydan boşlanadi. Aniq muddatlar talablar kelişilgaç belgilanadi."
     },
     "q3": {
       "question": "Boşlaş uçun bizdan nima kerak?",
