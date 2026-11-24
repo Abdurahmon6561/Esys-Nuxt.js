@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { onInteraction } from '../composables/deferredInit.js';
+import { shouldDeferMascot } from '../utils/mascot.js';
 
 const props = defineProps({ active: Boolean, greeting: Number });
 const host = ref(null);
@@ -8,10 +10,11 @@ let disposed = false;
 let cleanup = () => {};
 let sync = () => {};
 let greet = () => {};
+let cancelInit = () => {};
 watch(() => props.active, () => sync());
 watch(() => props.greeting, () => greet());
 
-onMounted(async () => {
+const init = async () => {
   let renderer;
   const geometries = new Set();
   const materials = new Set();
@@ -220,8 +223,22 @@ onMounted(async () => {
     release();
     ready.value = false;
   }
+};
+onMounted(() => {
+  const defer = shouldDeferMascot({
+    smallScreen: window.matchMedia('(max-width: 767px)').matches,
+    coarsePointer: window.matchMedia('(pointer: coarse)').matches,
+    reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  });
+  // The SVG stays visible and clickable inside the unchanged launcher.
+  // Input may have already caused the lazy widget itself to load.
+  if (defer && !navigator.userActivation?.hasBeenActive) {
+    cancelInit = onInteraction(() => { void init(); });
+  } else {
+    void init();
+  }
 });
-onBeforeUnmount(() => { disposed = true; cleanup(); });
+onBeforeUnmount(() => { disposed = true; cancelInit(); cleanup(); });
 </script>
 
 <template>

@@ -30,7 +30,6 @@ export default defineNuxtConfig({
 
   modules: [
     "@nuxtjs/i18n",
-    "motion-v/nuxt",
     "@nuxtjs/sitemap",
     "@nuxt/fonts",
     "@nuxt/image",
@@ -124,6 +123,19 @@ export default defineNuxtConfig({
   },
 
   hooks: {
+    "build:manifest"(manifest) {
+      // These imports have explicit visibility/idle/interaction gates. Nuxt's
+      // automatic hints otherwise fetch them on every route before those gates.
+      for (const [id, chunk] of Object.entries(manifest)) {
+        if (
+          /node_modules\/(?:three|gsap|@paper-design\/shaders)\//.test(id) ||
+          /components\/(?:ConsultantWidget|contact\/Modal)\.vue/.test(id)
+        ) {
+          chunk.prefetch = false;
+          chunk.preload = false;
+        }
+      }
+    },
     // The sitemap module adds a string redirect after top-level routeRules are
     // resolved, which Nitro normalizes to 307. Override that generated rule.
     "nitro:config"(nitroConfig) {

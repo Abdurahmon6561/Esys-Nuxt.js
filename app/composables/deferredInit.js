@@ -4,6 +4,21 @@
 
 const INTERACTION_EVENTS = ["pointerdown", "keydown", "touchstart", "wheel"];
 
+// Decorative work on constrained/motion-sensitive clients waits for input,
+// not idle. Return cleanup so lazy components can unmount before that input.
+export function onInteraction(callback) {
+  if (typeof window === "undefined") return () => {};
+  const cleanup = () => INTERACTION_EVENTS.forEach((event) =>
+    window.removeEventListener(event, fire));
+  const fire = () => {
+    cleanup();
+    callback();
+  };
+  INTERACTION_EVENTS.forEach((event) =>
+    window.addEventListener(event, fire, { once: true, passive: true }));
+  return cleanup;
+}
+
 // Runs `callback` once, on the first of: browser idle, `timeout` elapsed,
 // or first user interaction. Interaction counts because analytics must be
 // live before the user does anything measurable. Returns a cancel function.

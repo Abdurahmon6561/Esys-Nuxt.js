@@ -51,7 +51,7 @@ const unlockScroll = () => {
   if (background) background.inert = previousInert;
 };
 
-watch(isOpen, async (open) => {
+const syncOpen = async (open) => {
   if (open) {
     returnFocus = document.activeElement;
     lockScroll();
@@ -67,10 +67,16 @@ watch(isOpen, async (open) => {
     submitted = false;
     if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
   }
-});
+};
+watch(isOpen, syncOpen);
 watch(() => route.fullPath, close);
 
-onMounted(() => document.addEventListener("keydown", onKeydown));
+onMounted(() => {
+  document.addEventListener("keydown", onKeydown);
+  // On the first lazy mount the shared state is already open. Wait until
+  // template refs exist before locking the background and focusing the form.
+  if (isOpen.value) syncOpen(true);
+});
 onBeforeUnmount(() => {
   clearTimeout(closeTimer);
   document.removeEventListener("keydown", onKeydown);

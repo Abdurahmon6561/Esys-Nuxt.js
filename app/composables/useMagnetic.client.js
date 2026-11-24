@@ -2,7 +2,7 @@
 // while hovered, snaps back on leave. GSAP quickTo keeps it smooth + cheap.
 // `.client.js` → SSR-safe. Skipped entirely under prefers-reduced-motion.
 import { onMounted, onBeforeUnmount } from "vue";
-import { gsap } from "gsap";
+import { loadGsap } from "../utils/gsap.js";
 
 const MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
@@ -14,9 +14,17 @@ export function useMagnetic(elRef, strength = 0.35) {
   let xTo = null;
   let yTo = null;
   let el = null;
+  let target = null;
+  let disposed = false;
+  let hovered = false;
+  let loading = false;
+  let latestPointer = null;
+  let xTween = null;
+  let yTween = null;
 
   const onMove = (e) => {
-    if (!el) return;
+    latestPointer = e;
+    if (!el || !hovered) return;
     const r = el.getBoundingClientRect();
     const x = e.clientX - (r.left + r.width / 2);
     const y = e.clientY - (r.top + r.height / 2);
@@ -25,21 +33,44 @@ export function useMagnetic(elRef, strength = 0.35) {
   };
 
   const onLeave = () => {
+    hovered = false;
+    latestPointer = null;
     xTo?.(0);
     yTo?.(0);
   };
 
-  const bind = (node) => {
+  const bind = (node, gsap) => {
     el = node;
     xTo = gsap.quickTo(el, "x", { duration: 0.4, ease: "power3.out" });
     yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3.out" });
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
+    xTween = xTo.tween;
+    yTween = yTo.tween;
+    if (latestPointer) onMove(latestPointer);
+  };
+
+  const onEnter = async (event) => {
+    hovered = true;
+    latestPointer = event;
+    if (el || loading || window.matchMedia(MOTION_QUERY).matches) return;
+    loading = true;
+    try {
+      const gsap = await loadGsap();
+      if (!disposed && !window.matchMedia(MOTION_QUERY).matches) bind(target, gsap);
+    } catch {
+      // Keep the button usable if its optional animation chunk is unavailable.
+    } finally {
+      loading = false;
+    }
   };
 
   const unbind = () => {
-    el?.removeEventListener("pointermove", onMove);
-    el?.removeEventListener("pointerleave", onLeave);
+    disposed = true;
+    target?.removeEventListener("pointerenter", onEnter);
+    target?.removeEventListener("pointermove", onMove);
+    target?.removeEventListener("pointerleave", onLeave);
+    xTween?.kill();
+    yTween?.kill();
+    target = null;
     el = null;
   };
 
@@ -52,7 +83,10 @@ export function useMagnetic(elRef, strength = 0.35) {
     const node = resolveEl(elRef.value);
     if (!node) return;
     if (window.matchMedia(MOTION_QUERY).matches) return; // no magnetic under reduced motion
-    bind(node);
+    target = node;
+    node.addEventListener("pointerenter", onEnter);
+    node.addEventListener("pointermove", onMove);
+    node.addEventListener("pointerleave", onLeave);
   });
 
   onBeforeUnmount(unbind);

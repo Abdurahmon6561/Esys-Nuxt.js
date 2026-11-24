@@ -3,10 +3,7 @@
 //
 // Components import this instead of `gsap` directly so plugin registration,
 // scope cleanup, and the reduced-motion contract live in one place.
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { loadGsapWithScrollTrigger } from "../utils/gsap.js";
 
 /**
  * Run a GSAP setup function inside a `gsap.matchMedia()` context.
@@ -38,26 +35,35 @@ export function useGsapScope(setup, elOrRef) {
         ? elOrRef.value
         : elOrRef;
 
-  const mm = gsap.matchMedia();
-
-  mm.add(
-    {
-      full: "(prefers-reduced-motion: no-preference)",
-      reduceMotion: "(prefers-reduced-motion: reduce)",
-    },
-    (ctx) => {
-      const isReducedMotion = ctx.conditions.reduceMotion;
-      setup({ gsap, ScrollTrigger, isReducedMotion });
-    },
-    scopeEl || document,
-  );
+  let mm;
+  let disposed = false;
+  // Return cleanup synchronously: a route may unmount before the import ends.
+  // Until then SSR content stays visible, with no layout-changing placeholder.
+  loadGsapWithScrollTrigger().then(({ gsap, ScrollTrigger }) => {
+    if (disposed) return;
+    mm = gsap.matchMedia();
+    mm.add(
+      {
+        full: "(prefers-reduced-motion: no-preference)",
+        reduceMotion: "(prefers-reduced-motion: reduce)",
+      },
+      (ctx) => {
+        const isReducedMotion = ctx.conditions.reduceMotion;
+        setup({ gsap, ScrollTrigger, isReducedMotion });
+      },
+      scopeEl || document,
+    );
+  }).catch(() => {
+    // Optional animation chunks must never prevent reading the page.
+    mm?.revert();
+  });
 
   return {
-    revert: () => mm.revert(),
-    kill: () => mm.kill(),
+    revert: () => { disposed = true; mm?.revert(); },
+    kill: () => { disposed = true; mm?.kill(); },
   };
 }
 
 export function useGsap() {
-  return { gsap, ScrollTrigger };
+  return loadGsapWithScrollTrigger();
 }

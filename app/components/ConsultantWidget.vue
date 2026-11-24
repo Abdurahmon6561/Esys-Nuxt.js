@@ -68,6 +68,8 @@ const dismissInvitation = () => {
   clearTimeout(hideTimer);
 };
 onMounted(() => {
+  // The lazy widget may mount after a page has already opened it.
+  if (isOpen.value) nextTick(() => inputEl.value?.focus());
   try { if (sessionStorage.getItem(INVITATION_KEY)) return; } catch { /* optional storage */ }
   invitationTimer = setTimeout(() => {
     if (isOpen.value || contactOpen.value || document.hidden) return;

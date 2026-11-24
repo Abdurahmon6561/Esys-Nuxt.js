@@ -7,6 +7,20 @@ const siteUrl = config.public.siteUrl || "https://esys.pro";
 const metrikaId = config.public.metrikaId;
 const route = useRoute();
 const pageAlternates = usePageAlternatesState();
+const { isOpen: contactOpen } = useContactModal();
+const consultantOpen = useState("consultant-open", () => false);
+const consultantReady = ref(false);
+const contactReady = ref(false);
+let cancelConsultant = () => {};
+
+// Keep shared state live before loading either panel, so even the first CTA
+// click during hydration opens it. Retain mounted panels to preserve form/chat state.
+watch(contactOpen, (open) => { if (open) contactReady.value = true; }, { immediate: true });
+watch(consultantOpen, (open) => { if (open) consultantReady.value = true; }, { immediate: true });
+onMounted(() => {
+  cancelConsultant = onIdleOrInteraction(() => { consultantReady.value = true; });
+});
+onBeforeUnmount(() => cancelConsultant());
 
 // Keep only hreflang links for locales the current page really has (see
 // usePageAlternates). x-default points at the ru URL, so it goes with ru.
@@ -130,8 +144,8 @@ useSeoMeta({
   <SiteFooter />
   <ClientOnly>
     <CookieBanner />
-    <ContactModal />
-    <ConsultantWidget />
+    <LazyContactModal v-if="contactReady" />
+    <LazyConsultantWidget v-if="consultantReady" />
   </ClientOnly>
 </template>
 

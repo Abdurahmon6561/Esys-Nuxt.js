@@ -17,7 +17,6 @@ const mobileMenuOpen = ref(false);
 const langRef = ref(null);
 const nav = ref(null);
 const cta = ref(null);
-let scope = null;
 
 useMagnetic(cta, 0.4);
 
@@ -48,6 +47,10 @@ const closeMobileMenu = () => {
   mobileMenuOpen.value = false;
 };
 
+const onScroll = () => {
+  scrolled.value = window.scrollY > SCROLL_THRESHOLD;
+};
+
 const onClickOutside = (e) => {
   if (langRef.value && !langRef.value.contains(e.target)) {
     langOpen.value = false;
@@ -73,23 +76,15 @@ onMounted(() => {
   document.addEventListener("click", onClickOutside);
   window.addEventListener("keydown", onKeydown);
 
-  // ScrollTrigger drives the compact-pill toggle instead of a manual scroll
-  // listener. `is-scrolled`/`is-compact` classes + their CSS stay unchanged.
-  // Functional (not motion), so it runs regardless of reduced-motion.
-  scope = useGsapScope(({ ScrollTrigger }) => {
-    ScrollTrigger.create({
-      start: SCROLL_THRESHOLD,
-      onEnter: () => (scrolled.value = true),
-      onLeaveBack: () => (scrolled.value = false),
-    });
-  });
+  // A boolean scroll threshold does not need the animation engine site-wide.
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", onClickOutside);
   window.removeEventListener("keydown", onKeydown);
-  scope?.revert();
-  scope = null;
+  window.removeEventListener("scroll", onScroll);
 });
 </script>
 

@@ -34,8 +34,8 @@ const estimate = {
   factors: [], pricing_version: 1, pricing_url: "/pricing#landing", price_text: "Do not display this",
 };
 
-async function fixture(component: any, initialProps = {}, stored?: unknown) {
-  const states = new Map();
+async function fixture(component: any, initialProps = {}, stored?: unknown, initialState = {}) {
+  const states = new Map(Object.entries(initialState).map(([key, value]) => [key, Vue.ref(value)]));
   const storage = new Map(stored ? [["consultant_state", JSON.stringify(stored)]] : []);
   const locale = Vue.ref("ru");
   const route = { name: "pricing___ru", path: "/pricing", query: { utm_source: "search" } };
@@ -155,6 +155,26 @@ test("restored estimate cards retain sent state and estimate-flow error tracking
     const count = f.events.length;
     await f.state.send("General question");
     assert.equal(f.events.length, count, "ordinary chat errors are not estimate errors");
+  } finally { f.cleanup(); }
+});
+
+test("a pricing request queued before the lazy widget mounts is processed exactly once", async () => {
+  const component = await loadComponent("app/components/ConsultantWidget.vue");
+  const f = await fixture(component, {}, undefined, {
+    "consultant-open": true,
+    "consultant-estimate-started": true,
+    "consultant-estimate-requests": [{
+      message: translations.ru.consultant.estimate.starter, locale: "ru",
+      context: { suggested_service: "landing", entry_point: "pricing" },
+    }],
+  });
+  try {
+    await settle();
+    assert.equal(f.state.isOpen, true);
+    assert.equal(f.calls.length, 1);
+    assert.equal(f.calls[0].body.context.suggested_service, "landing");
+    assert.equal(f.state.estimateRequests.length, 0);
+    assert.deepEqual(f.state.messages.at(-1).estimate, estimate);
   } finally { f.cleanup(); }
 });
 
