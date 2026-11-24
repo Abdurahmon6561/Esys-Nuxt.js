@@ -149,8 +149,8 @@ const portfolioJsonLd = computed(() => {
             },
           }
         : {}),
-      keywords: portfolio.value.tags?.length
-        ? portfolio.value.tags.join(", ")
+      keywords: portfolio.value.technologies?.length
+        ? portfolio.value.technologies.join(", ")
         : undefined,
     },
     {
