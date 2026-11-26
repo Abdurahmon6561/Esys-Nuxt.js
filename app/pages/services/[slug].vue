@@ -249,17 +249,6 @@ const similarTitle = computed(() => {
 
       <div class="service__hero">
         <div class="service__hero-inner">
-          <UiReveal v-if="service.image" tag="figure" class="service__media">
-            <NuxtImg
-              :src="service.image"
-              :alt="service.image_alt || service.title || ''"
-              format="webp"
-              sizes="100vw lg:1200px"
-              fetchpriority="high"
-              class="service__hero-img"
-            />
-          </UiReveal>
-
           <UiReveal tag="div" class="service__body">
             <p v-if="leadText" class="service__lead">
               {{ leadText }}
@@ -364,18 +353,6 @@ const similarTitle = computed(() => {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 1.5rem 4rem;
-}
-
-.service__media {
-  margin: 0 0 3rem;
-}
-
-.service__hero-img {
-  width: 100%;
-  max-height: 520px;
-  object-fit: cover;
-  border-radius: 1.25rem;
-  background: #0a0a2e;
 }
 
 .service__body {
