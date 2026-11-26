@@ -4,11 +4,13 @@ import { readFileSync } from "node:fs";
 import { pricingCopy } from "../app/components/pricing/copy.js";
 import {
   buildServicePricingOffer,
+  buildServicePricingOffers,
   formatPricingAmount,
   formatPricingNumber,
   formatPricingSuffix,
   formatServicePrice,
   serviceContentBlocks,
+  servicePricingItems,
 } from "../app/utils/pricing.js";
 
 const pricing = {
@@ -139,4 +141,26 @@ test("all service pricing translations exist in every locale", () => {
       assert.ok(messages.services.priceSummary[key].length);
     }
   }
+});
+
+test("service page shows every pricing item and falls back to the single summary", () => {
+  const landing = { ...pricing, service_key: "landing" };
+  const corporate = { ...pricing, service_key: "corporate", price_from: 20000000 };
+  assert.deepEqual(servicePricingItems({ pricing: landing, pricing_items: [landing, corporate] }), [landing, corporate]);
+  assert.deepEqual(servicePricingItems({ pricing: landing }), [landing]);
+  assert.deepEqual(servicePricingItems({ pricing: landing, pricing_items: [] }), [landing]);
+  assert.deepEqual(servicePricingItems({ pricing: null, pricing_items: [null] }), []);
+  assert.deepEqual(servicePricingItems(null), []);
+});
+
+test("service schema emits one offer per pricing item", () => {
+  const site = "https://esys.pro";
+  const corporate = { ...pricing, price_from: 20000000 };
+  assert.deepEqual(buildServicePricingOffers([pricing], site), buildServicePricingOffer(pricing, site));
+  assert.deepEqual(buildServicePricingOffers([pricing, corporate], site), [
+    buildServicePricingOffer(pricing, site),
+    buildServicePricingOffer(corporate, site),
+  ]);
+  assert.equal(buildServicePricingOffers([{ price_from: null }], site), undefined);
+  assert.equal(buildServicePricingOffers([], site), undefined);
 });

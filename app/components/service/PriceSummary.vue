@@ -2,50 +2,66 @@
 import { pricingCopy } from "../pricing/copy.js";
 
 const props = defineProps({
-  pricing: {
-    type: Object,
+  items: {
+    type: Array,
     required: true,
   },
 });
 
 const { locale } = useI18n();
 const { open: openContact } = useContactModal();
-const price = computed(() =>
-  formatServicePrice(props.pricing, pricingCopy[locale.value])
+
+const cards = computed(() =>
+  props.items.map((item) => ({
+    ...item,
+    price: formatServicePrice(item, pricingCopy[locale.value]),
+    included: Array.isArray(item?.included)
+      ? item.included.filter((line) => typeof line === "string" && line.trim()).slice(0, 6)
+      : [],
+  }))
 );
-const included = computed(() =>
-  Array.isArray(props.pricing?.included)
-    ? props.pricing.included.filter((line) => typeof line === "string" && line.trim()).slice(0, 6)
-    : []
-);
+// Every item links to the same pricing page; drop the per-package anchor
+// when several packages are shown.
+const allPricesUrl = computed(() => {
+  const url = props.items.find((item) => item?.url)?.url;
+  if (!url) return "";
+  return props.items.length > 1 ? url.split("#")[0] : url;
+});
 </script>
 
 <template>
   <section class="sblock sblock--price-summary">
     <div class="sblock__inner">
       <UiSectionHead level="h2" :title="$t('services.priceSummary.title')" />
-      <UiReveal tag="div" class="scard">
-        <h3 v-if="pricing.title" class="summary__title">{{ pricing.title }}</h3>
-        <p v-if="price" class="summary__price">{{ price }}</p>
-        <p v-if="pricing.short_text" class="summary__text">{{ pricing.short_text }}</p>
-        <p v-if="pricing.timeline" class="summary__text">
-          <strong>{{ $t("services.priceSummary.timeline") }}:</strong> {{ pricing.timeline }}
-        </p>
-        <div v-if="included.length">
-          <h3 class="summary__included-title">{{ $t("services.priceSummary.included") }}</h3>
-          <ul class="summary__included">
-            <li v-for="(line, index) in included" :key="index">{{ line }}</li>
-          </ul>
-        </div>
-        <div class="summary__actions">
-          <button type="button" class="summary__cta" @click="openContact">
-            {{ $t("services.cta") }}
-          </button>
-          <NuxtLink v-if="pricing.url" :to="pricing.url" class="summary__link">
-            {{ $t("services.priceSummary.allPrices") }}
-          </NuxtLink>
-        </div>
+      <UiReveal tag="div" class="summary__grid" :class="{ 'summary__grid--multi': cards.length > 1 }">
+        <article
+          v-for="(card, index) in cards"
+          :key="card.service_key || index"
+          :id="cards.length > 1 && card.service_key ? `price-${card.service_key}` : undefined"
+          class="scard"
+        >
+          <h3 v-if="card.title" class="summary__title">{{ card.title }}</h3>
+          <p v-if="card.price" class="summary__price">{{ card.price }}</p>
+          <p v-if="card.short_text" class="summary__text">{{ card.short_text }}</p>
+          <p v-if="card.timeline" class="summary__text">
+            <strong>{{ $t("services.priceSummary.timeline") }}:</strong> {{ card.timeline }}
+          </p>
+          <div v-if="card.included.length">
+            <h4 class="summary__included-title">{{ $t("services.priceSummary.included") }}</h4>
+            <ul class="summary__included">
+              <li v-for="(line, lineIndex) in card.included" :key="lineIndex">{{ line }}</li>
+            </ul>
+          </div>
+        </article>
       </UiReveal>
+      <div class="summary__actions">
+        <button type="button" class="summary__cta" @click="openContact">
+          {{ $t("services.cta") }}
+        </button>
+        <NuxtLink v-if="allPricesUrl" :to="allPricesUrl" class="summary__link">
+          {{ $t("services.priceSummary.allPrices") }}
+        </NuxtLink>
+      </div>
     </div>
   </section>
 </template>
@@ -61,6 +77,15 @@ const included = computed(() =>
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+.summary__grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.summary__grid--multi {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .scard {
@@ -122,6 +147,7 @@ const included = computed(() =>
 }
 
 .summary__actions {
+  margin-top: 2rem;
   display: flex;
   align-items: center;
   flex-wrap: wrap;

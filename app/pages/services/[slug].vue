@@ -32,6 +32,7 @@ const service = computed(() => data.value?.service ?? null);
 const seo = computed(() => data.value?.seo ?? null);
 const alternates = computed(() => data.value?.alternates ?? {});
 const pricing = computed(() => data.value?.pricing ?? null);
+const pricingItems = computed(() => servicePricingItems(data.value));
 const { suggestedService } = useConsultant();
 watch(() => pricing.value?.service_key, (key) => {
   suggestedService.value = consultantServiceKey(key);
@@ -151,7 +152,7 @@ const serviceJsonLd = computed(() => {
       url: `${siteUrl}${route.path}`,
       provider: { "@id": orgId(siteUrl) },
       areaServed: { "@type": "City", name: "Tashkent" },
-      ...(pricing.value ? { offers: buildServicePricingOffer(pricing.value, siteUrl) } : {}),
+      ...(pricingItems.value.length ? { offers: buildServicePricingOffers(pricingItems.value, siteUrl) } : {}),
     },
     {
       "@context": "https://schema.org",
@@ -282,7 +283,7 @@ const similarTitle = computed(() => {
         </div>
       </div>
 
-      <ServicePriceSummary v-if="pricing" :pricing="pricing" />
+      <ServicePriceSummary v-if="pricingItems.length" :items="pricingItems" />
 
       <!-- Content blocks -->
       <div v-if="blocks.length" class="service__blocks">

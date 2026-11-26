@@ -127,3 +127,22 @@ export const serviceContentBlocks = (blocks, pricing) => {
   if (!Array.isArray(blocks)) return [];
   return pricing ? blocks.filter((block) => block?.type !== "pricing") : blocks;
 };
+
+// All active pricing items linked to the service (API `pricing_items`); older
+// APIs only send the first one as `pricing`.
+export const servicePricingItems = (data) => {
+  const items = Array.isArray(data?.pricing_items)
+    ? data.pricing_items.filter((item) => item && typeof item === "object")
+    : [];
+  if (items.length) return items;
+  return data?.pricing ? [data.pricing] : [];
+};
+
+// One Offer per package; a single package keeps the plain-object shape.
+export const buildServicePricingOffers = (items, siteUrl) => {
+  const offers = (items || [])
+    .map((item) => buildServicePricingOffer(item, siteUrl))
+    .filter(Boolean);
+  if (!offers.length) return undefined;
+  return offers.length === 1 ? offers[0] : offers;
+};
