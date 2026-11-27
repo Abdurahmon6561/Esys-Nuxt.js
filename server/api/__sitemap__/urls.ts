@@ -1,6 +1,7 @@
 import { defineSitemapEventHandler } from "#imports";
 import type { SitemapUrlInput } from "#sitemap/types";
 import { staticPageEntries } from "../../utils/static-page-lastmod";
+import { sitemapAlternatives } from "../../utils/sitemap-alternates";
 
 // services/sitemap rows: one per published locale+alias pair, with the
 // service's other published translations pre-grouped by the backend.
@@ -48,9 +49,7 @@ export default defineSitemapEventHandler(
         return (rows ?? []).map((row) => ({
           loc: toLoc(row.locale, row.alias),
           lastmod: row.updated_at,
-          alternatives: Object.entries(row.alternates ?? {}).map(
-            ([loc, alias]) => ({ hreflang: loc, href: toLoc(loc, alias) }),
-          ),
+          alternatives: sitemapAlternatives(row.alternates, toLoc),
         }));
       } catch (error) {
         console.error(`Sitemap: failed to fetch ${endpoint}`, error);
