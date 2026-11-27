@@ -6,7 +6,7 @@ import {
   STATIC_REDIRECTS,
 } from "../server/utils/redirects.ts";
 
-test("redirect lookup covers service and portfolio locale paths", () => {
+test("redirect lookup covers every page path", () => {
   for (const path of [
     "/services",
     "/services/websites",
@@ -16,11 +16,23 @@ test("redirect lookup covers service and portfolio locale paths", () => {
     "/portfolio/project",
     "/en/portfolio/project",
     "/uz/portfolio/project",
+    "/blog/post",
+    "/en/blog/old-slug",
+    "/tools/old-tool",
+    "/about-us",
   ]) {
     assert.equal(isRedirectPath(path), true, path);
   }
 
-  for (const path of ["/", "/blog/post", "/portfolio-other/project"]) {
+  for (const path of [
+    "/",
+    "/_nuxt/entry.js",
+    "/_ipx/w_640/image.webp",
+    "/api/backend/blogs",
+    "/__sitemap__/ru.xml",
+    "/sitemap_index.xml",
+    "/indexnow-key.txt",
+  ]) {
     assert.equal(isRedirectPath(path), false, path);
   }
 });

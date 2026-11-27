@@ -6,9 +6,9 @@ import {
   type RedirectRow,
 } from "../utils/redirects";
 
-// Slug-change redirects live in the CMS (GET /redirects). This middleware
-// serves them for service and portfolio URLs only, from a cached map, so the
-// rest of the site never pays for the lookup. Order relative to
+// Redirects live in the CMS (GET /redirects; slug changes, MCP create_redirect).
+// This middleware serves them for every page path from a cached map; assets,
+// chunks and API calls skip the lookup. Order relative to
 // redirect-default-locale does not matter: that one only touches /ru/**.
 
 // NOTE: defineCachedFunction JSON-serializes the cached value - a Map would
