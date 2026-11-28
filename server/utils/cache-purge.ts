@@ -9,6 +9,16 @@ export const MAX_PURGE_PATHS = 50;
 const PURGEABLE =
   /^\/(?:(?:en|uz)\/)?(?:pricing|(?:services|portfolio|blog)(?:\/[a-z0-9][a-z0-9-]{0,190})?)$/;
 
+// Pages whose publication state decides sitemap membership: pricing and any
+// CMS record page. Purging one also drops the sitemap module's cache so the
+// publish tools can verify sitemap membership immediately. List pages alone
+// (e.g. a reordered listing) never change the sitemap.
+const SITEMAP_PAGE =
+  /^\/(?:(?:en|uz)\/)?(?:pricing|(?:services|portfolio|blog)\/[a-z0-9][a-z0-9-]{0,190})$/;
+
+export const purgeTouchesSitemap = (paths: string[]): boolean =>
+  paths.some((path) => SITEMAP_PAGE.test(path));
+
 export const isPurgeablePath = (path: unknown): path is string =>
   typeof path === "string" && PURGEABLE.test(path);
 

@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   isPurgeablePath,
+  purgeTouchesSitemap,
   routeCacheKeyPrefix,
   safeEqual,
   selectRouteCacheKeys,
@@ -39,4 +40,13 @@ test("secret comparison", () => {
   assert.ok(!safeEqual("secret", "secreT"));
   assert.ok(!safeEqual("", ""));
   assert.ok(!safeEqual("a", "ab"));
+});
+
+test("sitemap cache is dropped for pricing and record pages, not list pages", () => {
+  assert.equal(purgeTouchesSitemap(["/pricing"]), true);
+  assert.equal(purgeTouchesSitemap(["/uz/services/support"]), true);
+  assert.equal(purgeTouchesSitemap(["/services", "/en/services", "/services/support"]), true);
+  assert.equal(purgeTouchesSitemap(["/en/blog/some-post"]), true);
+  assert.equal(purgeTouchesSitemap(["/services", "/uz/portfolio", "/en/blog"]), false);
+  assert.equal(purgeTouchesSitemap([]), false);
 });

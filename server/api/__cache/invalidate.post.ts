@@ -35,10 +35,11 @@ export default defineEventHandler(async (event) => {
 
   await Promise.all(keys.map((key) => storage.removeItem(key)));
 
-  // Pricing publication verifies sitemap membership immediately. Clear both
-  // the module's XML and resolved-URL caches, shared by all production workers.
+  // Pricing and service/portfolio/blog publication verify sitemap membership
+  // immediately. Clear both the module's XML and resolved-URL caches, shared
+  // by all production workers.
   const sitemapStorage = useStorage("sitemap");
-  const sitemapKeys = paths.some((path) => /^\/(?:(?:en|uz)\/)?pricing$/.test(path))
+  const sitemapKeys = purgeTouchesSitemap(paths)
     ? await sitemapStorage.getKeys()
     : [];
   await Promise.all(sitemapKeys.map((key) => sitemapStorage.removeItem(key)));
